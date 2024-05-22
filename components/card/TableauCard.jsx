@@ -1,4 +1,6 @@
 import React from "react";
+import tableau from "@/public/images/tableau-software.svg";
+import Image from "next/image";
 function TableauCard(){
 
     const handleClick = () => {
@@ -7,7 +9,8 @@ function TableauCard(){
 
     return (
         <div className="card card-compact w-72 h-96 bg-neutral shadow-xl">
-            <figure><img src={'../../images/tableau-software.svg'} alt="Movie" className="responsive-image" style={{ transform: 'scale(0.8)' }}/>
+            <figure>
+                <Image width='auto' height='auto' src={tableau} alt="Movie" className="responsive-image"style={{ transform: 'scale(0.8)' }}/>
             </figure>
             <div className="card-body">
                 <h2 className="card-title">Tableau </h2>

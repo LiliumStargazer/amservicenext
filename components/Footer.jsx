@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 
-function Footer() {
-    const [windowHeight, setWindowHeight] = useState(0);
-    useEffect(() => {
-
-        setWindowHeight(window.innerHeight);
-    }, []);
+function Footer({windowHeight}) {
+    // const [windowHeight, setWindowHeight] = useState(0);
+    // useEffect(() => {
+    //
+    //     setWindowHeight(window.innerHeight);
+    // }, []);
 
     return (
                 <footer className="footer items-center p-4 bg-neutral text-neutral-content bottom-0 w-full"

@@ -13,10 +13,28 @@ export async function GET(req) {
         systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory,
             systemPaths.localBackupUnzippedFile);
         const query = 'SELECT * FROM FrigoView';
-        const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
+        let results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
+        if ( systemPaths.localBackupUnzippedFile.includes("DbBackup") ){
+            const resultsOverwrite = [];
+
+            results.forEach((element) => {
+                const newElement = {};
+                newElement.DataOraR = element.DataOraR;
+                newElement.Id = element.ID;
+                newElement.IDFrigo = element.IDFrigo;
+                newElement.Temperature1 = element.Temperature;
+                newElement.Temperature2 = element.Temp2;
+                newElement.Temperature3 = element.Temp3;
+                newElement.Temperature4 = element.Temp4;
+                newElement.FrigoState = element.FrigoState;
+                newElement.WarnAlarm = element.WarnBits;
+                resultsOverwrite.push(newElement);
+            });
+            results = resultsOverwrite;
+        }
+
         return NextResponse.json(results);
     } catch (error) {
-
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+        return NextResponse.json({ error: error.toString() }, { status: 500 })
     }
 }

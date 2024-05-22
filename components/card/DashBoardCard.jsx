@@ -13,7 +13,7 @@ function DashBoardCard() {
             </figure>
             <div className="min-h-[152px]">
                 <div className="card-body ">
-                    <h2 className="card-title">DashBoard Lis e Prodotti</h2>
+                    <h2 className="card-title">Lis e Prodotti</h2>
                     <p className="min-h-[40px]">controllo dei servizi LIS, delle etichette dei prodotti</p>
                     <div className="card-actions justify-end">
                         <button className="btn btn-sm btn-info join-item" onClick={handleClick}>Go!</button>

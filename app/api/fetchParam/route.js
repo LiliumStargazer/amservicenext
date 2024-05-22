@@ -1,8 +1,11 @@
+'use server'
+
 import {createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile} from "@/lib/functionsServer";
 import {NextResponse} from "next/server";
-import {getParams} from "@/lib/params/param";
+import {getParams} from "@/lib/param_deserialization";
 
 export async function GET(req) {
+
     const url = new URL(req.url);
     const searchParams = new URLSearchParams(url.search);
     const serial = searchParams.get('serial');
@@ -13,11 +16,12 @@ export async function GET(req) {
         systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory,
             systemPaths.localBackupUnzippedFile);
         let query = 'SELECT Data FROM Param WHERE ID=(SELECT MAX(ID) FROM Param)';
-        if ( systemPaths.localBackupUnzippedFile.includes("DbBackup") ){
-            query = 'SELECT Data FROM Param WHERE ID=(SELECT MAX(ID) FROM ParamView)';
-        }
+        let backupName = systemPaths.localBackupUnzippedFile;
+        let softwareType = "android";
+        if ( backupName.includes("DbBackup"))
+            softwareType = "windows";
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
-        const param = await getParams(results);
+        const param = await getParams(results, softwareType);
         return NextResponse.json(param);
     } catch (error) {
         return NextResponse.json({ error: error.message }, { status: 500 })

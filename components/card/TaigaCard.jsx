@@ -1,4 +1,6 @@
 import React from "react";
+import taiga from "@/public/images/taiga-2.svg";
+import Image from "next/image";
 function TaigaCard(){
 
     const handleClick = () => {
@@ -7,7 +9,9 @@ function TaigaCard(){
 
     return (
         <div className="card card-compact w-72 h-96 bg-neutral shadow-xl">
-            <figure className="max-h-[232px]"><img src={'../../images/taiga-2.svg'} alt="Movie" className="responsive-image" style={{ transform: 'scale(0.8)' }}/>
+            <figure className="max-h-[232px]">
+                {/*<img src={'../../images/taiga-2.svg'} alt="Movie" className="responsive-image" style={{ transform: 'scale(0.8)' }}/>*/}
+                <Image width='auto' height='auto' src={taiga} alt="Movie" className="responsive-image"style={{ transform: 'scale(0.8)' }}/>
             </figure>
             <div className="card-body">
                 <h2 className="card-title">Taiga Project</h2>

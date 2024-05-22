@@ -14,6 +14,8 @@ export async function GET(req, res) {
         const result = await sftpConnector.isSerialNumberOnSftp(systemPaths);
         return NextResponse.json(result);
     } catch (error) {
+        console.log("sono error message")
+        console.log(error.message);
         return NextResponse.json({ error: error.message }, { status: 500 })
     }
 }

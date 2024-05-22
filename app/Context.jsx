@@ -20,7 +20,7 @@ const ContextApiProvider = ({children}) =>{
     const [activeTab, setActiveTab] = useState(1);
     const [dataFrigoCharts, setDataFrigoCharts] = useState([]);
     const [isChart, setIsChart] = useState(false);
-    const [page, setPage] = useState('Master');
+    const [page, setPage] = useState('Home');
     const [frigoTables, setFrigoTables] = useState({});
     const [frigoSelected, setFrigoSelected ] = useState(0);
     const [param, setParam] = useState({});
@@ -52,7 +52,7 @@ const ContextApiProvider = ({children}) =>{
         activeTab, frigoSelected, frigoData, alertMessage,
         storedSerial, timeLine, message, loading, searchValue,
         softwareType, serialTyped, backupList, backupSelected,
-        logDaMaster, gridApi
+        logDaMaster, gridApi, param
     ]);
 
     return (

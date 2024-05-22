@@ -1,0 +1,22 @@
+[ req ]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = dn
+
+[ dn ]
+C=IT
+ST=Lombardy
+L=Brescia
+O=My Company
+OU=My Unit
+emailAddress=myemail@example.com
+CN = amservice.ampiovani.locale
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = amservice.ampiovani.locale
+DNS.2 = localhost
+

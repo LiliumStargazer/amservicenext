@@ -2,9 +2,8 @@ import React, {useContext} from "react";
 import {Context} from "@/app/Context";
 
 
-function TextInput({className}) {
+function TextInputAmService({className}) {
     const {serialTyped, setSerialTyped} = useContext(Context);
-
     const classes = className || "input input-bordered w-min join-item w-44";
 
     return (
@@ -17,4 +16,4 @@ function TextInput({className}) {
         />
     )
 }
-export default TextInput;
+export default TextInputAmService;

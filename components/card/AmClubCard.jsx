@@ -1,4 +1,6 @@
 import React from "react";
+import Image from "next/image";
+import amclublogo from "../../public/images/amClubLogo.png";
 
 function AmClubCard(){
 
@@ -6,11 +8,10 @@ function AmClubCard(){
         window.open("https://amclub.amdistributori.it/admin", "_blank");
     };
 
-
     return (
         <div className="card card-compact w-72 h-96 bg-neutral shadow-xl">
-            <figure className="min-h-[229px]"><img src={'../images/AmClubLogo.png'} alt="Movie"
-                                                   className="responsive-image"/>
+            <figure className="min-h-[229px]">
+                <Image width='auto' height='auto' src={amclublogo} alt="Movie" className="responsive-image"/>
             </figure>
             <div className="min-h-[152px]">
             <div className="card-body">

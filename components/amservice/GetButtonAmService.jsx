@@ -10,7 +10,7 @@ function Button({ router, className }) {
         setStoredSerial, setLoading, loading} = useContext(Context);
 
     const classes = className || "btn btn-info join-item ";
-    const link = "/log";
+    const link = "/amservice";
 
     const handleDownload = async () => {
         let check = true;
@@ -37,17 +37,14 @@ function Button({ router, className }) {
         }
 
         if (check){
-            console.log(router.pathname);
             router.push(link);
             setPage("Master");
+            setLoading(true);
             DownloadBackup();
-
         }
     };
 
     async function DownloadBackup() {
-
-        setLoading(true);
         try {
             if (isStoredSerialNull(storedSerial) || isSerialChanged(storedSerial, serialTyped)) {
                 if (await isSerialNumberOnSftp(serialTyped)) {

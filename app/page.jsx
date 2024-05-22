@@ -11,14 +11,15 @@ import ChatWootCard from "../components/card/ChatwootCard";
 import PrestaShopCard from "../components/card/PrestaShopCard";
 import TaigaCard from "../components/card/TaigaCard";
 import VteCard from "../components/card/VteCard";
-import Footer from "../components/shared/Footer";
-import Alert from "@/components/log/Alert";
+import Footer from "../components/Footer";
 import TableauCard from "@/components/card/TableauCard";
+import Header from "@/components/Header";
+import CalcPsw from "@/components/card/CalcPsw";
 
 function Login() {
   const [windowHeight, setWindowHeight] = useState(0);
-  useEffect(() => {
 
+  useEffect(() => {
     setWindowHeight(window.innerHeight);
   }, []);
 
@@ -26,19 +27,14 @@ function Login() {
 
   return (
       <div>
-          <div className="navbar bg-neutral text-neutral-content"
-               style={{height: windowHeight * 0.06 + "px"}}>
-            <button className="text-xl ml-2 font-bold">Am Service</button>
-              <div className="ml-10">
-                <Alert/>
-              </div>
-          </div>
+          <Header windowHeight={windowHeight}/>
           <div className="flex flex-col items-center ">
               <div className="grid grid-cols-5 gap-5 mt-5 mb-28">
-                  <AliveCard/>
-                  <AmWikiCard/>
-                  <AmClubCard/>
+                  <CalcPsw/>
                   <AmServiceCard router={router}/>
+                  <AliveCard/>
+                  <AmClubCard/>
+                  <AmWikiCard/>
                   <ChatWootCard/>
                   <DashBoardCard/>
                   <PrestaShopCard/>
@@ -48,7 +44,7 @@ function Login() {
               </div>
           </div>
         <div>
-          <Footer/>
+          <Footer windowHeight={windowHeight}/>
         </div>
       </div>
   );

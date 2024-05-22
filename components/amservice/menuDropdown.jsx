@@ -1,39 +1,35 @@
 import React, {useContext } from 'react';
-
-import {getLogFrigo} from "../log/tableFrigo/getLogFrigo";
-import {getParam} from "../log/param/getParam";
 import * as XLSX from 'xlsx';
 import {Context} from "@/app/Context";
-
+import {getFrigoBackup, getParamApi} from "@/lib/apiClient";
 
 function MenuDropdown() {
-    const { setPage, setMessage, gridApi, searchValue} = useContext(Context);
-    const context = useContext(Context);
+    const { setPage, setMessage, gridApi, searchValue, setLoading, serialTyped, backupSelected, logDaMaster,
+        setFrigoData, setParam} = useContext(Context);
 
     const handleClick = (value) => {
+
+        if (value === "Master")
+            setPage(value);
+
         if (value === "Frigo"){
-           getLogFrigo(context).then((response) => {
+           getLogFrigo().then((response) => {
                 if (response){
                     setPage(value);
                 }
            }).catch((error) => {
-                console.log(error);
                 setMessage(error);
            });
         }
         if (value === "Param"){
-            getParam(context).then((response) => {
+            getParam().then((response) => {
                 if (response){
                     setPage(value);
                 }
             }).catch((error) => {
-                console.log(error);
                 setMessage(error);
             });
         }
-
-        else
-            setPage(value);
     };
 
     const handleExport = () => {
@@ -60,6 +56,51 @@ function MenuDropdown() {
         XLSX.writeFile(wb, fileName + '.xlsx');
     }
 
+    async function getLogFrigo() {
+
+        try{
+            if (logDaMaster.length === 0){
+                setMessage('Download backup Master first');
+                return false;
+            }
+            const result = await getFrigoBackup(serialTyped, backupSelected)
+            if (result.length === 0){
+                setMessage('No data found');
+                return false;
+            }
+            setFrigoData(result);
+            return true;
+        }catch (e) {
+            setMessage(`${e}`);
+            return false;
+        }
+    }
+
+    async function getParam() {
+
+        setLoading(true);
+        try{
+            if (logDaMaster.length === 0){
+                setLoading(false);
+                setMessage('Download backup Master first');
+                return false;
+            }
+            const result = await getParamApi(serialTyped, backupSelected)
+            if (result.length === 0){
+                setLoading(false);
+                setMessage('No data found');
+                return false;
+            }
+            setParam(result);
+            setLoading(false);
+            return true;
+        }catch (e) {
+            setLoading(false);
+            setMessage(`${e}`);
+            return false;
+        }
+    }
+
     return (
         <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">
             <div tabIndex={0} role="button" className="btn-rounded mt-2 ml-2 mr-2">
@@ -77,9 +118,9 @@ function MenuDropdown() {
                 <li>
                     <p onClick={() => handleClick("Master")}>Master</p>
                 </li>
-                <li>
+                {/*<li>
                     <p onClick={() => handleClick("Frigo")}>Frigo</p>
-                </li>
+                </li>*/}
                 <li>
                     <p onClick={() => handleClick("Param")}>Param</p>
                 </li>

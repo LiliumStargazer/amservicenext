@@ -4,11 +4,28 @@ import {AgGridReact} from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
-function TableFrigo() {
-    const { frigoData,  frigoTables, setFrigoTables, frigoSelected, setFrigoNumber} = useContext(Context);
+const colDefs = [
+    { headerName: 'ID', field: 'ID', flex: 1, cellStyle: { whiteSpace: 'nowrap' } , filter: true},
+    { headerName: 'Data', field: 'dataOraR', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+    { headerName: 'Time', field: 'Time', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true,},
+    { headerName: 'Temp1', field: 'Temp1', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+    { headerName: 'Warn Alarm', field: 'WarnAlarm', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+    { headerName: 'Allarm Temp', field: 'AlarmTemp', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+    { headerName: 'Power', field: 'Power', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+    { headerName: 'Sbrinamento', field: 'Sbrinamento', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+    { headerName: 'Test', field: 'Test', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+    { headerName: 'Porte Aperte', field: 'PorteAperte', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+    { headerName: 'Sbrina a Tempo', field: 'SbrinaTempo', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+    { headerName: 'Pre-Allarme', field: 'PreAllarme', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+    { headerName: 'Allarme', field: 'Allarme', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
+];
+
+function TableFrigo(factory, deps) {
+    const { frigoData,  frigoTables, setFrigoTables, frigoSelected, setFrigoNumber, setFrigoSelected, softwareType} = useContext(Context);
     const [gridApi, setGridApi] = useState(null);
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
     const gridStyle = useMemo(() => ({height: window.innerHeight-100, width: '100%' }), []);
+
     const onGridReady = (params) => {
         setGridApi(params.api);
     };
@@ -25,29 +42,6 @@ function TableFrigo() {
         let part = stringaInput.split(" ");
         return part[1];
     }
-
-    const filterDateParam = {
-        comparator: (filterLocalDateAtMidnight, cellValue) => {
-            const dateAsString = cellValue;
-            if (dateAsString == null) return -1;
-            const dateParts = dateAsString.split('/');
-            const cellDate = new Date(
-                Number(dateParts[2]),
-                Number(dateParts[1]) - 1,
-                Number(dateParts[0])
-            );
-            if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
-                return 0;
-            }
-            if (cellDate < filterLocalDateAtMidnight) {
-                return -1;
-            }
-            if (cellDate > filterLocalDateAtMidnight) {
-                return 1;
-            }
-            return 0;
-        },
-    };
 
     function computeState(element) {
         const frigoStatus = element;
@@ -88,7 +82,6 @@ function TableFrigo() {
         };
     }
 
-
     useEffect(() => {
         const frigoDataCopy = [...frigoData];
         const splittedTables = frigoDataCopy.reduce((tablesObject, rowFrigoData) => {
@@ -97,6 +90,7 @@ function TableFrigo() {
             const formattedTemp1 = parseFloat(rowFrigoData.Temperature1).toFixed(2) + "°";
             const alarmTemp = parseFloat(rowFrigoData.Temp1) >= rowFrigoData.WarnAlarm ? "ON" : "OFF";
             const time = getTimeString(rowFrigoData.DataOraR);
+
             const rowData = {
                 dataOraR: formattedDate,
                 IDFrigo: rowFrigoData.IDFrigo,
@@ -118,32 +112,15 @@ function TableFrigo() {
                 tablesObject[rowFrigoData.IDFrigo] = [];
             }
             tablesObject[rowFrigoData.IDFrigo].push(rowData);
-
             return tablesObject;
         }, {});
 
         setFrigoTables(splittedTables);
-         if ( Object.keys(splittedTables).length > 0)
-                setFrigoNumber(Object.keys(splittedTables).length-1);
-    }, [frigoData]);
+        setFrigoNumber(Object.keys(splittedTables).length);
+
+    }, [frigoData, setFrigoNumber, setFrigoTables]);
 
 
-
-    const colDefs = useMemo(() =>[
-        { headerName: 'ID', field: 'ID', flex: 1, cellStyle: { whiteSpace: 'nowrap' } , filter: true},
-        { headerName: 'Data', field: 'dataOraR', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: 'agDateColumnFilter', filterParams: filterDateParam },
-        { headerName: 'Time', field: 'Time', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true,},
-        { headerName: 'Temp1', field: 'Temp1', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Warn Alarm', field: 'WarnAlarm', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Allarm Temp', field: 'AlarmTemp', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Power', field: 'Power', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Sbrinamento', field: 'Sbrinamento', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Test', field: 'Test', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Porte Aperte', field: 'PorteAperte', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Sbrina a Tempo', field: 'SbrinaTempo', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Pre-Allarme', field: 'PreAllarme', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Allarme', field: 'Allarme', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-    ]);
 
     const options = {
         rowBuffer:50,
@@ -152,7 +129,7 @@ function TableFrigo() {
         },
         pagination: true,
         paginationPageSizeSelector: [200, 500, 1000],
-        paginationPageSize: 500,
+        paginationPageSize: 200,
         onGridReady:onGridReady,
     }
 

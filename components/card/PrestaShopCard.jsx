@@ -1,4 +1,6 @@
 import React from "react";
+import Image from "next/image";
+import prestaShop from "@/public/images/Prestashop.png";
 function PrestaShopCard(){
 
     const handleClick = () => {
@@ -7,7 +9,9 @@ function PrestaShopCard(){
 
     return (
         <div className="card card-compact w-72 h-96 bg-neutral shadow-xl">
-            <figure><img src={'../../images/Prestashop.png'} alt="Movie" className="responsive-image" style={{ transform: 'scale(0.8)' }}/>
+            <figure>
+                {/*<img src={'../../images/Prestashop.png'} alt="Movie" className="responsive-image" style={{ transform: 'scale(0.8)' }}/>*/}
+                <Image width='auto' height='auto' src={prestaShop} alt="Movie" className="responsive-image" style={{ transform: 'scale(0.8)' }}/>
             </figure>
             <div className="card-body">
                 <h2 className="card-title">AM Shop</h2>

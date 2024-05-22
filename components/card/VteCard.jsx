@@ -1,4 +1,6 @@
 import React from "react";
+import taiga from "@/public/images/vtenext.png";
+import Image from "next/image";
 function VteCard(){
 
     const handleClick = () => {
@@ -7,7 +9,9 @@ function VteCard(){
 
     return (
         <div className="card card-compact w-72 h-96 bg-neutral shadow-xl">
-            <figure ><img src={'../../images/vtenext.png'} alt="Movie" className="responsive-image" style={{ transform: 'scale(0.7)' }}/>
+            <figure>
+
+                <Image width='auto' height='auto' src={taiga} alt="Movie" className="responsive-image"style={{ transform: 'scale(0.7)' }}/>
             </figure>
             <div className="card-body">
             <h2 className="card-title">VTE</h2>

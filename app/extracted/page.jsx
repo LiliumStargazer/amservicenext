@@ -3,32 +3,49 @@ import React, {useCallback, useEffect, useMemo, useState} from "react";
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { getRowStyle } from "../../components/log/tableDaMaster/formatLogTable.js";
+import {getRowStyle, TagDataCellRenderer} from "@/lib/formatLogTable";
+import "../../style/gridStyle.css";
+
+const colDefs = [
+    { headerName: 'ID', field: 'IDR', flex:1 , maxWidth: 70, cellStyle: {whiteSpace: 'nowrap'}, filter: false , sortable: false, },
+    { headerName: 'Data', field: 'Data', flex:1 , minWidth:140, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: false, },
+    { headerName: 'Time', field: 'Time', flex:1 , cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: false },
+    { headerName: 'Evento', field: 'EventString', flex:2 , cellStyle: { whiteSpace: 'nowrap' }, filter: true , sortable: false, floatingFilter:false},
+    { headerName: 'Stato', field: 'Stato', flex:1 ,maxWidth: 80, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
+    { headerName: 'Producer', field: 'DevProducer', flex:1 , cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
+    { headerName: 'Dev', field: 'DevIndex', flex:1 ,maxWidth: 75, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
+    { headerName: 'Sub', field: 'SubIndex',flex:1 ,maxWidth: 75, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
+    { headerName: 'T1', field: 'T1', flex:1 ,maxWidth: 75, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
+    { headerName: 'T2', field: 'Tag2', flex:1 ,maxWidth: 75 , cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
+    { headerName: 'T3', field: 'Tag3', flex:1 ,maxWidth: 75, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
+    { headerName: 'T4', field: 'Tag4', flex:1 ,maxWidth: 75, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false , floatingFilter:false},
+    { headerName: 'Fase', field: 'Fase', flex:1 , cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
+    { headerName: 'TagData', field: 'TagData', flex: 4, wrapText: true, filter:false,  sortable: false , cellRenderer: props => TagDataCellRenderer(props)},
+];
+
+
+
 function Extract(){
+    const [extractedData, setExtractedData] = useState([]);
+    const [extractedID, setExtractedID] = useState(0);
+    const [gridStyle, setGridStyle] = useState({height: 0, width: '100%'});
+
+    useEffect(() => {
+        const style= {height: window.innerHeight-100, width: '100%' };
+        setGridStyle(style);
+    }, []);
+
+    useEffect(() => {
+        const data = JSON.parse(localStorage.getItem('extractedData'));
+        const id = JSON.parse(localStorage.getItem('rowID'));
+        setExtractedData(data);
+        setExtractedID(id);
+    }, []);
+
     const [gridApi, setGridApi] = useState(null);
     const [searchValue, setSearchValue] = useState('');
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
-    const gridStyle = useMemo(() => ({height: window.innerHeight-100, width: '100%' }), []);
-    const extractedData = useMemo(() => JSON.parse(localStorage.getItem('extractedData')), []);
-    const extractedID = useMemo(() => JSON.parse(localStorage.getItem('rowID')), []);
     const getRowStyleCallback = useCallback(getRowStyle, []);
-
-    const colDefs = useMemo(() =>[
-        {headerName: 'Nr', field: 'IDR', width: 80, cellStyle: {whiteSpace: 'nowrap'}, filter: true},
-        {headerName: 'Data', field: 'Data', width: 110, cellStyle: { whiteSpace: 'nowrap' }, filter: 'agDateColumnFilter' },
-        { headerName: 'Time', field: 'Time', width: 100, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Evento', field: 'EventString', width: 205, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Stato', field: 'Stato', width: 85 ,cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Producer', field: 'DevProducer', width: 150, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Dev', field: 'DevIndex', width: 80, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Sub', field: 'SubIndex',width: 80, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'T1', field: 'T1', width: 90, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'T2', field: 'Tag2', width: 80, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'T3', field: 'Tag3', width: 80, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'T4', field: 'Tag4', width: 80, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'Fase', field: 'Fase', width: 130, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
-        { headerName: 'TagData', field: 'TagData', flex: 2, wrapText: true },
-    ]);
 
     const formattedRows = useMemo(() => {
         return extractedData.map(row => ({
@@ -59,7 +76,7 @@ function Extract(){
             const rowIndex = formattedRows.findIndex(row => row.IDR === extractedID);
             gridApi.ensureIndexVisible(rowIndex, 'top');
         }
-    },[gridApi]);
+    },[gridApi, formattedRows, extractedID]);
 
     const handleInputChange = (event) => {
         setSearchValue(event.target.value);
@@ -69,31 +86,17 @@ function Extract(){
         return params.data.IDR;
     }, []);
 
-    const getRowHeight = useCallback((params) => {
-        if (params.data.EventString === "EV_PAX_PAYMENT" || params.data.EventString === "EV_ING_PAYMENT" ||
-        params.data.EventString === "EV_MRPAY_EXECUTERECHARGE") {
-            return 240;
-        }
-        return 35;
-    }, []);
-
-    const getRowsCallback = useCallback((params) => {
-        const margin = 100;
-        const startRow = Math.max(params.startRow - margin, 0);
-        const endRow = params.endRow + margin;
-        const rowsThisBlock = formattedRows.slice(startRow, endRow);
-        params.successCallback(rowsThisBlock, formattedRows.length);
-    }, [formattedRows]);
-
     const options = useMemo(() => ({
-        getRowHeight: getRowHeight,
+        //getRowHeight: getRowHeight,
         cacheQuickFilter: true,
         defaultColDef: { cellStyle: {textAlign: 'left'},},
         getRowId: getRowIds,
+        rowStyle: {fontSize: '12px', margin: '0px', padding: '0px'},
+        rowHeight: 30,
         getRowStyle: getRowStyleCallback,
-        rowModel: 'infinite',
-        datasource: {getRows: getRowsCallback}
-    }), [getRowsCallback]);
+        headerHeight:30,
+
+    }), [ getRowIds, getRowStyleCallback]);
 
     return (
         <div>
@@ -119,6 +122,7 @@ function Extract(){
                         gridOptions={options}
                         quickFilterText={searchValue}
                         onGridReady={onGridReady}
+                        animateRows={false}
                     />
                 </div>
             </div>
