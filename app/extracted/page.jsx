@@ -3,37 +3,16 @@ import React, {useCallback, useEffect, useMemo, useState} from "react";
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import {getRowStyle, TagDataCellRenderer} from "@/lib/formatLogTable";
-import "../../style/gridStyle.css";
-
-const colDefs = [
-    { headerName: 'ID', field: 'IDR', flex:1 , maxWidth: 70, cellStyle: {whiteSpace: 'nowrap'}, filter: false , sortable: false, },
-    { headerName: 'Data', field: 'Data', flex:1 , minWidth:140, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: false, },
-    { headerName: 'Time', field: 'Time', flex:1 , cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: false },
-    { headerName: 'Evento', field: 'EventString', flex:2 , cellStyle: { whiteSpace: 'nowrap' }, filter: true , sortable: false, floatingFilter:false},
-    { headerName: 'Stato', field: 'Stato', flex:1 ,maxWidth: 80, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
-    { headerName: 'Producer', field: 'DevProducer', flex:1 , cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
-    { headerName: 'Dev', field: 'DevIndex', flex:1 ,maxWidth: 75, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
-    { headerName: 'Sub', field: 'SubIndex',flex:1 ,maxWidth: 75, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
-    { headerName: 'T1', field: 'T1', flex:1 ,maxWidth: 75, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
-    { headerName: 'T2', field: 'Tag2', flex:1 ,maxWidth: 75 , cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
-    { headerName: 'T3', field: 'Tag3', flex:1 ,maxWidth: 75, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
-    { headerName: 'T4', field: 'Tag4', flex:1 ,maxWidth: 75, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false , floatingFilter:false},
-    { headerName: 'Fase', field: 'Fase', flex:1 , cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter:false },
-    { headerName: 'TagData', field: 'TagData', flex: 4, wrapText: true, filter:false,  sortable: false , cellRenderer: props => TagDataCellRenderer(props)},
-];
-
-
+import "@/style/gridStyle.css";
+import useWindowSize from "@/hooks/useWIndowSize";
+import {useAgGridConfig} from "@/hooks/useAgGridConfig";
+import {mapLogDaMaster} from "@/lib/aggrid-helper";
 
 function Extract(){
     const [extractedData, setExtractedData] = useState([]);
     const [extractedID, setExtractedID] = useState(0);
-    const [gridStyle, setGridStyle] = useState({height: 0, width: '100%'});
-
-    useEffect(() => {
-        const style= {height: window.innerHeight-100, width: '100%' };
-        setGridStyle(style);
-    }, []);
+    const { height } = useWindowSize();
+    const gridStyle = useMemo(() => ({height: height - 100, width: '100%' }), [height]);
 
     useEffect(() => {
         const data = JSON.parse(localStorage.getItem('extractedData'));
@@ -45,38 +24,28 @@ function Extract(){
     const [gridApi, setGridApi] = useState(null);
     const [searchValue, setSearchValue] = useState('');
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
-    const getRowStyleCallback = useCallback(getRowStyle, []);
-
-    const formattedRows = useMemo(() => {
-        return extractedData.map(row => ({
-            IDR: row.IDR,
-            Data: row.Data,
-            Time: row.Time,
-            EventString: row.EventString,
-            Stato: row.State,
-            DevProducer: row.DevProducer,
-            DevIndex: row.DevIndex,
-            SubIndex: row.SubIndex,
-            T1: row.T1,
-            Tag2: row.Tag2,
-            Tag3: row.Tag3,
-            Tag4: row.Tag4,
-            Fase: row.Fase,
-            TagData: row.TagData,
-        }));
-    }, [extractedData]);
 
     const onGridReady = (params) => {
         setGridApi(params.api);
-
     };
 
+    const rows = useMemo(() => {
+        return extractedData && extractedData.length > 0 ? mapLogDaMaster(extractedData) : [];
+    }, [extractedData]);
+
+    const rowIndex =  useMemo(() => {
+        return rows.findIndex(row => row.IDR === extractedID)
+    }, [rows, extractedID]);
+
+
     useEffect(() => {
-        if (gridApi){
-            const rowIndex = formattedRows.findIndex(row => row.IDR === extractedID);
+        if (gridApi && rowIndex > -1) {
+            const pageSize = gridApi.paginationGetPageSize();
+            const pageNumber = Math.floor(rowIndex / pageSize);
+            gridApi.paginationGoToPage(pageNumber);
             gridApi.ensureIndexVisible(rowIndex, 'top');
         }
-    },[gridApi, formattedRows, extractedID]);
+    },[gridApi, rowIndex]);
 
     const handleInputChange = (event) => {
         setSearchValue(event.target.value);
@@ -86,17 +55,14 @@ function Extract(){
         return params.data.IDR;
     }, []);
 
-    const options = useMemo(() => ({
-        //getRowHeight: getRowHeight,
-        cacheQuickFilter: true,
-        defaultColDef: { cellStyle: {textAlign: 'left'},},
-        getRowId: getRowIds,
-        rowStyle: {fontSize: '12px', margin: '0px', padding: '0px'},
-        rowHeight: 30,
-        getRowStyle: getRowStyleCallback,
-        headerHeight:30,
+    const { colDefs, options } = useAgGridConfig( rows, getRowIds, true);
 
-    }), [ getRowIds, getRowStyleCallback]);
+    //console.log(useEventsTranslatedByAlive());
+
+    const getRowNodeId = useCallback((data) => {
+        return data.IDR;
+    }, []);
+
 
     return (
         <div>
@@ -104,8 +70,8 @@ function Extract(){
                 <input
                     type="search"
                     className="m-0 block w-[1px] min-w-0 flex-auto textarea textarea-info text-md font-bol"
-                    placeholder="Search"
-                    aria-label="Search"
+                    placeholder="InputSearch"
+                    aria-label="InputSearch"
                     aria-describedby="button-addon2"
                     value={searchValue}
                     onChange={handleInputChange}
@@ -117,12 +83,13 @@ function Extract(){
                     style={gridStyle}
                 >
                     <AgGridReact
-                        rowData={formattedRows}
+                        rowData={rows}
                         columnDefs={colDefs}
                         gridOptions={options}
                         quickFilterText={searchValue}
                         onGridReady={onGridReady}
-                        animateRows={false}
+                        immutableData={true}
+                        getRowNodeId={getRowNodeId}
                     />
                 </div>
             </div>

@@ -1,9 +1,10 @@
 'use client'
 import React, {createContext, useState, useMemo} from "react";
-const Context = createContext();
+
+const Context = createContext(null);
 
 const ContextApiProvider = ({children}) =>{
-    const [serialTyped, setSerialTyped] =useState('');
+    const [serial, setSerial] =useState('');
     const [softwareType, setSoftwareType] = useState('');
     const [backupList, setBackupList] = useState('');
     const [backupSelected, setBackupSelected] = useState('');
@@ -24,8 +25,10 @@ const ContextApiProvider = ({children}) =>{
     const [frigoTables, setFrigoTables] = useState({});
     const [frigoSelected, setFrigoSelected ] = useState(0);
     const [param, setParam] = useState({});
+    const [eventsTranslatedByAlive, setEventsTranslatedByAlive] =useState({});
 
     const contextValue = useMemo(() => ({
+        eventsTranslatedByAlive, setEventsTranslatedByAlive,
         gridApi, setGridApi,
         frigoNumber, setFrigoNumber,
         frigoTables, setFrigoTables,
@@ -42,7 +45,7 @@ const ContextApiProvider = ({children}) =>{
         loading, setLoading,
         searchValue, setSearchValue,
         softwareType, setSoftwareType,
-        serialTyped, setSerialTyped,
+        serial, setSerial,
         backupList, setBackupList,
         backupSelected, setBackupSelected,
         logDaMaster, setLogDaMaster,
@@ -51,8 +54,8 @@ const ContextApiProvider = ({children}) =>{
         frigoNumber, frigoTables, page, isChart, dataFrigoCharts,
         activeTab, frigoSelected, frigoData, alertMessage,
         storedSerial, timeLine, message, loading, searchValue,
-        softwareType, serialTyped, backupList, backupSelected,
-        logDaMaster, gridApi, param
+        softwareType, serial, backupList, backupSelected,
+        logDaMaster, gridApi, param, eventsTranslatedByAlive
     ]);
 
     return (
