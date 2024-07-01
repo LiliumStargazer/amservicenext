@@ -12,10 +12,11 @@ export async function GET(req, res) {
     try {
         const systemPaths = createSystemPaths(serial);
         const sftpConnector = new SftpConnector();
-        const result = await sftpConnector.getSerialNumberOnSftp(systemPaths);
+        const result = await sftpConnector.isSerialNumberOnSftp(systemPaths);
         return NextResponse.json(result);
     } catch (error) {
-        Sentry.captureException(err);
-        return NextResponse.json({ error: error.message }, { status: 500 })
+        Sentry.captureException(error);
+        return NextResponse.json({ error: error.message });
+
     }
 }

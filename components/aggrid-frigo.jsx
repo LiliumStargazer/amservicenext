@@ -1,11 +1,11 @@
-import React, {useEffect, useContext, useMemo, useState} from "react";
+import React, {useEffect, useContext, } from "react";
 import {Context} from "@/app/Context";
-import {AgGridReact} from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import {formatStringToDate, getTimeString} from "@/lib/utils";
 import {translateFrigoState} from "@/lib/events-helper";
-
+import AgGrid from "@/components/aggrid";
+import {defaultColDef} from "@/lib/aggrid-helper";
 
 const colDefs = [
     { headerName: 'ID', field: 'ID', flex: 1, cellStyle: { whiteSpace: 'nowrap' } , filter: true},
@@ -23,15 +23,8 @@ const colDefs = [
     { headerName: 'Allarme', field: 'Allarme', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
 ];
 
-function AggridFrigo(factory, deps) {
+function AggridFrigo() {
     const { frigoData,  frigoTables, setFrigoTables, frigoSelected, setFrigoNumber} = useContext(Context);
-    const [gridApi, setGridApi] = useState(null);
-    const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
-    const gridStyle = useMemo(() => ({height: window.innerHeight-100, width: '100%' }), []);
-
-    const onGridReady = (params) => {
-        setGridApi(params.api);
-    };
 
     useEffect(() => {
         const frigoDataCopy = [...frigoData];
@@ -71,8 +64,6 @@ function AggridFrigo(factory, deps) {
 
     }, [frigoData, setFrigoNumber, setFrigoTables]);
 
-
-
     const options = {
         rowBuffer:50,
         defaultColDef: {
@@ -81,23 +72,15 @@ function AggridFrigo(factory, deps) {
         pagination: true,
         paginationPageSizeSelector: [200, 500, 1000],
         paginationPageSize: 200,
-        onGridReady:onGridReady,
     }
 
     return (
-        <div style={containerStyle}>
-            <div
-                className={"ag-theme-quartz-dark"}
-                style={gridStyle}
-            >
-            <AgGridReact
-                columnMenu={'new'}
-                columnDefs={colDefs}
-                rowData={frigoTables[frigoSelected]}
-                gridOptions={options}
-            />
-            </div>
-        </div>
+        <AgGrid
+            rows={frigoTables[frigoSelected]}
+            colDefs={colDefs}
+            options={options}
+            defaultColDef={defaultColDef}
+        />
     )
 }
 

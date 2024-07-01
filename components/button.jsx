@@ -1,12 +1,10 @@
 
-import React, {useCallback, useContext, useEffect, useRef} from "react";
+import React, { useContext, useEffect, useRef} from "react";
 import { Context } from "@/app/Context";
 import PropTypes from 'prop-types';
-import useDownloadBackupOnClick from "@/hooks/useDownloadBackupOnClick";
-import useHandleExtractClick from '@/hooks/useHandleExtractClick';
 
 Button.propTypes = {
-    router: PropTypes.object.isRequired,
+    router: PropTypes.object,
     className: PropTypes.string,
     disabled: PropTypes.bool,
     url: PropTypes.string,
@@ -14,34 +12,36 @@ Button.propTypes = {
     buttonKey: PropTypes.string, // Add this line
     text: PropTypes.string,
     rows: PropTypes.array,
-    props: PropTypes.object
+    props: PropTypes.object,
+    id: PropTypes.string,
+    onButtonClick: PropTypes.func,
 };
 
-function Button({ router, className , disabled, url, inputValue, buttonKey, text, rows, props}) {
+function Button({ router, className = "btn btn-md btn-info join-item rounded-r-full" , disabled, url, inputValue, id, text, rows, props, onButtonClick}) {
     const context = useContext(Context);
     const { loading, searchValue} = context;
     const searchValueRef = useRef(searchValue);
-
-    const handleClickOnCards = useCallback(() => {
-        const finalUrl = url.includes("{input}") ? url.replace("{input}", inputValue) : url;
-        window.open(finalUrl, "_blank");
-    }, [url, inputValue]);
 
     useEffect(() => {
         searchValueRef.current = searchValue;
     }, [searchValue]);
 
-    const handleDownloadClick = useDownloadBackupOnClick(router);
-    const handleExtractClick = useHandleExtractClick(rows, props);
+    const buttonProps = {};
 
-    const onClickProp = (buttonKey === "amlog" && handleDownloadClick) || (url && handleClickOnCards) || (props && handleExtractClick);
-    const classNameDefault = className || "btn btn-md btn-info join-item rounded-r-full";
+    if (router) buttonProps.router = rows;
+    if (className) buttonProps.className = `${className} ${loading ? "btn-disabled" : ""}`;
+    if (disabled) buttonProps.disabled = disabled;
+    if (url) buttonProps.url = url;
+    if (inputValue) buttonProps.inputValue = inputValue;
+    if (id) buttonProps.buttonKey = id;
+    if (text) buttonProps.text = text;
+    if (rows) buttonProps.rows = rows;
+    if (props) buttonProps.props = props;
+    if (onButtonClick) buttonProps.onClick = onButtonClick;
 
     return (
         <button
-            className={`${classNameDefault} ${loading ? "btn-disabled" : ""}`}
-            onClick={onClickProp}
-            disabled={disabled}
+            {...buttonProps}
         >
             {text}
         </button>

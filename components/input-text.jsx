@@ -1,52 +1,24 @@
-import React, {useContext, useState} from "react";
-import {Context} from "@/app/Context";
+import React from "react";
+import PropTypes from "prop-types";
 
-function InputText({className, type, placeholder, setPassword, password}) {
-    const {serial, setSerial} = useContext(Context);
-    const classes = className || "input input-bordered input-md input-bordered join-item max-w-36";
-    const defaultPlaceholder = placeholder || "Type Serial";
-    const [aliveSerial, setAliveSerial] = useState("");
+InputText.propTypes = {
+    className: PropTypes.string,
+    id: PropTypes.string,
+    placeholder: PropTypes.string,
+    onChange: PropTypes.func,
+    value: PropTypes.string
+};
 
-    const handleChange = (event) => {
-        const value = event.target.value;
-        switch (type) {
-            case 'ampassword':
-                setPassword(value);
-                break;
-            case 'amlog':
-                setSerial(value);
-                break;
-            case 'alive':
-                setAliveSerial(value);
-                break;
-            default:
-                break;
-        }
-    };
+function InputText(props) {
+    const {className, id, placeholder = "Type Serial", onChange} = props;
 
-    const handleValue = (type) => {
-        switch (type) {
-            case 'ampassword':
-                return password;
-            case 'amlog':
-                return serial;
-            case 'alive':
-                return aliveSerial;
-            default:
-                return 'amlog';
-        }
-    };
+    const inputProps = {};
+    if (className) inputProps.className = className;
+    if (id) inputProps.id = id;
+    if (placeholder) inputProps.placeholder = placeholder;
+    if (onChange) inputProps.onChange = onChange;
 
-
-    return (
-        <input
-            type={type}
-            placeholder={defaultPlaceholder}
-            className={classes}
-            value={handleValue(type)}
-            onChange={handleChange}
-        />
-    );
+    return <input {...inputProps} />;
 }
 
 export default InputText;

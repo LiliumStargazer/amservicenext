@@ -24,7 +24,6 @@ function AnimationLottieloading(){
             </div>
         </div>
     );
-
 }
 
 export default AnimationLottieloading;

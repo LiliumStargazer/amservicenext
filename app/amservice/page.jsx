@@ -19,24 +19,35 @@ import InputText from "@/components/input-text";
 import {useRouter} from "next/navigation";
 import ButtonHome from "@/components/button-home";
 import Button from "@/components/button";
+import Kbd from "@/components/kbd";
+import AnimationLottieNotLoaded from "@/components/animation-lottieNotLoaded";
+import useDownloadBackupOnClick from "@/hooks/useDownloadBackupOnClick";
 
 function Log() {
 
-    const { page, isChart, logDaMaster, loading} = useContext(Context);
+    const { page, isChart, logDaMaster, loading, storedSerial, setSerial} = useContext(Context);
     const router = useRouter();
+    const handleDownloadAMLog = useDownloadBackupOnClick(router);
 
     return (
       <div>
         <div className="mb-3 mt-2">
           <div className="flex items-start ml-2 mr-2 space-x-3">
-
             <div className="join">
-                <InputText type={"amlog"} />
-                <SelectBackup />
-                <Button router={router} buttonKey={"amlog"} text={"Go!"} />
+              <InputText
+                  id={"amlog"}
+                  className="input input-md input-bordered join-item max-w-36"
+                  onChange={(event) => setSerial(event.target.value)}
+              />
+              <SelectBackup />
+              <Button
+                  router={router}
+                  text={"Go!"}
+                  onButtonClick={handleDownloadAMLog}
+              />
             </div>
-              <Helper />
-              { page === "Master" && <InputSearch /> }
+              {page === "Master" && logDaMaster.length > 0 && <Helper />}
+              {page === "Master" && logDaMaster.length > 0 && <InputSearch />}
             <div className="max-h-4 relative">
               <Alert />
             </div>
@@ -45,11 +56,12 @@ function Log() {
               {page === "Frigo" && <ButtonsGroup />}
             </div>
             <div className="flex space-x-3 absolute right-2">
-                <div className="flex mt-2">
-                    <IconSoftware />
-                </div>
-                <ButtonHome />
-                <DropdownMenu />
+                {storedSerial && <Kbd />}
+              <div className="flex mt-2">
+                <IconSoftware />
+              </div>
+              <ButtonHome />
+              <DropdownMenu />
             </div>
           </div>
         </div>
@@ -57,6 +69,7 @@ function Log() {
         <div>
           <div>
             <AnimationLottieloading />
+            {!loading && logDaMaster.length === 0 && <AnimationLottieNotLoaded /> }
             {!loading &&
               page === "Master" &&
               logDaMaster &&

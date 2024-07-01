@@ -19,16 +19,18 @@ export async function GET(req) {
             const resultsOverwrite = [];
 
             results.forEach((element) => {
-                const newElement = {};
-                newElement.DataOraR = element.DataOraR;
-                newElement.Id = element.ID;
-                newElement.IDFrigo = element.IDFrigo;
-                newElement.Temperature1 = element.Temperature;
-                newElement.Temperature2 = element.Temp2;
-                newElement.Temperature3 = element.Temp3;
-                newElement.Temperature4 = element.Temp4;
-                newElement.FrigoState = element.FrigoState;
-                newElement.WarnAlarm = element.WarnBits;
+                const { DataOraR, ID, IDFrigo, Temperature, Temp2, Temp3, Temp4, FrigoState, WarnBits } = element;
+                const newElement = {
+                    DataOraR: DataOraR,
+                    Id: ID,
+                    IDFrigo: IDFrigo,
+                    Temperature1: Temperature,
+                    Temperature2: Temp2,
+                    Temperature3: Temp3,
+                    Temperature4: Temp4,
+                    FrigoState: FrigoState,
+                    WarnAlarm: WarnBits
+                };
                 resultsOverwrite.push(newElement);
             });
             results = resultsOverwrite;
@@ -36,7 +38,7 @@ export async function GET(req) {
 
         return NextResponse.json(results);
     } catch (error) {
-        Sentry.captureException(err);
-        return NextResponse.json({ error: error.toString() }, { status: 500 })
+        Sentry.captureException(error);
+        return NextResponse.json({ error: error.message }, )
     }
 }

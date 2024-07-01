@@ -13,7 +13,7 @@ export async function GET(req) {
 
     try {
         const systemPaths = createSystemPaths(serial, backup);
-        createDirectory(systemPaths.localBackupDirectory);
+        await createDirectory(systemPaths.localBackupDirectory);
         const sftpConnector = new SftpConnector();
         await sftpConnector.downloadBackup(systemPaths);
         await unzipFile(systemPaths);
@@ -27,7 +27,7 @@ export async function GET(req) {
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
         return NextResponse.json(results);
     } catch (error) {
-        Sentry.captureException(err);
-        return NextResponse.json({ error: error.message }, { status: 500 })
+        Sentry.captureException(error);
+        return NextResponse.json({ error: error.message })
     }
 }

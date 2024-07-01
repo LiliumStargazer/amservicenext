@@ -12,7 +12,6 @@ function useHandleExtractClick(rows, props) {
             return;
         }
         const filteredRows = rows.filter(row => row.DataOraR === props.data.DataOraR);
-        filteredRows.reverse();
         localStorage.setItem('rowID', JSON.stringify(props.data.IDR));
         localStorage.setItem('extractedData', JSON.stringify(filteredRows));
         const url = `/extracted?`;

@@ -14,7 +14,8 @@ export async function GET(req) {
         const backupLists = await sftpConnector.getListOfSftpBackups(systemPaths);
         return NextResponse.json(backupLists);
     } catch (error) {
-        Sentry.captureException(err);
-        return NextResponse.json({ error: error.message }, { status: 500 })
+        console.log('Error while getting backup list from api-route:', error.message)
+        Sentry.captureException(error);
+        return NextResponse.json({ error: error.message });
     }
 }

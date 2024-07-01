@@ -5,14 +5,17 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/style/gridStyle.css";
 import useWindowSize from "@/hooks/useWIndowSize";
-import {useAgGridConfig} from "@/hooks/useAgGridConfig";
+import {useAgGridConfigLogMaster} from "@/hooks/useAgGridConfigLogMaster";
 import {mapLogDaMaster} from "@/lib/aggrid-helper";
 
 function Extract(){
     const [extractedData, setExtractedData] = useState([]);
     const [extractedID, setExtractedID] = useState(0);
     const { height } = useWindowSize();
-    const gridStyle = useMemo(() => ({height: height - 100, width: '100%' }), [height]);
+    const gridStyle = useMemo(() => {
+        const validHeight = typeof height === 'number' ? height - 100 : 'auto';
+        return {height: validHeight, width: '100%' };
+    }, [height]);
 
     useEffect(() => {
         const data = JSON.parse(localStorage.getItem('extractedData'));
@@ -55,7 +58,7 @@ function Extract(){
         return params.data.IDR;
     }, []);
 
-    const { colDefs, options } = useAgGridConfig( rows, getRowIds, true);
+    const { colDefs, options } = useAgGridConfigLogMaster( rows, getRowIds, true);
 
     //console.log(useEventsTranslatedByAlive());
 

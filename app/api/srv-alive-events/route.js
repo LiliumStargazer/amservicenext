@@ -1,28 +1,19 @@
 'use server'
 
 import {NextResponse} from "next/server";
-import axios from "axios";
 import Sentry from "@sentry/nextjs";
+
+import {getEventsAlive} from "@/lib/api-srv";
 
 export async function GET() {
 
     try {
-        const result = await fetchAliveApiTranslation();
+        const result = await getEventsAlive();
         return NextResponse.json(result);
     } catch (error) {
         Sentry.captureException(error);
-        return NextResponse.json({ error: error.message }, { status: 500 })
+        return NextResponse.json({ error: error.message })
     }
 }
 
-async function fetchAliveApiTranslation() {
-
-    try {
-        const response = await axios.get('https://alive2.amdistributori.it:8443/aliveApi.php');
-        return response.data;
-    } catch (error) {
-        Sentry.captureException(error);
-        return { error: error.message };
-    }
-
-}
+// Path: app/api/srv-alive-events/route.js

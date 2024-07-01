@@ -18,12 +18,12 @@ const ContextApiProvider = ({children}) =>{
     const [alertMessage, setAlertMessage] = useState('');
     const [frigoData, setFrigoData] = useState([]);
     const [frigoNumber, setFrigoNumber] = useState(0);
-    const [activeTab, setActiveTab] = useState(1);
-    const [dataFrigoCharts, setDataFrigoCharts] = useState([]);
-    const [isChart, setIsChart] = useState(false);
-    const [page, setPage] = useState('Home');
     const [frigoTables, setFrigoTables] = useState({});
     const [frigoSelected, setFrigoSelected ] = useState(0);
+    const [dataFrigoCharts, setDataFrigoCharts] = useState([]);
+    const [activeTab, setActiveTab] = useState(1);
+    const [isChart, setIsChart] = useState(false);
+    const [page, setPage] = useState('Home');
     const [param, setParam] = useState({});
     const [eventsTranslatedByAlive, setEventsTranslatedByAlive] =useState({});
 

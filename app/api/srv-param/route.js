@@ -26,6 +26,6 @@ export async function GET(req) {
         return NextResponse.json(param);
     } catch (error) {
         Sentry.captureException(error);
-        return NextResponse.json({ error: error.message }, { status: 500 })
+        return NextResponse.json({ error: error.message })
     }
 }

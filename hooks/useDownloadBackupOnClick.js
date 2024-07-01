@@ -18,6 +18,7 @@ function useDownloadBackupOnClick(router) {
             try {
                 await handleDownload(serial, context);
             } catch (error) {
+                console.error("sono error in useDownloadBackupOnClick", error);
                 setMessage(`${error}`);
                 Sentry.captureException(error);
             } finally {

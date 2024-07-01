@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react";
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
-import {getEventTranslationOnAlive} from "@/lib/api";
+import {getEventsAliveViaSrv} from "@/lib/api";
 
 ButtonDialog.propTypes = {
     rowEvent: PropTypes.string.isRequired,
@@ -43,7 +43,7 @@ function ButtonDialog({rowEvent, type}) {
     const handleDoubleClick = () => {
         const fetchData = async () => {
             try {
-                const data = await getEventTranslationOnAlive();
+                const data = await getEventsAliveViaSrv();
                 const matchedEvent = matchLogEventWithAliveEvents(data);
                 setAliveEvent(matchedEvent);
             } catch (error) {

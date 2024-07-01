@@ -1,10 +1,9 @@
 import {useCallback, useMemo} from "react";
 import Button from "@/components/button";
-import {filterParams, getRowStyle, tagDataCellRenderer} from "@/lib/aggrid-helper";
+import {filterParams, getRowStyle, handleExtractClick, tagDataCellRenderer} from "@/lib/aggrid-helper";
 import ButtonDialog from "@/components/button-dialog";
 
-
-export function useAgGridConfig( rows, getRowIds, isExtracted = false) {
+export function useAgGridConfigLogMaster(rows, getRowIds, isExtracted = false) {
     const getRowStyleCallback = useCallback(getRowStyle, []);
 
     const colDefsBase = useMemo(() => [
@@ -29,10 +28,22 @@ export function useAgGridConfig( rows, getRowIds, isExtracted = false) {
 
     const colDefs = useMemo(() => {
         let newColDefs = [...colDefsBase];
+
         if (!isExtracted) {
-            newColDefs.push({ headerName: 'Action', field: 'ID', flex: 1, minWidth: 90, sortable: false,
-                cellRenderer: (props) => { return ( <Button className="btn btn-ghost btn-xs" rows={rows} props={props} text={"Extract"} /> ) }, filter: false, floatingFilter: false }
-            );
+            newColDefs.push(
+                {
+                headerName: 'Action',
+                field: 'ID',
+                flex: 1,
+                minWidth: 90,
+                sortable: false,
+                cellStyle: { whiteSpace: 'nowrap' },
+                cellRenderer: (props) => {
+                    return ( <Button className="btn btn-ghost btn-xs" rows={rows} props={props} text={"Extract"} onButtonClick={() => handleExtractClick(rows, props)}/> )
+                },
+                filter: false,
+                floatingFilter: false
+            });
         }
         return newColDefs;
     },[colDefsBase, isExtracted, rows]);
