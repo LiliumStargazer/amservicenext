@@ -12,7 +12,8 @@ import {
     storedTechnicians
 } from "@/lib/statistic-helper";
 import React, {useContext, useMemo, useState} from "react";
-import AnimationLottieloading from "@/components/animation-lottieloading";
+import loading_lottie from "@/public/loading_lottie.json";
+import AnimationLottie from "@/components/animation-lottie";
 import Header from "@/components/header";
 import AgGrid from "@/components/aggrid";
 import {Context} from "@/app/Context";
@@ -68,7 +69,7 @@ const Statistics = () => {
     };
 
     if (!techniciansStatistic || techniciansStatistic.length === 0) {
-        return <AnimationLottieloading/>;
+        return <AnimationLottie file={loading_lottie}/>;
     }
     else{
         setLoading(false);

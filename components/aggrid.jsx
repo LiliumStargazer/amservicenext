@@ -7,15 +7,18 @@ import PropTypes from "prop-types";
 const AgGrid = ({rows, colDefs, options, searchValue, isCached, defaultColDef, onGridReady}) => {
 
     const { height: windowHeight } = useWindowSize();
-    const height = Number.isFinite(windowHeight) ? windowHeight : 0; // Default to 0 if height is not a number
+    const height = Number.isFinite(windowHeight) ? windowHeight : 0;
+
     const containerStyle = useMemo(() => {
         const validHeight = typeof height === 'number' ? height - ( height * 0.08 ) : 'auto';
         return { width: '100%', height: validHeight };
     }, [height]);
+
     const gridStyle = useMemo(() => {
         const validHeight = typeof height === 'number' ? height - 100 : 'auto';
         return {height: validHeight, width: '100%' };
     }, [height]);
+
     const gridRef = useRef();
 
     const agGridProps = {

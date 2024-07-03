@@ -5,7 +5,7 @@ function Kdb() {
     const {storedSerial} = useContext(Context);
 
     return (
-        <kbd className="kbd">{storedSerial}</kbd>
+        <kbd className="kbd kbd-lg">{storedSerial}</kbd>
     );
 }
 
