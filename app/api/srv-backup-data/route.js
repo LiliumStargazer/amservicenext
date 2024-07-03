@@ -1,4 +1,4 @@
-// app/api/route.js
+// Desc: Route to get backup data
 import {createDirectory, createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile, unzipFile} from "@/lib/functionsServer";
 import SftpConnector from "@/lib/ftp-handler";
 import {NextResponse} from "next/server";
@@ -10,14 +10,12 @@ export async function GET(req) {
     const searchParams = new URLSearchParams(url.search);
     const serial = searchParams.get('serial');
     const backup = searchParams.get('backup');
-
     try {
         const systemPaths = createSystemPaths(serial, backup);
         await createDirectory(systemPaths.localBackupDirectory);
         const sftpConnector = new SftpConnector();
         await sftpConnector.downloadBackup(systemPaths);
         await unzipFile(systemPaths);
-
         systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory,
             systemPaths.localBackupUnzippedFile);
         let query = 'SELECT * FROM EventiView';
@@ -25,9 +23,11 @@ export async function GET(req) {
             query = 'SELECT * FROM EventiAll';
         }
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
+
         return NextResponse.json(results);
     } catch (error) {
         Sentry.captureException(error);
+        console.log('error', error.message);
         return NextResponse.json({ error: error.message })
     }
 }

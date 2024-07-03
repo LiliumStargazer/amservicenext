@@ -4,6 +4,8 @@ import LottieAnimation from 'lottie-react';
 import not_loaded_lottie from "@/public/not_loaded_lottie.json";
 
 function AnimationLottieNotLoaded() {
+
+
   return (
     <div
       className="flex justify-center items-center h-screen"

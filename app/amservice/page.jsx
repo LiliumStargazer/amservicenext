@@ -25,7 +25,7 @@ import useDownloadBackupOnClick from "@/hooks/useDownloadBackupOnClick";
 
 function Log() {
 
-    const { page, isChart, logDaMaster, loading, storedSerial, setSerial} = useContext(Context);
+    const { page, isChart, logDaMaster, loading, storedSerial, setSerial, backupList} = useContext(Context);
     const router = useRouter();
     const handleDownloadAMLog = useDownloadBackupOnClick(router);
 
@@ -46,10 +46,10 @@ function Log() {
                   onButtonClick={handleDownloadAMLog}
               />
             </div>
-              {page === "Master" && logDaMaster.length > 0 && <Helper />}
+              {page === "Master" && backupList.length > 0 && <Helper />}
               {page === "Master" && logDaMaster.length > 0 && <InputSearch />}
             <div className="max-h-4 relative">
-              <Alert />
+
             </div>
             <div className="flex items-start ml-2 mr-2 space-x-3">
               {page === "Frigo" && <ButtonsRadioGroup />}
@@ -66,6 +66,7 @@ function Log() {
           </div>
         </div>
         <div className="items-end"></div>
+          <Alert />
         <div>
           <div>
             <AnimationLottieloading />
