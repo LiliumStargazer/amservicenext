@@ -1,4 +1,5 @@
 import {withSentryConfig} from '@sentry/nextjs';
+import '.cron.js';
 // next.config.mjs
 export default withSentryConfig({
 webpack: (config, { isServer }) => {
