@@ -132,7 +132,7 @@ function Login() {
                   />
                   <Card
                       title="Audio Generator"
-                      description="File audio peri prodotti"
+                      description="File audio utilizzati dai prodotti"
                       icon={faMusic}
                       color={"#B197FC"}
                       onButtonClick={() => onClickOpenWindow("https://audiogateway.amdistributori.it:8443/", "")}

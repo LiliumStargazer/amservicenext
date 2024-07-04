@@ -21,14 +21,16 @@ import useDownloadBackupOnClick from "@/hooks/useDownloadBackupOnClick";
 import loading_lottie from "@/public/loading_lottie.json";
 import no_data_lottie from "@/public/no_data_lottie.json";
 import AnimationLottie from "@/components/animation-lottie";
+import { usePathname } from 'next/navigation'
 
 function Log() {
   const { page, isChart, logDaMaster, loading, storedSerial, setSerial, backupList, setMessage, message } = useContext(Context);
   const router = useRouter();
+  const pathname = usePathname();
   const handleDownloadAMLog = useDownloadBackupOnClick(router);
 
   useEffect(() => {
-      if ( !loading && logDaMaster.length === 0 && message === "") {
+      if ( !loading && logDaMaster.length === 0 && message === "" && pathname === "/amservice") {
           setMessage("Download the backup to see the data.");
       }
   },[loading, logDaMaster, message]);
@@ -58,7 +60,7 @@ function Log() {
         </div>
         <div className="navbar-end space-x-2 ">
             <ButtonHome />
-            <DropdownMenu />
+            {page === "Master" && logDaMaster.length > 0 && <DropdownMenu /> }
         </div>
       </div>
       <Alert />

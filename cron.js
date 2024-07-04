@@ -1,7 +1,7 @@
 // cron.js
 const cron = require('node-cron');
 const fs = require('fs');
-import * as Sentry from "@sentry/nextjs";
+const Sentry = require("@sentry/nextjs");
 
 function cleanFolder() {
     const temporaryPath = process.env.TMPDIR || '/tmp';
@@ -17,6 +17,6 @@ function cleanFolder() {
 }
 
 // every day at midnight (00:00)
-cron.schedule('0 0 0 * *', () => {
+cron.schedule('0 0 * * *', () => {
     cleanFolder();
 });
