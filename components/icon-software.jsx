@@ -1,35 +1,32 @@
-import React, {useEffect, useContext, useState} from 'react';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAndroid, faWindows } from '@fortawesome/free-brands-svg-icons'
-import {Context} from "@/app/Context";
+import React, { useEffect, useContext, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAndroid, faWindows } from '@fortawesome/free-brands-svg-icons';
+import { Context } from "@/app/Context";
 
 function IconSoftware() {
     const { softwareType } = useContext(Context);
-    const [software, setSoftware] = useState('');
+    const [softwareIcon, setSoftwareIcon] = useState(null);
 
     useEffect(() => {
-        if (softwareType !== '') {
-            if ( softwareType === 'android' )
-                setSoftware(<FontAwesomeIcon icon={faAndroid} size="2xl" style={{color: "#63E6BE"}} />);
-            else if ( softwareType === 'windows' )
-                setSoftware(<FontAwesomeIcon icon={faWindows} size="2xl" style={{color: "#74C0FC"}} />);
-            else
-                setSoftware('');
+        switch (softwareType) {
+            case 'android':
+                setSoftwareIcon(<FontAwesomeIcon icon={faAndroid} size="2xl" style={{ color: "#63E6BE" }} />);
+                break;
+            case 'windows':
+                setSoftwareIcon(<FontAwesomeIcon icon={faWindows} size="2xl" style={{ color: "#74C0FC" }} />);
+                break;
+            default:
+                setSoftwareIcon(null);
         }
-        else
-            setSoftware('');
     }, [softwareType]);
 
-    if (software === '')
-        return null;
+    if (!softwareIcon) return null;
 
     return (
         <div>
-            {software}
+            {softwareIcon}
         </div>
-    )
-
+    );
 }
 
 export default IconSoftware;
