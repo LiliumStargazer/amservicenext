@@ -13,10 +13,10 @@ import {
 } from "@/lib/statistic-helper";
 import React, {useContext, useMemo, useState} from "react";
 import loading_lottie from "@/public/loading_lottie.json";
-import AnimationLottie from "@/components/animation-lottie";
-import Header from "@/components/header";
-import AgGrid from "@/components/aggrid";
-import {Context} from "@/app/Context";
+import AnimationLottie from "@/components/AnimationLottie";
+import Header from "@/components/Header";
+import AgGrid from "@/components/AgGrid";
+import {Context} from "@/old/Context";
 
 const Statistics = () => {
     const {setLoading}= useContext(Context);

@@ -9,13 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ag-grid-community/styles": "^31.2.1",
+    "@ag-grid-community/styles": "^32.0.2",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@sentry/nextjs": "^8.2.1",
     "@tailwindcss/typography": "^0.5.13",
-    "ag-grid-react": "^31.2.0",
+    "ag-grid-react": "^32.0.2",
     "axios": "^1.6.8",
     "better-sqlite3": "^11.0.0",
     "date-fns": "^3.6.0",
@@ -24,7 +24,6 @@
     "exceljs": "^4.4.0",
     "lottie-react": "^2.4.0",
     "next": "^14.2.4",
-    "node-cron": "^3.0.3",
     "papaparse": "^5.4.1",
     "prop-types": "^15.8.1",
     "protobufjs": "^7.2.6",
@@ -32,17 +31,27 @@
     "react-datepicker": "^7.1.0",
     "react-dom": "^18",
     "recharts": "^2.12.4",
+    "semantic-release": "^24.0.0",
     "sharp": "^0.33.3",
     "ssh2-sftp-client": "^10.0.3",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/decompress": "^4.2.7",
+    "@types/node": "^22.2.0",
+    "@types/papaparse": "^5.3.14",
+    "@types/react": "^18.3.3",
+    "@types/ssh2-sftp-client": "^9.0.3",
+    "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.0.1",
     "daisyui": "^4.9.0",
     "file-loader": "^6.2.0",
     "globals": "^15.3.0",
     "postcss": "^8",
     "prettier": "^3.2.5",
-    "tailwindcss": "^3.3.0"
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5.5.4"
   }
 }

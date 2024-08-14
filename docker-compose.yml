@@ -30,3 +30,10 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 3600 --label-enable
+
+  cronjob:
+    image: lalghisi/cron:1.0
+    container_name: cronjob
+    restart: unless-stopped
+    depends_on:
+      - nextjs-app

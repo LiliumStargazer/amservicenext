@@ -1,6 +1,5 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import {ContextApiProvider} from "./Context";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 
@@ -16,7 +15,6 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
         <body className={inter.className} data-theme="dark">
-        <ContextApiProvider>{children}</ContextApiProvider>
         </body>
         </html>
     );

@@ -1,9 +1,9 @@
 'use client'
 import React, { useContext, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
-import Card from "@/components/card";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import Card from "@/components/Card";
 import {faCloud , faList, faMusic, faLineChart} from '@fortawesome/free-solid-svg-icons';
 import amclublogo from "@/public/images/amClubLogo.png";
 import wikiLogo from "@/public/images/logos-wikijs.png";
@@ -13,9 +13,9 @@ import taiga from "@/public/images/taiga-2.svg";
 import vte from "@/public/images/vtenext.png";
 import tableau from "@/public/images/tableau-software.svg";
 import amlog from "@/public/images/image2.jpg";
-import useDownloadBackupOnClick from "@/hooks/useDownloadBackupOnClick";
-import {Context} from "@/app/Context";
+import useDownloadBackup from "@/hooks/useDownloadBackup";
 import usePasswordLevels from "@/hooks/usePasswordLevels";
+
 
 function Login() {
     const [windowHeight, setWindowHeight] = useState(0);
@@ -28,7 +28,7 @@ function Login() {
   }, []);
 
   const router = useRouter();
-  const handleDownloadAMLog = useDownloadBackupOnClick(router);
+  const handleDownloadAMLog = useDownloadBackup(router);
 
 
     const onClickOpenWindow = (url, inputValue) => {

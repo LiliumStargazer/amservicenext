@@ -1,33 +1,45 @@
 'use client'
 
-import React, {useContext, useEffect} from "react";
-import Alert from "@/components/alert";
-import InputSearch from "@/components/input-search";
-import IconSoftware from "@/components/icon-software";
-import SelectBackup from "@/components/select-backup";
-import Helper from "@/components/dropdown-info";
-import DropdownMenu from "@/components/dropdown-menu";
-import AggridMaster from "@/components/aggrid-master";
-import AggridFrigo from "@/components/aggrid-frigo";
-import Chart from "@/components/chart";
-import Param from "@/components/param";
-import {Context} from "../Context";
-import InputText from "@/components/input-text";
-import {useRouter} from "next/navigation";
-import ButtonHome from "@/components/button-home";
-import Button from "@/components/button";
-import Kbd from "@/components/kbd";
-import useDownloadBackupOnClick from "@/hooks/useDownloadBackupOnClick";
+import React, { useEffect} from "react";
+import {useRouter, usePathname} from "next/navigation";
+import Alert from "@/components/Alert";
+import InputSearch from "@/components/amservice/Input-Search";
+import IconSoftware from "@/components/amservice/Icon-Software";
+import SelectBackup from "@/components/amservice/Select";
+import BackupInfoDropDown from "@/components/amservice/BackupInfoDropDown";
+import AggridMaster from "@/components/amservice/master/AgGrid-Master";
+import AggridFrigo from "@/components/amservice/fridge/AgGrid-Fridge";
+import Chart from "@/components/amservice/fridge/Chart";
+//import Param from "@/components/amservice/param/Param";
+import InputText from "@/components/amservice/Input-Text";
+import ButtonNav from "@/components/navbar/Button";
+import Button from "@/components/Button";
+import useDownloadBackup from "@/hooks/useDownloadBackup";
 import loading_lottie from "@/public/loading_lottie.json";
 import no_data_lottie from "@/public/no_data_lottie.json";
-import AnimationLottie from "@/components/animation-lottie";
-import { usePathname } from 'next/navigation'
+import AnimationLottie from "@/components/AnimationLottie";
+import Dialog from "components/Dialog";
+import Badge from "@/components/amservice/Badge";
+import ButtonsRadioGroup from "@/components/Buttons-Radio-Group";
+import useStore from "@/app/store";
+import NavigationMenu from "@/components/amservice/NavigationMenu";
 
 function Log() {
-  const { page, isChart, logDaMaster, loading, storedSerial, setSerial, backupList, setMessage, message } = useContext(Context);
+
+const page = useStore(state => state.page);
+const isChart = useStore(state => state.isChart);
+const logDaMaster = useStore(state => state.logDaMaster);
+const loading = useStore(state => state.loading);
+const storedSerial = useStore(state => state.storedSerial);
+const setSerial = useStore(state => state.setSerial);
+const backupList = useStore(state => state.backupList);
+const setMessage = useStore(state => state.setMessage);
+const message = useStore(state => state.message);
+const frigoData = useStore(state => state.frigoData);
+
   const router = useRouter();
   const pathname = usePathname();
-  const handleDownloadAMLog = useDownloadBackupOnClick(router);
+  const handleDownloadAMLog = useDownloadBackup(router);
 
   useEffect(() => {
       if ( !loading && logDaMaster.length === 0 && message === "" && pathname === "/amservice") {
@@ -51,16 +63,17 @@ function Log() {
                 className="btn btn-info"
             />
             {page === "Master" && backupList.length > 0 && <SelectBackup /> }
-            {page === "Master" && backupList.length > 0 && <Helper />}
-            {storedSerial && <Kbd/>}
+            {page === "Master" && backupList.length > 0 && <BackupInfoDropDown />}
+            {storedSerial && <Badge/>}
             <IconSoftware />
+            {page === "Frigo" && frigoData.length >0 && <ButtonsRadioGroup /> }
         </div>
         <div className="navbar-center">
           {page === "Master" && logDaMaster.length > 0 && <InputSearch />}
         </div>
         <div className="navbar-end space-x-2 ">
-            <ButtonHome />
-            {page === "Master" && logDaMaster.length > 0 && <DropdownMenu /> }
+            <ButtonNav />
+            {pathname === "/amservice" && logDaMaster.length > 0 && <NavigationMenu /> }
         </div>
       </div>
       <Alert />
@@ -68,11 +81,12 @@ function Log() {
         <div>
             {loading && logDaMaster.length === 0 && <AnimationLottie file={loading_lottie}/>}
             {!loading && logDaMaster.length === 0 && <AnimationLottie file={no_data_lottie} />}
+            <Dialog />
             {!loading && page === "Master" && logDaMaster && logDaMaster.length > 0 && <AggridMaster />}
             <div className="mt-5">
                 {!loading && page === "Frigo" && !isChart && <AggridFrigo />}
                 {!loading && page === "Frigo" && isChart && <Chart />}
-                {!loading && page === "Param" && <Param />}
+                {/*  {!loading && page === "Param" && <Param />} */}
             </div>
         </div>
       </div>

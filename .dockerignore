@@ -1,6 +1,6 @@
 DockerfileNext
-nginx/DockerfileNginx
-nginx
+old/lib/nginx/DockerfileNginx
+old/lib/nginx
 .dockerignore
 node_modules
 npm-debug.log
@@ -8,7 +8,7 @@ README.md
 .next
 .git
 
-nginx/ssl/openssl.cnf
+old/lib/nginx/ssl/openssl.cnf
 
 .idea
 # dependencies

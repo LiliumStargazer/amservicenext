@@ -1,12 +1,4 @@
 import {withSentryConfig} from '@sentry/nextjs';
-if (process.env.NODE_ENV === 'production') {
-    // Importa dinamicamente cron.js solo in produzione
-    import('./cron.js').then(_ => {
-        // Il cron job è stato importato e eseguito
-    }).catch(err => {
-        console.error('Errore durante l\'importazione di cron.js:', err);
-    });
-}
 // next.config.mjs
 export default withSentryConfig({
     webpack: (config, { isServer }) => {

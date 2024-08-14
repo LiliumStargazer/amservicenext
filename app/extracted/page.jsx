@@ -1,12 +1,14 @@
 'use client'
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/style/gridStyle.css";
-import useWindowSize from "@/hooks/useWIndowSize";
+import useWindowSize from "@/hooks/useWindowSize";
 import {useAgGridConfigLogMaster} from "@/hooks/useAgGridConfigLogMaster";
-import {mapLogDaMaster} from "@/lib/aggrid-helper";
+import {defaultColDef, mapLogDaMaster} from "@/lib/aggrid-helper";
+import Dialog from "@/components/Dialog";
+import AgGrid from "@/components/AgGrid";
+
 
 function Extract(){
     const [extractedData, setExtractedData] = useState([]);
@@ -40,7 +42,6 @@ function Extract(){
         return rows.findIndex(row => row.IDR === extractedID)
     }, [rows, extractedID]);
 
-
     useEffect(() => {
         if (gridApi && rowIndex > -1) {
             const pageSize = gridApi.paginationGetPageSize();
@@ -50,54 +51,62 @@ function Extract(){
         }
     },[gridApi, rowIndex]);
 
-    const handleInputChange = (event) => {
-        setSearchValue(event.target.value);
-    };
-
     const getRowIds = useCallback((params) => {
         return params.data.IDR;
     }, []);
 
     const { colDefs, options } = useAgGridConfigLogMaster( rows, getRowIds, true);
 
-    //console.log(useEventsTranslatedByAlive());
-
     const getRowNodeId = useCallback((data) => {
         return data.IDR;
     }, []);
 
-
     return (
         <div>
-            <div className="flex items-start space-x-3 p-2">
-                <input
-                    type="search"
-                    className="m-0 block w-[1px] min-w-0 flex-auto textarea textarea-info text-md font-bol"
-                    placeholder="InputSearch"
-                    aria-label="InputSearch"
-                    aria-describedby="button-addon2"
-                    value={searchValue}
-                    onChange={handleInputChange}
-                />
-            </div>
-            <div style={containerStyle}>
-                <div
-                    className={"ag-theme-quartz-dark"}
-                    style={gridStyle}
-                >
-                    <AgGridReact
-                        rowData={rows}
-                        columnDefs={colDefs}
-                        gridOptions={options}
+            <Dialog />
+            <div>
+                <div className="flex justify-center items-center p-2">
+                    <label className="input input-bordered input-info flex items-center gap-2">
+                        <input
+                            type="search"
+                            className="grow"
+                            placeholder="Search..."
+                            aria-label="InputSearch"
+                            aria-describedby="button-addon2"
+                            value={searchValue}
+                            onChange={(event) => setSearchValue(event.target.value)}
+                        />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 16 16"
+                            fill="currentColor"
+                            className="h-4 w-4 opacity-70"
+                        >
+                            <path
+                                fillRule="evenodd"
+                                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                                clipRule="evenodd"
+                            />
+                        </svg>
+                    </label>
+                </div>
+                <div style={containerStyle}>
+                    <div className={"ag-theme-quartz-dark"} style={gridStyle}>
+                        <AgGrid
+                        rows={rows}
+                        colDefs={colDefs}
+                        options={options}
                         quickFilterText={searchValue}
+                        defaultColDef={defaultColDef}
                         onGridReady={onGridReady}
                         immutableData={true}
                         getRowNodeId={getRowNodeId}
-                    />
+                        />
+                    </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default Extract;
