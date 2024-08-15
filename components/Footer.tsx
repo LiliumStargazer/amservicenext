@@ -1,10 +1,17 @@
 import React from "react";
+import useWindowSize from "@/hooks/useWindowSize";
 
-interface FooterProps {
-    windowHeight: number;
-}
 
-const Footer: React.FC<FooterProps> = ({ windowHeight }) => {
+
+const Footer = () => {
+
+    const windowSize  = useWindowSize();
+    let windowHeight = windowSize.height;
+
+    if (windowHeight === undefined) {
+        windowHeight = 0;
+    }
+
     return (
         <footer className="footer items-center p-4 bg-neutral text-neutral-content bottom-0 w-full"
                 style={{ height: windowHeight * 0.07 + "px" }}>

@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 import * as Sentry from '@sentry/nextjs';
 import fs from 'fs';
 
-export async function DELETE() {
-    const temporaryPath = process.env.TMPDIR || '/tmp';
-    const amServiceTempPath = `${temporaryPath}/tempAmService`;
+export async function DELETE(): Promise<NextResponse> {
+    const temporaryPath: string = process.env.TMPDIR || '/tmp';
+    const amServiceTempPath: string = `${temporaryPath}/tempAmService`;
     try {
-        const amServiceTempPathExists = fs.existsSync(amServiceTempPath);
+        const amServiceTempPathExists: boolean = fs.existsSync(amServiceTempPath);
         if (amServiceTempPathExists) {
             fs.rmSync(amServiceTempPath, { recursive: true });
             return NextResponse.json({ message: 'Cartella pulita con successo' });

@@ -23,6 +23,8 @@ interface CardProps {
         level2: string;
         level3: string;
         level4: string;
+        setPassword: (password: string) => void;
+        password: string;
     };
     onInputChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     value?: string;

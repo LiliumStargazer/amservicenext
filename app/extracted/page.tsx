@@ -1,36 +1,35 @@
 'use client'
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/style/gridStyle.css";
 import useWindowSize from "@/hooks/useWindowSize";
-import {useAgGridConfigLogMaster} from "@/hooks/useAgGridConfigLogMaster";
-import {defaultColDef, mapLogDaMaster} from "@/lib/aggrid-helper";
+import { useAgGridConfigLogMaster } from "@/hooks/useAgGridConfigLogMaster";
+import { defaultColDef, mapLogDaMaster } from "@/lib/aggrid-helper";
 import Dialog from "@/components/Dialog";
 import AgGrid from "@/components/AgGrid";
 
-
-function Extract(){
-    const [extractedData, setExtractedData] = useState([]);
-    const [extractedID, setExtractedID] = useState(0);
+function Extract() {
+    const [extractedData, setExtractedData] = useState<any[]>([]);
+    const [extractedID, setExtractedID] = useState<number>(0);
     const { height } = useWindowSize();
     const gridStyle = useMemo(() => {
         const validHeight = typeof height === 'number' ? height - 100 : 'auto';
-        return {height: validHeight, width: '100%' };
+        return { height: validHeight, width: '100%' };
     }, [height]);
 
     useEffect(() => {
-        const data = JSON.parse(localStorage.getItem('extractedData'));
-        const id = JSON.parse(localStorage.getItem('rowID'));
+        const data = JSON.parse(localStorage.getItem('extractedData') || '[]');
+        const id = JSON.parse(localStorage.getItem('rowID') || '0');
         setExtractedData(data);
         setExtractedID(id);
     }, []);
 
-    const [gridApi, setGridApi] = useState(null);
-    const [searchValue, setSearchValue] = useState('');
+    const [gridApi, setGridApi] = useState<any>(null);
+    const [searchValue, setSearchValue] = useState<string>('');
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
 
-    const onGridReady = (params) => {
+    const onGridReady = (params: any) => {
         setGridApi(params.api);
     };
 
@@ -38,8 +37,8 @@ function Extract(){
         return extractedData && extractedData.length > 0 ? mapLogDaMaster(extractedData) : [];
     }, [extractedData]);
 
-    const rowIndex =  useMemo(() => {
-        return rows.findIndex(row => row.IDR === extractedID)
+    const rowIndex = useMemo(() => {
+        return rows.findIndex(row => row.IDR === extractedID);
     }, [rows, extractedID]);
 
     useEffect(() => {
@@ -49,15 +48,15 @@ function Extract(){
             gridApi.paginationGoToPage(pageNumber);
             gridApi.ensureIndexVisible(rowIndex, 'top');
         }
-    },[gridApi, rowIndex]);
+    }, [gridApi, rowIndex]);
 
-    const getRowIds = useCallback((params) => {
+    const getRowIds = useCallback((params: any) => {
         return params.data.IDR;
     }, []);
 
-    const { colDefs, options } = useAgGridConfigLogMaster( rows, getRowIds, true);
+    const { colDefs, options } = useAgGridConfigLogMaster({rows, getRowIds, isExtracted: true});
 
-    const getRowNodeId = useCallback((data) => {
+    const getRowNodeId = useCallback((data: any) => {
         return data.IDR;
     }, []);
 
@@ -93,14 +92,14 @@ function Extract(){
                 <div style={containerStyle}>
                     <div className={"ag-theme-quartz-dark"} style={gridStyle}>
                         <AgGrid
-                        rows={rows}
-                        colDefs={colDefs}
-                        options={options}
-                        quickFilterText={searchValue}
-                        defaultColDef={defaultColDef}
-                        onGridReady={onGridReady}
-                        immutableData={true}
-                        getRowNodeId={getRowNodeId}
+                            rows={rows}
+                            colDefs={colDefs}
+                            options={options}
+                            quickFilterText={searchValue}
+                            defaultColDef={defaultColDef}
+                            onGridReady={onGridReady}
+                            // immutableData={true}
+                            // getRowNodeId={getRowNodeId}
                         />
                     </div>
                 </div>

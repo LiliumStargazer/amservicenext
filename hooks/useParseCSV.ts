@@ -5,7 +5,7 @@ interface ParsedData {
     [key: string]: any;
 }
 
-const useParseCSV = (ticketHistory: string | null) => {
+const useParseCSV = (ticketHistory: string ) => {
     const [parsedData, setParsedData] = useState<ParsedData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);

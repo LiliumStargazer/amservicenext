@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+
+
 function usePasswordLevels() {
     const [password, setPassword] = useState<string>('');
     const [level1, setLevel1] = useState<string>('********');

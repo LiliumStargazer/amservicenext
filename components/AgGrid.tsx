@@ -10,7 +10,10 @@ interface AgGridProps {
     isCached?: boolean;
     defaultColDef?: object;
     onGridReady?: (params: any) => void;
+    immutableData?: boolean; // Add this line
+    getRowNodeId?: (data: any) => any;
 }
+
 
 const AgGrid: React.FC<AgGridProps> = ({
     rows,
@@ -19,7 +22,8 @@ const AgGrid: React.FC<AgGridProps> = ({
     quickFilterText,
     isCached,
     defaultColDef,
-    onGridReady
+    onGridReady,
+    immutableData,getRowNodeId
 }) => {
     const { height: windowHeight } = useWindowSize();
     const height = Number.isFinite(windowHeight) ? windowHeight : 0;

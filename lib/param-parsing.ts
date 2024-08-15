@@ -42,7 +42,7 @@ interface Data {
     Data: Uint8Array;
 }
 
-async function getParams(data: Data[], softwareType: 'android' | 'ce'): Promise<protobuf.Message<{}>> {
+async function getParams(data: Data[], softwareType: 'android' | 'windows'): Promise<protobuf.Message<{}>> {
     try {
         if (softwareType === 'android') {
             await loadProtoAndroid;
