@@ -1,9 +1,9 @@
 // Desc: Route to get backup data
-import { createDirectory, createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile, unzipFile } from "@/lib/serverBackupHandler";
-import SftpConnector from "@/lib/ftp-handler";
+import { createDirectory, createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile, unzipFile } from "@/features/log/server/backup-handler";
+import SftpConnector from "@/features/log/server/ftp-handler";
 import { NextResponse } from "next/server";
 import * as Sentry from '@sentry/nextjs';
-import {handleError} from "@/lib/errorHandler";
+import {handleError} from "@/features/shared/client/utils/error-handler";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);

@@ -4,7 +4,7 @@ services:
   nextjs-app:
     image: lalghisi/amservice:1.0
     volumes:
-      - ./:/usr/src/app
+      - ./:/usr/features/app
     ports:
       - 3000:3000
     env_file:

@@ -1,7 +1,8 @@
-import { createSystemPaths } from "@/lib/serverBackupHandler";
-import SftpConnector from "@/lib/ftp-handler";
+import { createSystemPaths } from "@/features/log/server/backup-handler";
+import SftpConnector from "@/features/log/server/ftp-handler";
 import { NextResponse } from "next/server";
 import * as Sentry from '@sentry/nextjs';
+import {handleError} from "@/features/shared/client/utils/error-handler";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -18,8 +19,7 @@ export async function GET(req: Request): Promise<NextResponse> {
         const backupLists = await sftpConnector.getListOfSftpBackups(systemPaths);
         return NextResponse.json(backupLists);
     } catch (error) {
-        console.log('Error while getting backup lists from api-route:', error.message);
-        Sentry.captureException(error);
-        return NextResponse.json({ error: error.message });
+        console.log('Error while getting backup lists from api-route:', error);
+        return handleError(error);
     }
 }

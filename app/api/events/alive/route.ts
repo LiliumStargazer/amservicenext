@@ -1,16 +1,14 @@
 'use server'
 
 import { NextResponse } from "next/server";
-import Sentry from "@sentry/nextjs";
-import { getEventsAlive } from "@/lib/api-srv";
-import {handleError} from "@/lib/errorHandler";
+import { getEventsAlive } from "@/features/shared/server/api";
+import { handleError } from "@/features/shared/client/utils/error-handler";
 
-export async function GET(req: Request): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
     try {
         const result = await getEventsAlive();
         return NextResponse.json(result);
     } catch (error) {
-        Sentry.captureException(error);
         return handleError(error);
     }
 }

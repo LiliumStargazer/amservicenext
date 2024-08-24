@@ -2,12 +2,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import "@/style/gridStyle.css";
-import useWindowSize from "@/hooks/useWindowSize";
-import { useAgGridConfigLogMaster } from "@/hooks/useAgGridConfigLogMaster";
-import { defaultColDef, mapLogDaMaster } from "@/lib/aggrid-helper";
-import Dialog from "@/components/Dialog";
-import AgGrid from "@/components/AgGrid";
+import "@/features/shared/client/style/gridStyle.css";
+import useWindowSize from "@/features/shared/client/hooks/useWindowSize";
+import { useAgGridConfigLogMaster } from "@/features/log/client/hooks/useAgGridConfigLogMaster";
+import { defaultColDef, mapLogDaMaster } from "@/components/log/tables/shared/aggrid-helper";
+import Dialog from "@/components/log/tables/Dialog";
+import AgGrid from "@/components/shared/AgGrid";
 
 function Extract() {
     const [extractedData, setExtractedData] = useState<any[]>([]);
@@ -50,15 +50,11 @@ function Extract() {
         }
     }, [gridApi, rowIndex]);
 
-    const getRowIds = useCallback((params: any) => {
-        return params.data.IDR;
+    const getRowIds = useCallback((params: { data: { IDR: string } }) => {
+        return String( params.data.IDR ) ;
     }, []);
 
     const { colDefs, options } = useAgGridConfigLogMaster({rows, getRowIds, isExtracted: true});
-
-    const getRowNodeId = useCallback((data: any) => {
-        return data.IDR;
-    }, []);
 
     return (
         <div>
@@ -98,8 +94,6 @@ function Extract() {
                             quickFilterText={searchValue}
                             defaultColDef={defaultColDef}
                             onGridReady={onGridReady}
-                            // immutableData={true}
-                            // getRowNodeId={getRowNodeId}
                         />
                     </div>
                 </div>

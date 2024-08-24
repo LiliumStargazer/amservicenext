@@ -1,10 +1,11 @@
 'use server'
 
-import { createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile } from "@/lib/serverBackupHandler";
+import { createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile } from "@/features/log/server/backup-handler";
 import { NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
-import { handleError } from "@/lib/errorHandler";
-import {getParams} from "@/lib/param-parsing";
+import { handleError } from "@/features/shared/client/utils/error-handler";
+import {getParams} from "@/features/log/client/utils/param-parsing";
+
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);

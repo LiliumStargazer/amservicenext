@@ -1,4 +1,4 @@
-'use client' // Error components must be Client Components
+'use client' // Error features must be Client Components
 
 import { useEffect } from 'react'
 

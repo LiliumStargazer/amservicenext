@@ -35,16 +35,16 @@ interface State {
     setActiveTab: (value: number) => void;
     isChart: boolean;
     setIsChart: (value: boolean) => void;
-    page: string;
-    setPage: (value: string) => void;
+    table: string;
+    setTable: (value: string) => void;
     param: Record<string, any>;
     setParam: (value: Record<string, any>) => void;
     eventsTranslatedByAlive: Record<string, any>;
     setEventsTranslatedByAlive: (value: Record<string, any>) => void;
     isDialogOpen: boolean;
     setIsDialogOpen: (value: boolean) => void;
-    dialogContent: string;
-    setDialogContent: (value: string) => void;
+    dialogContent: object | any[];
+    setDialogContent: (value: object | any[]) => void;
     gridApi: null;
     setGridApi: (value: any | null) => void;
 }
@@ -84,15 +84,15 @@ const useStore = create<State>((set) => ({
     setActiveTab: (value) => set({ activeTab: value }),
     isChart: false,
     setIsChart: (value) => set({ isChart: value }),
-    page: 'Home',
-    setPage: (value) => set({ page: value }),
+    table: 'Home',
+    setTable: (value) => set({ table: value }),
     param: {},
     setParam: (value) => set({ param: value }),
     eventsTranslatedByAlive: {},
     setEventsTranslatedByAlive: (value) => set({ eventsTranslatedByAlive: value }),
     isDialogOpen: false,
     setIsDialogOpen: (value) => set({ isDialogOpen: value }),
-    dialogContent: '',
+    dialogContent: [],
     setDialogContent: (value) => set({ dialogContent: value }),
     gridApi: null,
     setGridApi: (value) => set({ gridApi: value })

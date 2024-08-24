@@ -1,9 +1,6 @@
 'use client'
-import React, { useEffect, useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import Footer from "@/components/Footer";
-import Header from "@/components/navbar/Header";
-import Card from "@/components/Card";
 import { faCloud, faList, faMusic, faLineChart } from '@fortawesome/free-solid-svg-icons';
 import amclublogo from "@/public/images/amClubLogo.png";
 import wikiLogo from "@/public/images/logos-wikijs.png";
@@ -13,31 +10,23 @@ import taiga from "@/public/images/taiga-2.svg";
 import vte from "@/public/images/vtenext.png";
 import tableau from "@/public/images/tableau-software.svg";
 import amlog from "@/public/images/image2.jpg";
-import useDownloadBackup from "@/hooks/useDownloadBackup";
-import usePasswordLevels from "@/hooks/usePasswordLevels";
-import useWindowSize from "@/hooks/useWindowSize";
+import useDownloadBackup from "@/features/log/client/hooks/useDownloadBackup";
+import usePasswordLevels from "@/features/home/hooks/usePasswordLevels";
 import useStore from "@/app/store";
-
+import {onClickOpenWindow} from "@/features/shared/client/utils/utils";
+import Card from "@/features/home/components/Card";
+import Header from "@/features/shared/client/components/Header";
+import Footer from "@/features/shared/client/components/Footer";
 
 
 const Login: React.FC = () => {
-    const { height: windowHeight } = useWindowSize();
-
 
     const [aliveSerial, setAliveSerial] = useState<string>("");
     const { level1, level2, level3, level4, setPassword, password } = usePasswordLevels();
-
     const serial = useStore(state => state.serial);
     const setSerial = useStore(state => state.setSerial);
-
-
     const router = useRouter();
-    const handleDownloadAMLog = useDownloadBackup(router);
 
-    const onClickOpenWindow = (url: string, inputValue: string) => {
-        const finalUrl = url.includes("{input}") ? url.replace("{input}", inputValue) : url;
-        window.open(finalUrl, "_blank");
-    }
 
     return (
         <div>
@@ -52,7 +41,7 @@ const Login: React.FC = () => {
                         router={router}
                         id={"amlog"}
                         isInput={true}
-                        onButtonClick={handleDownloadAMLog}
+                        onButtonClick={useDownloadBackup(router)}
                         onInputChange={(event: ChangeEvent<HTMLInputElement>) => setSerial(event.target.value)}
                         value={serial}
                     />

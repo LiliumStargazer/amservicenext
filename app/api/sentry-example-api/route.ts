@@ -1,4 +1,4 @@
-import {handleError} from "@/lib/errorHandler";
+import {handleError} from "@/features/shared/client/utils/error-handler";
 
 export const dynamic = "force-dynamic";
 
