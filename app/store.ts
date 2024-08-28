@@ -33,8 +33,6 @@ interface State {
     setDataFrigoCharts: (value: any[]) => void;
     activeTab: number;
     setActiveTab: (value: number) => void;
-    isChart: boolean;
-    setIsChart: (value: boolean) => void;
     table: string;
     setTable: (value: string) => void;
     param: Record<string, any>;
@@ -82,8 +80,6 @@ const useStore = create<State>((set) => ({
     setDataFrigoCharts: (value) => set({ dataFrigoCharts: value }),
     activeTab: 1,
     setActiveTab: (value) => set({ activeTab: value }),
-    isChart: false,
-    setIsChart: (value) => set({ isChart: value }),
     table: 'Home',
     setTable: (value) => set({ table: value }),
     param: {},

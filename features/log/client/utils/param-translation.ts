@@ -567,9 +567,6 @@ function translateParam(inputObj: any): any {
             break;
         default:
             if (!isTranslation) {
-                console.log(inputObj);
-                console.log(paramValue);
-                console.log("sono key", key);
                 return translateSingleValue(key, paramValue, "Undefined");
             }
             return translateSingleValue(translation.name, paramValue, translation.category);

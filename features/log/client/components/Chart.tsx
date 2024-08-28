@@ -14,6 +14,7 @@ const Chart: React.FC = () => {
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [data, setData] = useState<any[]>([]);
     const [dataFiltered, setDataFiltered] = useState<any[]>([]);
+    const loading = useStore(state => state.loading);
 
     function formatDate(dateString: string): Date {
         try {
@@ -69,6 +70,9 @@ const Chart: React.FC = () => {
             Sentry.captureException(error);
         }
     }, [startDate, endDate, data]);
+
+    if ( loading )
+        return null;
 
     return (
         <div className="w-full h-full">

@@ -1,11 +1,11 @@
 import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import InputTextGeneric from "@/features/shared/client/components/InputTextGeneric";
-import ButtonGeneric from "@/features/shared/client/components/ButtonGeneric";
-
+import Button from "@/features/home/components/Button";
+import Input from "@/features/home/components/Input";
 
 interface CardProps {
+
     title: string;
     description: string;
     icon?: object;
@@ -15,8 +15,7 @@ interface CardProps {
     cardKey?: string;
     scale?: number;
     color?: string;
-    router?: object;
-    text?: string;
+    router?: any;
     isInput?: boolean;
     onButtonClick?: () => void;
     passwordLevels?: {
@@ -28,27 +27,34 @@ interface CardProps {
         password: string;
     };
     onInputChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onKeyDown?: any;
+    event?: any;
     value?: string;
     id?: string;
+    isButtonEnabled?: boolean;
 }
 
-function createButtonProps(router: object | undefined, id: string | undefined, onButtonClick: (() => void) | undefined, placeholder: string | undefined) {
+function createButtonProps(router: object | undefined, id: string | undefined, onButtonClick: (() => void) | undefined ,
+    isButtonEnabled: boolean | undefined) {
+
     const buttonProps: any = {};
+    buttonProps.isButtonEnabled = !!isButtonEnabled;
     if (router) buttonProps.router = router;
     if (id) buttonProps.id = id;
-    buttonProps.text = "Go!";
     if (onButtonClick) buttonProps.onClick = onButtonClick;
-    buttonProps.className = ` btn btn-sm btn-info ${ (placeholder && id !== "ampassword" ) ? 'join-item rounded-r-full' : ''}`;
     return buttonProps;
 }
 
-function createInputTextProps(placeholder: string | undefined, id: string | undefined, onInputChange: ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined) {
-    const inputTextProps: any = {};
-    if (placeholder) inputTextProps.placeholder = placeholder;
-    if (id) inputTextProps.id = id;
-    inputTextProps.className = "input-sm input-bordered join-item max-w-36";
-    if (onInputChange) inputTextProps.onChange = onInputChange;
-    return inputTextProps;
+function createInputProps(placeholder: string | undefined, id: string | undefined,
+                          onInputChange: ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined,
+                          isInput: boolean | undefined, onKeyDown: any | undefined) {
+    const inputProps: any = {};
+    if (placeholder) inputProps.placeholder = placeholder;
+    if (id) inputProps.id = id;
+    if (onInputChange) inputProps.onChange = onInputChange;
+    inputProps.isInput = !!isInput;
+    if (onKeyDown) inputProps.onKeyDown = onKeyDown;
+    return inputProps;
 }
 
 function createImageProps(imageSrc: object | undefined, title: string | undefined, imageStyle: React.CSSProperties | undefined) {
@@ -73,7 +79,7 @@ function createFontAwesomeIconProps(icon: object | undefined, iconStyle: React.C
 
 function renderAmpasswordCard(level1: string, level2: string, level3: string, level4: string, imageContainerStyle: React.CSSProperties) {
     return (
-        <div className="mockup-code" style={imageContainerStyle} >
+        <div className="mockup-code rounded-t-3xl rounded-b-3xl" style={imageContainerStyle} >
             <pre data-prefix=">" className="text-info"><code>Level 1 : {level1}</code></pre>
             <pre data-prefix=">" className="text-warning"><code>Level 2 : {level2}</code></pre>
             <pre data-prefix=">" className="text-success"><code>Level 3 : {level3}</code></pre>
@@ -84,7 +90,7 @@ function renderAmpasswordCard(level1: string, level2: string, level3: string, le
 
 function renderRegularCard(icon: object | undefined, imageSrc: object | undefined, imageContainerStyle: React.CSSProperties, fontAwesomeIconProps: any, imageProps: any) {
     return (
-        <figure className="flex" style={imageContainerStyle}>
+        <figure className="flex rounded-t-3xl rounded-b-3xl" style={imageContainerStyle}>
             {icon && <FontAwesomeIcon {...fontAwesomeIconProps}/>}
             {imageSrc && <Image {...imageProps}/>}
         </figure>
@@ -94,7 +100,8 @@ function renderRegularCard(icon: object | undefined, imageSrc: object | undefine
 const Card: React.FC<CardProps> = (props) => {
 
     const { title = "undefined", description ="undefined", icon, imageSrc, placeholder, id,
-        scale, color, router, isInput, onButtonClick, passwordLevels, onInputChange} = props;
+        scale, color, router, isInput, onButtonClick, passwordLevels, onInputChange, isButtonEnabled = true,
+        onKeyDown} = props;
 
     const imageContainerStyle: React.CSSProperties = { height: '200px', width: '100%', overflow: 'hidden' };
     const iconStyle: React.CSSProperties = color ? { color: color } : { color: "#e32400" };
@@ -107,13 +114,12 @@ const Card: React.FC<CardProps> = (props) => {
     }
     const fontAwesomeIconProps = createFontAwesomeIconProps(icon, iconStyle);
     const imageProps = createImageProps(imageSrc, title, imageStyle);
-    const inputTextProps = createInputTextProps(placeholder, id, onInputChange);
-
-
-    const buttonProps = createButtonProps(router, id, onButtonClick, placeholder);
+    const inputProps = createInputProps(placeholder, id, onInputChange, isInput, onKeyDown);
+    const buttonProps = createButtonProps(router, id, onButtonClick, isButtonEnabled);
 
     return (
         <div className="card w-80 bg-base-100 shadow-xl">
+            <div className="flex">
           {id === "ampassword"
             ? renderAmpasswordCard(
                   level1 ?? "",
@@ -129,12 +135,13 @@ const Card: React.FC<CardProps> = (props) => {
                 fontAwesomeIconProps,
                 imageProps,
               )}
+            </div>
           <div className="card-body">
             <h2 className="card-title">{title}</h2>
             <p>{description}</p>
             <div className="join justify-end">
-              {isInput && ( <InputTextGeneric {...inputTextProps} /> )}
-              {id !== "ampassword" && <ButtonGeneric {...buttonProps} />}
+                <Input {...inputProps}/>
+                <Button {...buttonProps} />
             </div>
           </div>
         </div>

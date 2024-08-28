@@ -43,7 +43,8 @@ export function validateSerialAndSetAlert(serial: string) {
     const setMessage = useStore.getState().setMessage;
     const serialTrimmed = serial.trim();
 
-    if (serialTrimmed.length === 4) setSerial("0" + serial);
+    if (serialTrimmed.length === 4)
+        setSerial("0" + serial);
     if (serialTrimmed === "") {
         setMessage("Please type a serial-numbers number");
         return false;
@@ -118,10 +119,8 @@ export async function handleDownload(serial: string): Promise<boolean | void> {
             setBackupList, setBackupSelected} = useStore.getState();
 
         if (isNull(storedSerial) || isChanged(storedSerial ?? '', serial)) {
-
             reset();
             const serialValidated = await getSerialValidationServer(serial);
-            console.log('serialValidated', serialValidated);
             if (serialValidated.error != null) {
                 setMessage(serialValidated.error);
                 return;
@@ -129,15 +128,12 @@ export async function handleDownload(serial: string): Promise<boolean | void> {
             if (serialValidated) {
                 setStoredSerial(serial);
                 const backupList = await getBackupList(serial);
-
                 if (!Array.isArray(backupList)) {
                     setMessage("No database files: " + backupList.error);
                     setLogDaMaster([]);
                     setSoftwareType('unknown');
                 } else {
                     const latestBackup = selectLatestBackup(backupList);
-
-
                     const backupData = await downloadExtractAndReadBackup(serial, latestBackup);
                     if (backupData.error) {
                         setMessage("database corrupted: " + backupData.error);

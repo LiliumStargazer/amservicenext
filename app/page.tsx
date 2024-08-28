@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, ChangeEvent } from "react";
+import React, {useState, ChangeEvent, KeyboardEvent} from "react";
 import { useRouter } from "next/navigation";
 import { faCloud, faList, faMusic, faLineChart } from '@fortawesome/free-solid-svg-icons';
 import amclublogo from "@/public/images/amClubLogo.png";
@@ -10,14 +10,14 @@ import taiga from "@/public/images/taiga-2.svg";
 import vte from "@/public/images/vtenext.png";
 import tableau from "@/public/images/tableau-software.svg";
 import amlog from "@/public/images/image2.jpg";
-import useDownloadBackup from "@/features/log/client/hooks/useDownloadBackup";
+import useDownloadBackup from "@/features/shared/client/hooks/useDownloadBackup";
 import usePasswordLevels from "@/features/home/hooks/usePasswordLevels";
 import useStore from "@/app/store";
 import {onClickOpenWindow} from "@/features/shared/client/utils/utils";
 import Card from "@/features/home/components/Card";
 import Header from "@/features/shared/client/components/Header";
 import Footer from "@/features/shared/client/components/Footer";
-
+import {validateSerialAndSetAlert} from "@/features/shared/client/utils/backup-handler";
 
 const Login: React.FC = () => {
 
@@ -26,7 +26,26 @@ const Login: React.FC = () => {
     const serial = useStore(state => state.serial);
     const setSerial = useStore(state => state.setSerial);
     const router = useRouter();
+    const downloadBackup = useDownloadBackup(router);
 
+    const onClickWithValue = (url: string, value: string) => {
+        if ( validateSerialAndSetAlert(value) )
+            onClickOpenWindow(url, value);
+    }
+
+    const handleKeyDownOnLog = async (event: KeyboardEvent) => {
+        if (event.key === "Enter" ) {
+            if ( validateSerialAndSetAlert(serial))
+                await downloadBackup();
+        }
+    }
+
+    const handleKeyDownOnAlive  = (event: KeyboardEvent) => {
+        if (event.key === "Enter") {
+            if ( validateSerialAndSetAlert(aliveSerial))
+                onClickWithValue("https://alive2.amdistributori.it:8443/dettaglio-distributore/?serialnumber={input}", aliveSerial);
+        }
+    }
 
     return (
         <div>
@@ -43,6 +62,7 @@ const Login: React.FC = () => {
                         isInput={true}
                         onButtonClick={useDownloadBackup(router)}
                         onInputChange={(event: ChangeEvent<HTMLInputElement>) => setSerial(event.target.value)}
+                        onKeyDown={handleKeyDownOnLog}
                         value={serial}
                     />
                     <Card
@@ -55,6 +75,7 @@ const Login: React.FC = () => {
                         passwordLevels={{ level1, level2, level3, level4, setPassword, password }}
                         onInputChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
                         value={password}
+                        isButtonEnabled={false}
                     />
                     <Card
                         title="Alive"
@@ -64,8 +85,9 @@ const Login: React.FC = () => {
                         color={"#e32400"}
                         id={"alive"}
                         isInput={true}
-                        onButtonClick={() => onClickOpenWindow("https://alive2.amdistributori.it:8443/dettaglio-distributore/?serialnumber={input}", aliveSerial)}
+                        onButtonClick={() => onClickWithValue("https://alive2.amdistributori.it:8443/dettaglio-distributore/?serialnumber={input}", aliveSerial)}
                         onInputChange={(event: ChangeEvent<HTMLInputElement>) => setAliveSerial(event.target.value)}
+                        onKeyDown={handleKeyDownOnAlive}
                         value={aliveSerial}
                     />
                     <Card

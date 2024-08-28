@@ -7,7 +7,6 @@ import {translateFrigoState} from "@/features/log/client/utils/event-converter";
 import AgGrid from "@/features/shared/client/components/AgGrid";
 import {defaultColDef} from "@/features/log/client/utils/aggrid-helper";
 
-
 const colDefs = [
     { headerName: 'ID', field: 'ID', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
     { headerName: 'Data', field: 'dataOraR', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true },
@@ -32,13 +31,10 @@ const AggridFrigo: React.FC = () => {
     const setFrigoSelected = useStore(state => state.setFrigoSelected);
     const setFrigoNumber = useStore(state => state.setFrigoNumber);
 
-
-
     useEffect(() => {
-        console.log('frigoData', frigoData);
         const frigoDataCopy = [...frigoData];
-        console.log('frigoDataCopy', frigoDataCopy);
-        const splittedTables = frigoDataCopy.reduce((tablesObject, rowFrigoData) => {
+
+        let arrayTables = frigoDataCopy.reduce((tablesObject, rowFrigoData) => {
             const formattedDate = formatStringToDate(rowFrigoData.DataOraR );
             const state = translateFrigoState(rowFrigoData.FrigoState);
             const formattedTemp1 = parseFloat(rowFrigoData.Temperature1).toFixed(2) + "°";
@@ -62,22 +58,27 @@ const AggridFrigo: React.FC = () => {
                 Allarme: state.Allarme,
             };
 
+
             if (!tablesObject[rowFrigoData.IDFrigo]) {
                 tablesObject[rowFrigoData.IDFrigo] = [];
             }
             tablesObject[rowFrigoData.IDFrigo].push(rowData);
-
             return tablesObject;
 
         }, {});
 
-        setFrigoTables(splittedTables);
-
-        const lenght = Object.keys(splittedTables).length;
-        if (lenght == 1) {
-            setFrigoSelected(1);
+        //controllo che la prima posizione sia piena, altrimenti tiro tutto indietro di 1
+        if (!arrayTables[0]) {
+            const updatedTables: { [key: number]: any[] } = {};
+            Object.keys(arrayTables).forEach(key => {
+                const newKey = parseInt(key) - 1;
+                updatedTables[newKey] = arrayTables[parseInt(key)];
+            });
+            arrayTables = updatedTables;
         }
-        setFrigoNumber(lenght);
+        setFrigoTables(arrayTables);
+        setFrigoNumber(Object.keys(arrayTables).length);
+        setFrigoSelected(0);
 
     }, [frigoData]);
 

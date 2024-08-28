@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import useStore from "@/app/store";
-import { validateSerialAndSetAlert, handleDownload } from "@/features/log/client/utils/backup-handler";
+import { validateSerialAndSetAlert, handleDownload } from "@/features/shared/client/utils/backup-handler";
 import * as Sentry from "@sentry/nextjs";
 
 interface Router {
@@ -16,6 +16,9 @@ function useDownloadBackupOnClick(router: Router) {
     const setTable = useStore(state => state.setTable);
 
     return useCallback(async () => {
+        if (serial === "")
+            return setMessage("Please type a serial number");
+        setLoading(true);
         setTable("master");
         router.push("/log");
         let isValid = validateSerialAndSetAlert(serial);

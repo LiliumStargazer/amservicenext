@@ -5,9 +5,10 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/features/shared/client/style/gridStyle.css";
 import useWindowSize from "@/features/shared/client/hooks/useWindowSize";
 import { useAgGridConfigLogMaster } from "@/features/log/client/hooks/useAgGridConfigLogMaster";
-import { defaultColDef, mapLogDaMaster } from "@/components/log/tables/shared/aggrid-helper";
-import Dialog from "@/components/log/tables/Dialog";
-import AgGrid from "@/components/shared/AgGrid";
+import {defaultColDef, mapLogDaMaster} from "@/features/log/client/utils/aggrid-helper";
+import Dialog from "@/features/log/client/components/Dialog";
+import AgGrid from "@/features/shared/client/components/AgGrid";
+
 
 function Extract() {
     const [extractedData, setExtractedData] = useState<any[]>([]);

@@ -5,6 +5,8 @@ import useStore from "@/app/store";
 const ButtonNav: React.FC = () => {
     const setTable = useStore(state => state.setTable);
     const setMessage = useStore(state => state.setMessage);
+    const setStoredSerial = useStore(state => state.setStoredSerial);
+    const setSerial = useStore(state => state.setSerial);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -12,8 +14,10 @@ const ButtonNav: React.FC = () => {
         if (pathname !== '/') {
             router.push('/');
             setTable('Home');
+            setStoredSerial("");
+            setSerial("");
         } else {
-            setMessage("You are already on the Home table");
+            setMessage("You are already at Home");
         }
     }
 

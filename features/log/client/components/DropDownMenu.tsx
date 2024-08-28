@@ -65,7 +65,6 @@ const DropDownMenu: React.FC = () => {
         }
     }
 
-
     const handleDataFetch = async (
         fetchFunction: (serial: string, backup: string) => Promise<any>,
         setDataCallback: (data: any) => void
@@ -74,7 +73,11 @@ const DropDownMenu: React.FC = () => {
         try {
             const data = await fetchFunction(storedSerial, backupSelected);
             setDataCallback(data);
-            return data.length > 0;
+            //per gestire l'array dei frigo
+            if ( Array.isArray(data))
+                return data.length > 0;
+            //per gestire l'oggetto dei parametri
+            return !!data;
         } catch (error) {
             if (error instanceof Error) {
                 setMessage(error.message);
@@ -88,6 +91,7 @@ const DropDownMenu: React.FC = () => {
 
 
     const handleFrigoClick = async () => {
+
         const result = await handleDataFetch(readFrigoTable, setFrigoData);
         if (result) {
             setTable("frigo");
