@@ -1,61 +1,37 @@
 'use client'
 
 
-import React, { useMemo, useState, useEffect } from "react";
+import React, {useMemo, useState} from "react";
 import loading_lottie from "@/public/loading_lottie.json";
 import useFetchTickets from "@/features/statistics/hooks/useFetchTickets";
 import useStore from "@/app/store";
 
-import Papa from 'papaparse';
 import {
     colDefs,
     createStatistics,
     filterOnlyActiveTechnicians,
-    filterTechnicianFromTickets, filterTicketsAndAddTTR, options,
+    filterTechnicianFromTickets,
+    filterTicketsAndAddTTR,
+    options,
     storedTechnicians
 } from "@/features/statistics/utils/statistic-helper";
 import AnimationLottie from "@/features/shared/client/components/AnimationLottie";
 import Header from "@/features/shared/client/components/Header";
 import AgGrid from "@/features/shared/client/components/AgGrid";
+import useParseCSV from "@/features/statistics/hooks/useParseCSV";
 
-interface ParsedData {
-    [key: string]: any;
-}
 
-const useParseCSV = (ticketHistory: any[] ) => {
-    const [parsedData, setParsedData] = useState<ParsedData[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<Error | null>(null);
 
-    useEffect(() => {
-        if (ticketHistory) {
-            const csvString = Papa.unparse(ticketHistory);
-            Papa.parse(csvString, {
-                header: true,
-                complete: (results) => {
-                    setParsedData(results.data as ParsedData[]);
-                    setLoading(false);
-                },
-                error: (err: any) => {
-                    setError(err);
-                    setLoading(false);
-                }
-            });
-        }
-    }, [ticketHistory]);
-
-    return { parsedData, loading, error };
-};
 
 const Statistics: React.FC = () => {
     const  setLoading  = useStore(state => state.setLoading);
-
     const [isOpen, setIsOpen] = useState<boolean>(false);
     setLoading(true);
     const { ticketHistory, ticketLatest } = useFetchTickets();
-
+    // console.log("Ticket History:", ticketHistory);
     const ticketHistoryParsed = useParseCSV(ticketHistory).parsedData;
     const ticketLatestParsed = useParseCSV(ticketLatest).parsedData;
+
 
     const mergedTickets = useMemo(() => {
         if (!ticketHistoryParsed || !ticketLatestParsed || ticketHistoryParsed.length === 0 || ticketLatestParsed.length === 0) {
@@ -102,6 +78,7 @@ const Statistics: React.FC = () => {
         return <AnimationLottie file={loading_lottie} />;
     }
     else {
+        console.log("Technicians Statistic:", techniciansStatistic);
         setLoading(false);
         return (
             <div>

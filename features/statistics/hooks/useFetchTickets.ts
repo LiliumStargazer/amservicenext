@@ -1,24 +1,25 @@
 import { useState, useEffect } from 'react';
 import { getTicketHistoryViaSrv, getTicketLatestViaSrv } from "@/features/shared/client/api";
 
-
 const useFetchTickets = () => {
     const [ticketHistory, setTicketHistory] = useState<any[]>([]);
     const [ticketLatest, setTicketLatest] = useState<any[]>([]);
 
     useEffect(() => {
-        const fetchTicketHistory = async () => {
-            const result = await getTicketHistoryViaSrv();
-            setTicketHistory(result);
+        const fetchTickets = async () => {
+            try {
+                const [historyResult, latestResult] = await Promise.all([
+                    getTicketHistoryViaSrv(),
+                    getTicketLatestViaSrv()
+                ]);
+                setTicketHistory(historyResult);
+                setTicketLatest(latestResult);
+            } catch (error) {
+                console.error("Error fetching tickets:", error);
+            }
         };
 
-        const fetchTicketLatest = async () => {
-            const result = await getTicketLatestViaSrv();
-            setTicketLatest(result);
-        };
-
-        fetchTicketHistory();
-        fetchTicketLatest();
+        fetchTickets().catch(error => console.error("Error in fetchTickets:", error));
     }, []);
 
     return { ticketHistory, ticketLatest };

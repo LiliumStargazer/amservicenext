@@ -22,10 +22,10 @@ interface Statistic {
     ticketsWithTimeToRestoreLessOrEqualThree: number;
     ticketsWithTimeToRestoreBetweenFourAndFive: number;
     ticketsWithTimeToRestoreGreaterThanFive: number;
-    MTTR?: string;
-    percentageOfTicketsWithTimeToRestoreLessOrEqualThree?: string;
-    percentageOfTicketsWithTimeToRestoreBetweenFourAndFive?: string;
-    percentageOfTicketsWithTimeToRestoreGreaterThanFive?: string;
+    MTTR?: number;
+    percentageOfTicketsWithTimeToRestoreLessOrEqualThree?: number;
+    percentageOfTicketsWithTimeToRestoreBetweenFourAndFive?: number;
+    percentageOfTicketsWithTimeToRestoreGreaterThanFive?: number;
 }
 
 export const filterTechnicianFromTickets = (data: any[]): string[] => {
@@ -144,7 +144,9 @@ export const filterTicketsAndAddTTR = (tickets: any[], activeTechnicians: string
 export const createStatistics = (tickets: Ticket[], activeTechnicians: string[]): Statistic[] => {
     const stats = tickets.reduce<Statistic[]>((acc, ticket) => {
         if (activeTechnicians.includes(ticket.Manutentore)) {
+
             const foundTechnician = acc.find(t => t.Manutentore === ticket.Manutentore);
+
             if (foundTechnician) {
                 foundTechnician.totalTickets += 1;
 
@@ -176,13 +178,17 @@ export const createStatistics = (tickets: Ticket[], activeTechnicians: string[])
     }, []);
 
     stats.forEach(technician => {
-        technician.MTTR = (technician.totalTimeToRestore / technician.totalTickets).toFixed(2);
+
+        technician.MTTR = Number ((technician.totalTimeToRestore / technician.totalTickets).toFixed(2) ) ;
+
+        console.log(typeof ( (technician.totalTimeToRestore / technician.totalTickets).toFixed(2) ) );
+
         // Calcola la percentuale di ticket con TimeToRestore <= 3
-        technician.percentageOfTicketsWithTimeToRestoreLessOrEqualThree = ((technician.ticketsWithTimeToRestoreLessOrEqualThree / technician.totalTickets) * 100).toFixed(2);
+        technician.percentageOfTicketsWithTimeToRestoreLessOrEqualThree = Number( ((technician.ticketsWithTimeToRestoreLessOrEqualThree / technician.totalTickets) * 100).toFixed(2) ) ;
         // Calcola la percentuale di ticket con TimeToRestore >= 4 e <= 5
-        technician.percentageOfTicketsWithTimeToRestoreBetweenFourAndFive = ((technician.ticketsWithTimeToRestoreBetweenFourAndFive / technician.totalTickets) * 100).toFixed(2);
+        technician.percentageOfTicketsWithTimeToRestoreBetweenFourAndFive = Number( ((technician.ticketsWithTimeToRestoreBetweenFourAndFive / technician.totalTickets) * 100).toFixed(2) ) ;
         // Calcola la percentuale di ticket con TimeToRestore > 5
-        technician.percentageOfTicketsWithTimeToRestoreGreaterThanFive = ((technician.ticketsWithTimeToRestoreGreaterThanFive / technician.totalTickets) * 100).toFixed(2);
+        technician.percentageOfTicketsWithTimeToRestoreGreaterThanFive = Number ( ((technician.ticketsWithTimeToRestoreGreaterThanFive / technician.totalTickets) * 100).toFixed(2) ) ;
     });
 
     return stats;
