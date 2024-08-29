@@ -12,28 +12,30 @@ services:
     container_name: nextjs-app
     labels:
       - com.centurylinklabs.watchtower.enable=true
-    restart: unless-stopped
+    restart: always
 
   nginx:
     image: lalghisi/nginx:1.0
     ports:
       - 80:80
       - 443:443
-    depends_on:
-      - nextjs-app
     container_name: nginx
     labels:
       - com.centurylinklabs.watchtower.enable=true
+    restart: always
 
   watchtower:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 3600 --label-enable
+    restart: always
 
   cronjob:
     image: lalghisi/cron:1.0
     container_name: cronjob
-    restart: unless-stopped
-    depends_on:
-      - nextjs-app
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    restart: always
+
+
