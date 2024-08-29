@@ -135,18 +135,6 @@ const DropDownMenu: React.FC = () => {
                     </button>
                 </li>
                 <li>
-                    {/*<button onClick={async () => {*/}
-                    {/*    if (gridApi) {*/}
-                    {/*        try {*/}
-                    {/*            await handleExport(gridApi, searchValue, setMessage, logDaMaster);*/}
-                    {/*        } catch (error) {*/}
-                    {/*            setMessage((error as Error).message);*/}
-                    {/*        }*/}
-                    {/*    } else {*/}
-                    {/*        setMessage('Grid API is not available');*/}
-                    {/*    }*/}
-                    {/*}}>Export To Excel*/}
-                    {/*</button>*/}
                     <button onClick={() => handleExportClick() }>Export To Excel
                     </button>
                 </li>
