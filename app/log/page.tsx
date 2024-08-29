@@ -22,6 +22,7 @@ import Param from "@/features/log/client/components/Param";
 import Button from "@/features/log/client/components/Button";
 import Input from "@/features/log/client/components/Input";
 import Pagination from "@/features/log/client/components/Pagination";
+import SelectRange from "@/features/log/client/components/SelectRange";
 
 const Log: React.FC = () => {
     const table = useStore(state => state.table);
@@ -50,6 +51,7 @@ const Log: React.FC = () => {
                     {table === "master" && backupList.length > 0 && <InfoDropDown />}
                     {storedSerial && <Badge />}
                     <IconSoftware />
+                    {table === "frigo" && <SelectRange />}
                     {table === "frigo" && <Pagination />}
                 </div>
                 <div className="navbar-center">
