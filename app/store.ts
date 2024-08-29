@@ -45,6 +45,8 @@ interface State {
     setDialogContent: (value: object | any[]) => void;
     gridApi: null;
     setGridApi: (value: any | null) => void;
+    intervalMinutes: number;
+    setIntervalMinutes: (value: number) => void;
 }
 
 const useStore = create<State>((set) => ({
@@ -91,7 +93,9 @@ const useStore = create<State>((set) => ({
     dialogContent: [],
     setDialogContent: (value) => set({ dialogContent: value }),
     gridApi: null,
-    setGridApi: (value) => set({ gridApi: value })
+    setGridApi: (value) => set({ gridApi: value }),
+    intervalMinutes: 0,
+    setIntervalMinutes: (value) => set({ intervalMinutes: value }),
 }));
 
 export default useStore;

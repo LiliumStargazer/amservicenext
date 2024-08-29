@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
-import {CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis} from "recharts";
+import React, { useEffect, useState } from "react";
+import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {format} from "date-fns";
+import { format } from "date-fns";
 import useStore from "@/app/store";
 import * as Sentry from '@sentry/nextjs';
 
@@ -10,6 +10,7 @@ const Chart: React.FC = () => {
     const frigoTables = useStore(state => state.frigoTables);
     const frigoSelected = useStore(state => state.frigoSelected);
     const setMessage = useStore(state => state.setMessage);
+    const intervalMinutes = useStore(state => state.intervalMinutes);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [data, setData] = useState<any[]>([]);
@@ -38,32 +39,61 @@ const Chart: React.FC = () => {
         }
     }
 
+    function reduceDataPoints(data: any[], minutes : number): any[] {
+
+        if ( minutes <= 0 )
+            return data; // no reduction
+
+        const milliseconds= minutes * 60 * 1000;
+        const result = [];
+        let lastDate = null;
+
+        for (const entry of data) {
+            const [day, month, year] = entry.dataOraR.split("/");
+            const [hours, minutes] = entry.Time.split(":");
+            const currentDate = new Date(year, month - 1, day, hours, minutes);
+
+            if (!lastDate || (currentDate.getTime() - lastDate.getTime()) >= milliseconds) { // 30 minutes in milliseconds
+                result.push(entry);
+                lastDate = currentDate;
+            }
+        }
+
+        return result;
+    }
+
     useEffect(() => {
         try {
             if (frigoTables[frigoSelected]) {
-                let newData = frigoTables[frigoSelected].map((entry: any) => ({
+
+                const dataReduced = reduceDataPoints(frigoTables[frigoSelected], intervalMinutes);
+
+                let newData = dataReduced.map((entry: any) => ({
                     date: formatDate(entry.dataOraR),
                     Temp1: parseFloat(entry.Temp1.replace("°", "")),
                     Power: entry.Power === "ON" ? 1 : 0,
                     Time: entry.Time
                 }));
 
-                const maxDate = findMaxDate(newData);
-                setStartDate(maxDate);
-                setEndDate(maxDate);
+                if ( startDate === null || endDate === null ){
+                    const maxDate = findMaxDate(newData);
+                    setStartDate(maxDate);
+                    setEndDate(maxDate);
+                }
+
                 setData(newData);
+
             }
         } catch (error) {
             Sentry.captureException(error);
             setMessage((error as Error).message);
         }
-    }, [frigoSelected, frigoTables]);
+    }, [frigoSelected, frigoTables, intervalMinutes]);
 
     useEffect(() => {
         try {
-            if ( startDate && endDate ) {
-                const newData = [...data];
-                newData.reverse();
+            if (startDate && endDate) {
+                let newData = [...data];
                 setDataFiltered(newData.filter(entry => entry.date >= startDate && entry.date <= endDate));
             }
         } catch (error) {
@@ -71,7 +101,7 @@ const Chart: React.FC = () => {
         }
     }, [startDate, endDate, data]);
 
-    if ( loading )
+    if (loading)
         return null;
 
     return (
@@ -102,7 +132,7 @@ const Chart: React.FC = () => {
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tick={false} />
+                    <XAxis dataKey="date" tickCount={10} />
                     <YAxis />
                     <Tooltip content={({ active, payload }) => {
                         if (active && payload && payload.length) {
