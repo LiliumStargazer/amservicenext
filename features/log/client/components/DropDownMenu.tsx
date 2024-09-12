@@ -66,12 +66,12 @@ const DropDownMenu: React.FC = () => {
     }
 
     const handleDataFetch = async (
-        fetchFunction: (serial: string, backup: string) => Promise<any>,
+        fetchFunction: (serial: string, backup: string , id:string ) => Promise<any>,
         setDataCallback: (data: any) => void
     ) => {
         setLoading(true);
         try {
-            const data = await fetchFunction(storedSerial, backupSelected);
+            const data = await fetchFunction(storedSerial, backupSelected, "MAX(ID)");
             setDataCallback(data);
             //per gestire l'array dei frigo
             if ( Array.isArray(data))

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import useStore from "@/app/store";
 
 
 
 function usePasswordLevels() {
-    const [password, setPassword] = useState<string>('');
+    const password = useStore(state => state.password);
+    const setPassword = useStore(state => state.setPassword);
     const [level1, setLevel1] = useState<string>('********');
     const [level2, setLevel2] = useState<string>('********');
     const [level3, setLevel3] = useState<string>('********');

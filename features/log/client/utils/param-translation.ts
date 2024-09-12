@@ -1,577 +1,635 @@
+export enum Category {
+    Audio = "Audio",
+    BetPassion = "BetPassion",
+    Borsellino = "Borsellino",
+    ComandoVocale = "Comando Vocale",
+    Configurazione = "Configurazione",
+    Corrispettivi = "Corrispettivi",
+    DeviceList = "Device List",
+    Favoriti = "Favoriti",
+    Frigo = "Frigo",
+    Gestionale = "Gestionale",
+    Gv = "Gv",
+    Hopper = "Hopper",
+    Impronte = "Impronte",
+    Lis = "Lis",
+    Luci = "Luci",
+    Motori = "Motori",
+    MrPay = "MrPay",
+    Pannelli = "Pannelli",
+    Planogrammi = "Planogrammi",
+    Pos = "Pos",
+    Proximity = "Proximity",
+    Rete = "Rete",
+    Satispay = "Satispay",
+    Scontrino = "Scontrino",
+    Sicurezza = "Sicurezza",
+    Skebby = "Skebby",
+    Soglie = "Soglie",
+    VTE = "VTE",
+    Video = "Video",
+}
 
-const EnumParam: { [key: string]: { category: string; name: string } } = {
-
-"Enable": { category: "POS", name: "Abilita Pax" },
-    "SpendingDefaultTerminal": { category: "POS", name: "Terminale di default per spending" },
-    "EnableCardTransactionMono": { category: "POS", name: "Abilita acquisto prodotti di monopolio" },
-    "DisableCardTransactionGv": { category: "POS", name: "Inibisci acquisto Gratta e Vinci" },
-    "MincCardTransactionMono": { category: "POS", name: "Importo minimo per acquisto prodotti di monopolio" },
-    "MinCardTransactionnonMono": { category: "POS", name: "Importo minimo per acquisto prodotti NON di monopolio" },
-    "MaxCardTransaction": { category: "POS", name: "Importo massimo per acquisto prodotti" },
-    "LockReceiptPrint": { category: "POS", name: "Rimozione stampa ricevuta transazione" },
-    "SerialNumber": { category: "POS", name: "Numero di serie" },
-    "TerminalId": { category: "POS", name: "Id terminale" },
-    "IpcentroServizi": { category: "POS", name: "Indirizzo ip centro servizi" },
-    "PortaCentroServizi": { category: "POS", name: "Porta centro servizi" },
-    "IdCertificato": { category: "POS", name: "Id certificato" },
-    "CodAzienda": { category: "POS", name: "Codice azienda" },
-    "ProtTrasporto": { category: "POS", name: "Protocollo trasporto" },
-    "IgnoreTechnicalParameter": { category: "POS", name: "Ignora parametri tecnici" },
-    "BillPayment": { category: "Funzionalità Aggiuntive", name: "Abilita Bill Payment" },
-    "Spending": { category: "Funzionalità Aggiuntive", name: "Abilita spending" },
-    "IdCertificatopax": { category: "Certificati", name: "Id certificato PAX" },
-    "TipoCertificato": { category: "Certificati", name: "Tipo certificato" },
-    "Idpersonalizzazione": { category: "Certificati", name: "Id personalizzazione PAX" },
-    "Personalizzazione": { category: "Certificati", name: "Personalizzazione" },
-    "CodicePos": { category: "Lis", name: "Codice POS servizi LIS" },
-    "OnlineCryptedPassword": { category: "Lis", name: "PIN servizi LIS" },
-    "Onlineservicedisabled": { category: "Lis", name: "Disabilita servizi LIS" },
-    "Lisprintonerror": { category: "Lis", name: "Scontrino su transazione fallita LIS" },
-    "SatispayEnable": { category: "Satispay", name: "Proponi Satispay" },
-    "SatispayCryptedoken": { category: "Satispay", name: "Token" },
-    "SatispayShortToken": { category: "Satispay", name: "Codice di attivazione" },
-    "SatispayCryptedKeyId": { category: "Satispay", name: "KeyId" },
-    "BorsellinoEnabled": { category: "Borsellino", name: "Abilita borsellino elettronico" },
-    "BorsellinoValueLimitCentesimi": { category: "Borsellino", name: "Limite borsellino (€)" },
-    "AbilitaVenditore2": { category: "Configurazione", name: "Abilita venditore automatico 2.0- funz_venditore "},
-    "AbilitaInvioGiorno": { category: "Configurazione", name: "Abilita invio giornaliero" },
-    "AbilitaInvioSettimana": { category: "Configurazione", name: "Abilita invio settimanale" },
-    "AbilitaInvioMese": { category: "Configurazione", name: "Abilita invio mensile" },
-    "OrarioInvioVenditore": { category: "Configurazione", name: "Orario invio" },
-    "EsauritoVisibile": { category: "Configurazione", name: "Segnala prodotto esaurito" },
-    "TimerProdottoAlternativo": { category: "Configurazione", name: "Tempo prodotto alternativo (sec)" },
-    "ProponiAlternativa": { category: "Configurazione", name: "Proponi alternativa su prodotto esaurito - fisarmonica" },
-    "AlternativaGiocoFumo": { category: "Configurazione", name: "Proponi alternativa Tabacco/Gioco" },
-    "EnablePromoProximity": { category: "Configurazione", name: "Proponi offerte su presenza cliente - Affaregiorno" },
-    "EnableProductAudio": { category: "Configurazione", name: "Riproduci name prodotto sulla scelta" },
-    "EnableScontrinoRicaricabile": { category: "Scontrino", name: "Abilita scontrino ricaricabile" },
-    "EnableSpeechToText": { category: "Comando Vocale", name: "Abilita comandi vocali" },
-    "SpeechPartialResults": { category: "Comando Vocale", name: "Abilita scrittura in tempo reale" },
-    "Sttprossimity": { category: "Comando Vocale", name: "Avvia processo su sensore di prossimità" },
-    "AudioOnSpeech": { category: "Comando Vocale", name: "Abilita audio su sensore di prossimità" },
-    "Speechautostartsecondtime": { category: "Comando Vocale", name: "Abilita avvio automatico dopo risposta" },
-    "SpeechTimeoutForVideo": { category: "Comando Vocale", name: "Timeout riavvio video (sec)" },
-    "SpeechMaxRetrySilence": { category: "Comando Vocale", name: "Numero tentativi su silenzio" },
-    "SpeechMaxRetryBad": { category: "Comando Vocale", name: "Numero tentativi su parola non capita" },
-    "SpeechMaxRetryNotInDa": { category: "Comando Vocale", name: "numero tentativi su prodotto non trovato" },
-    "Speechoffsetposms": { category: "Comando Vocale", name: "offset positivo avvio servizio (ms)" },
-    "Speechoffsetnegms": { category: "Comando Vocale", name: "offset negativo avvio servizio (ms)" },
-    "SpeechMinChar": { category: "Configurazione", name: "numero minimo caratteri" },
-    "GestionaleCryptedToken": { category: "Gestionale", name: "token gestionale" },
-    "TipoGestionale": { category: "Gestionale", name: "marca gestionale" },
-    "VideoEnable": { category: "Video", name: "abilita video pubblicitari" },
-    "EnableVideoBroadcastEst": { category: "Video", name: "abilita visual broadcast" },
-    "EnableFloorBanner": { category: "Video", name: "abilita banner basso" },
-    "TempoAlarm": { category: "Configurazione", name: "tempo sirena allarme (sec)" },
-    "TempoAttesaResto": { category: "Configurazione", name: "tempo attesa resto (sec)" },
-    "DisableCarrello": { category: "Configurazione", name: "disabilita carrello" },
-    "NumPedate": { category: "Configurazione", name: "numero massimo colpi" },
-    "TempoPedate": { category: "Configurazione", name: "tempo filtro colpi (sec)" },
-    "SogliaAccelerometro": { category: "Configurazione", name: "soglia accelerometro" },
-    "Remotoscassoenabled": { category: "Configurazione", name: "combinatore remoto su sospetto di scasso abilitato" },
-    "TempoCombinatoreRemoto": { category: "Configurazione", name: "tempo filtro combinatore remoto (sec)" },
-    "DisablePhotoAlarm": { category: "Configurazione", name: "disabilita allarme fotocellule" },
-    "email1": { category: "Configurazione", name: "email 1" },
-    "email2": { category: "Configurazione", name: "email 2" },
-    "email3": { category: "Configurazione", name: "email 3" },
-    "email4": { category: "Configurazione", name: "email 4" },
-    "AutoPricesEnabled": { category: "Configurazione", name: "abilita prezzi automatici" },
-    "Reversepanelorder": { category: "Configurazione", name: "inverti ordine pannelli" },
-    "NetflixSound": { category: "Configurazione", name: "abilita suono di benvenuto" },
-    "CheckExitProg": { category: "Configurazione", name: "autodiagnosi: verifica errori su chiusura porta" },
-    "AudioOnInput": { category: "Configurazione", name: "abilita audio su cambio stato sensori" },
-    "AudioMicroProduct": { category: "Configurazione", name: "abilita colonna parlante" },
-    "Disablecarrello": { category: "Configurazione", name: "disabilita proposta prodotti a fine vendita (carrello)" },
-    "TempoAperturaCassetto": { category: "Configurazione", name: "tempo apertura sportello (sec)" },
-    "EbableTabaInTask": { category: "Configurazione", name: "abilita applicazione TabainTask" },
-    "RestoMaxCommon": {category: "Configurazione", name: "resto massimo comune"},
-    "TempoAcquistoCommon": {category: "Configurazione", name: "tempo accettazione denaro (sec)"},
-    "TimerSceltaProdotto": {category: "Configurazione", name: "tempo scelta prodotto (sec)"},
-    "TimerConvalidaEta": {category: "Configurazione", name: "tempo convalida età (sec)"},
-    "TimerConfermaProdotto": {category: "Configurazione", name: "tempo conferma prodotto (sec)"},
-    "TimerMetodiPagamento": {category: "Configurazione", name: "tempo scelta metodo di pagamento (sec)"},
-    "TimerComeProseguire": {category: "Configurazione", name: "tempo scelta come proseguire (sec)"},
-    "Delayerogazioneprodotto": {category: "Configurazione", name: "ritardo erogazione prodotto (sec)"},
-    "Azione1": {category: "Configurazione", name: "scontrino azione riga 1"},
-    "Azione2": {category: "Configurazione", name: "scontrino azione riga 2"},
-    "Azione3": {category: "Configurazione", name: "scontrino azione riga 3"},
-    "ScontrinoNote1": {category: "Scontrino", name: "scontrino note riga 1"},
-    "ScontrinoNote2": {category: "Scontrino", name: "scontrino note riga 2"},
-    "ScontrinoNote3": {category: "Scontrino", name: "scontrino note riga 3"},
-    "Righeavanzamentocarta": {category: "Configurazione", name: "righe avanzamento carta"},
-    "Tg2460jamdelay": {category: "Configurazione", name: "tg2460: ritardo filtro jam (sec)"},
-    "Excludetg2460antijam": {category: "Configurazione", name: "tg2460: esclusione movimento jam"},
-    "Tg2460recuperocartaimmediato": {category: "Configurazione", name: "tg2460: recupero carta immediato"},
-    "PwdProgrammazione": {category: "Configurazione", name: "password accesso programmazione"},
-    "IDImprontaSpeciale1": {category: "Impronte", name: "id impronta speciale 1"},
-    "IDImprontaSpeciale2": {category: "Impronte", name: "id impronta speciale 2"},
-    "IDImprontaSpeciale3": {category: "Impronte", name: "id impronta speciale 3"},
-    "IDImprontaSpeciale4": {category: "Impronte", name: "id impronta speciale 4"},
-    "Idimprontaspeciale5": {category: "Impronte", name: "id impronta speciale 5"},
-    "Idimprontaspecialedip1": {category: "Impronte", name: "id impronta speciale dipendente 1"},
-    "Idimprontaspecialedip2": {category: "Impronte", name: "id impronta speciale dipendente 2"},
-    "Idimprontaspecialedip3": {category: "Impronte", name: "id impronta speciale dipendente 3"},
-    "Idimprontaspecialedip4": {category: "Impronte", name: "id impronta speciale dipendente 4"},
-    "Idimprontaspecialedip5": {category: "Impronte", name: "id impronta speciale dipendente 5"},
-    "QrImageFile" :{category: "Corrispettivi", name: "file immagine QR"},
-    "Cfspeciale1": {category: "Configurazione", name: "tessera speciale 1"},
-    "Cfspeciale2": {category: "Configurazione", name: "tessera speciale 2"},
-    "Cfspeciale3": {category: "Configurazione", name: "tessera speciale 3"},
-    "Cfspeciale4": {category: "Configurazione", name: "tessera speciale 4"},
-    "Cfspeciale5": {category: "Configurazione", name: "tessera speciale 5"},
-    "SensPresenzaEnable": {category: "Ingressi-Uscite", name: "abilita gestione sensore presenza"},
-    "ProxyFiltType": {category: "Ingressi-Uscite", name: "tipo filtro sensore presenza"},
-    "ProxyDistLimit": {category: "Ingressi-Uscite", name: "distanza presenza persona [mm]"},
-    "ProxyTimeIn": {category: "Ingressi-Uscite", name: "tempo minimo presenza persona [ms]"},
-    "ProxyTimeOut": {category: "Ingressi-Uscite", name: "tempo minimo assenza persona [ms]"},
-    "RipristinoAutomaticoSpirali": {category: "Ingressi-Uscite", name: "ripristino automatico spirali"},
-    "TemperaturaFanOn": {category: "Ingressi-Uscite", name: "temperatura accensione ventole [°C]"},
-    "TemperaturaFanOff": {category: "Ingressi-Uscite", name: "temperatura spegnimento ventole [°C]"},
-    "OrarioAccensioneDeluxe": {category: "Ingressi-Uscite", name: "orario accensione pannello [Manuale]"},
-    "OrarioSpegnimentoDeluxe": {category: "Ingressi-Uscite", name: "orario spegnimento pannello [Manuale]"},
-    "Ignorephotomaster": {category: "Luci", name: "fotocellule assenti"},
-    "SmsAccount": {category: "Skebby", name: "account SMS"},
-    "SmsCryptedPassword": {category: "Skebby", name: "password SMS"},
-
-    "Bitsperled": {category: "Luci", name: "bits per LED"},
-    "Wrgbtype": {category: "Luci", name: "tipo WRGB"},
-    "Numled": {category: "Luci", name: "numero LED"},
-    "Piecesize": {category: "Luci", name: "dimensione cluster"},
-    "Brightidle": {category: "Luci", name: "luminosità utente non presente min. 0-max. 255"},
-    "Brightpres": {category: "Luci", name: "luminosità utente presente min. 0-max. 255"},
-    "Brightseg": {category: "Luci", name: "luminosità segmenti min. 0-max. 255"},
-    "Effsegenabled": {category: "Luci", name: "tipo effetto periferiche"},
-    "Effsegspeed": {category: "Luci", name: "velocità effetto periferiche"},
-    "Color1seg": {category: "Luci", name: "colore 1 segmento periferica"},
-    "Color2seg": {category: "Luci", name: "colore 2 segmento periferica"},
-    "Color3seg": {category: "Luci", name: "colore 3 segmento periferica"},
-    "Effbaseidle": {category: "Luci", name: "tipo effetto segmento base idle"},
-    "Effbaseidlespeed": {category: "Luci", name: "velocità effetto segmento base idle"},
-    "Optionbaseidle": {category: "Luci", name: "opzione effetto base idle"},
-    "Color1baseidle": {category: "Luci", name: "colore 1 segmento base idle"},
-    "Color2baseidle": {category: "Luci", name: "colore 2 segmento base idle"},
-    "Color3baseidle": {category: "Luci", name: "colore 3 segmento base idle"},
-    "Effbasepres": {category: "Luci", name: "tipo effetto segmento base persona presente"},
-    "Effbasepresspeed": {category: "Luci", name: "velocità effetto segmento base persona presente"},
-    "Color1basepres": {category: "Luci", name: "colore 1 segmento base persona presente"},
-    "Color2basepres": {category: "Luci", name: "colore 2 segmento base persona presente"},
-    "Color3basepres": {category: "Luci", name: "colore 3 segmento base persona presente"},
-    "Cassprelstart": {category: "Luci", name: "inizio cassetto prelievo"},
-    "Cassprelend": {category: "Luci", name: "fine cassetto prelievo"},
-    "Micstart": {category: "Luci", name: "inizio microfono"},
-    "Micend": {category: "Luci", name: "fine microfono"},
-
-    "Moneystart": { category: "Luci", name: "inizio accettazione denaro" },
-    "Moneyend": { category: "Luci", name: "fine accettazione denaro" },
-    "Money2start": { category: "Luci", name: "inizio accettazione denaro 2" },
-    "Money2end": { category: "Luci", name: "fine accettazione denaro 2" },
-    "Agestart": { category: "Luci", name: "inizio convalida età" },
-    "Ageend": { category: "Luci", name: "fine convalida età" },
-    "Prnstart": { category: "Luci", name: "inizio stampante" },
-    "Prnend": { category: "Luci", name: "fine stampante" },
-    "Virtmoneystart": { category: "Luci", name: "inizio pagamenti virtuali" },
-    "Virtmoneyend": { category: "Luci", name: "fine pagamenti virtuali" },
-    "Gvstart": { category: "Luci", name: "inizio G&V" },
-    "Gvend": { category: "Luci", name: "fine G&V" },
-    "Cassslavestart": { category: "Luci", name: "inizio cassetto slave" },
-    "Cassslaveend": { category: "Luci", name: "fine cassetto slave" },
-    "Sl1bitsperled": { category: "Luci", name: "bits per LED (Slave Tabacco 1)" },
-    "Sl1wrgbtype": { category: "Luci", name: "tipo WRGB (Slave Tabacco 1)" },
-    "Sl1numled": { category: "Luci", name: "numero LED (Slave Tabacco 1)" },
-    "Sl1piecesize": { category: "Luci", name: "Dimensione cluster (Slave Tabacco 1)" },
-    "Sl2bitsperled": { category: "Luci", name: "Bits per LED (Slave Tabacco 2)" },
-    "Sl2wrgbtype": { category: "Luci", name: "Tipo WRGB" },
-    "DHCPEnabled": { category: "Rete", name: "Abilita DHCP" },
-    "IPAddress": { category: "Rete", name: "Indirizzo IP per IP statico" },
-    "SubnetMask": { category: "Rete", name: "Maschera di sottorete per IP statico" },
-    "Telefono1" : { category: "Skebby", name: "Telefono 1" },
-    "Telefono2" : { category: "Skebby", name: "Telefono 1" },
-    "Telefono3" : { category: "Skebby", name: "Telefono 1" },
-    "Telefono4" : { category: "Skebby", name: "Telefono 1" },
-    "GatewayAddress": { category: "Rete", name: "Indirizzo gateway per IP statico" },
-    "DnsPrimary": { category: "Rete", name: "DNS primario per IP statico" },
-    "DnsSecondary": { category: "Rete", name: "DNS secondario per IP statico" },
-    "FtpUrl": { category: "Rete", name: "URL connessione FTP" },
-    "FtpPort": { category: "Rete", name: "Porta connessione FTP" },
-    "EnableBrightnessDayNight": { category: "Display", name: "Abilita gestione luminosità" },
-    "LumProfiloGiorno": { category: "Display", name: "Luminosità profilo giorno" },
-    "LumProfiloNotte": { category: "Display", name: "Luminosità profilo notte" },
-    "Inviocorrispettivomode": { category: "Corrispettivi", name: "Modalità di invio corrispettivo" },
-    "AdeUniqueId": { category: "Corrispettivi", name: "Codice univoco" },
-    "AdeLat": { category: "Corrispettivi", name: "Latitudine" },
-    "AdeLon": { category: "Corrispettivi", name: "Longitudine" },
-    "LookappUrl": { category: "Corrispettivi", name: "URL Web Services" },
-    "EnableCassettoMot": { category: "Ingressi-Uscite", name: "Abilita cassetto motore" },
-    "RigheAvanzamentoCarta": { category: "Scontrino", name: "Righe avanzamento carta" },
-
-    "FingerEnabled": { category: "Configurazione", name: "Abilita impronta digitale" },
-    "Fingerproductproposedmode": { category: "Configurazione", name: "Modalità di proposta prodotto con impronta digitale" },
-    "Matricola": { category: "Configurazione", name: "Matricola distributore" },
-    "MachineModel": { category: "Configurazione", name: "Modello distributore" },
-    "Simularicariche": { category: "Configurazione", name: "Simula servizi LIS" },
-    "Devmotorparam.tempolampadaerogazione": { category: "Soglie", name: "Tempo lampada erogazione [sec]" },
-    "Devmotorparam.sogliai0ma": { category: "Soglie", name: "Soglia corrente I0 [mA]" },
-    "Devmotorparam.sogliat0ms": { category: "Soglie", name: "Tempo soglia 0 [ms]" },
-    "Devmotorparam.sogliai1ma": { category: "Soglie", name: "Soglia corrente I1 [mA]" },
-    "Devmotorparam.sogliat1ms": { category: "Soglie", name: "Tempo soglia 1 [ms]" },
-    "Devmotorparam.sogliai2ma": { category: "Soglie", name: "Soglia corrente I2 [mA]" },
-    "Devmotorparam.sogliat2ms": { category: "Soglie", name: "Tempo soglia 2 [ms]" },
-    "Devmotorparam.sogliai3ma": { category: "Soglie", name: "Soglia corrente I3 [mA]" },
-    "Devmotorparam.tempociclo": { category: "Soglie", name: "Tempo ciclo massimo [sec]" },
-    "Devmotorparam.iminimama": { category: "Soglie", name: "Soglia corrente fermo [mA]" },
-    "Spiraliinterne": { category: "Soglie", name: "Spirali interne" },
-    "Devmotorparam.sogliai0maspiint": { category: "Soglie", name: "Soglia corrente I0 [mA] per Spirali Interne" },
-    "Devmotorparam.sogliat0msspiint": { category: "Soglie", name: "Tempo soglia 0 [ms] per Spirali Interne" },
-    "Devmotorparam.sogliai1maspiint": { category: "Soglie", name: "Soglia corrente I1 [mA] per Spirali Interne" },
-    "Devmotorparam.sogliat1msspiint": { category: "Soglie", name: "Tempo soglia 1 [ms] per Spirali Interne" },
-    "Devmotorparam.sogliai2maspiint": { category: "Soglie", name: "Soglia corrente I2 [mA] per Spirali Interne" },
-    "Devmotorparam.tempociclospiint": { category: "Soglie", name: "Tempo ciclo massimo [sec] per Spirali Interne" },
-    "Devmotorparam.iminimamaspiint": { category: "Soglie", name: "Soglia corrente fermo [mA] per Spirali Interne" },
-    "Devfrigoparam.frigomancante": { category: "Frigo", name: "Slave disattiva frigo" },
-    "Devfrigoparam.temperaturalavoro": { category: "Frigo", name: "Temperatura frigo [°C]" },
-    "Devfrigoparam.isteresi": { category: "Frigo", name: "Isteresi frigo [°C]" },
-    "Devfrigoparam.periodosbrinamento": { category: "Frigo", name: "Periodo sbrinamento [min]" },
-    "Devfrigoparam.duratasbrinamento": { category: "Frigo", name: "Durata sbrinamento [min]" },
-    "Devfrigoparam.temperaturaallarmecondensatore": { category: "Frigo", name: "Temperatura allarme condensatore [°C]" },
-    "Devfrigoparam.temperaturawarningcondensatore": { category: "Frigo", name: "Temperatura warning condensatore [°C]" },
-    "Devfrigoparam.deltatemperaturaallarmecondensatore": { category: "Frigo", name: "Delta temperatura allarme condensatore [°C]" },
-    "Devfrigoparam.frigopolltime": { category: "Frigo", name: "Tempo campionamento diagnostica frigo [min]" },
-    "Devfrigoparam.frigoalarmholdofftime": { category: "Frigo", name: "Tempo limite allarme frigo [min]" },
-    "Devfrigoparam.deltaalarm": { category: "Frigo", name: "Limite allarme frigo [°C]" },
-    "Devfrigoparam.sogliai0ma": { category: "Frigo", name: "Soglia corrente I0 [mA]" },
-    "Devfrigoparam.sogliat0ms": { category: "Frigo", name: "Tempo soglia 0 [ms]" },
-    "Devfrigoparam.sogliai1ma": { category: "Frigo", name: "Soglia corrente I1 [mA]" },
-    "Devfrigoparam.tempociclo": { category: "Frigo", name: "Tempo ciclo massimo [sec]" },
-    "Devfrigoparam.iminimama": { category: "Frigo", name: "Soglia corrente fermo [mA]" },
-    "Adimacparam.temperaturalavoro": { category: "Frigo", name: "Temperatura lavoro [°C]" },
-    "Adimacparam.isteresi": { category: "Frigo", name: "Isteresi [°C]" },
-    "Adimacparam.periodosbrinamento": { category: "Frigo", name: "Periodo sbrinamento [h]" },
-    "Adimacparam.duratasbrinamento": { category: "Frigo", name: "Durata sbrinamento [min]" },
-    "Sensneggv": { category: "Frigo", name: "Logica fine corsa Gv" },
-    "SogliaI0mAGv": { category: "Gv", name: "Soglia corrente I0 [mA] Gv" },
-    "SogliaT0mSGv": { category: "Gv", name: "Tempo soglia 0 [ms] Gv" },
-    "SogliaI1mAGv": { category: "Gv", name: "Soglia corrente I1 [mA] Gv" },
-    "EnergySaving": { category: "Configurazione", name: "Abilita risparmio energetico" },
-    "Defaultvendlanguage": { category: "Lingua", name: "Lingua base di vendita" },
-    "LogistaAbil": { category: "Corrispettivi", name: "Abilita Logista" },
-    "fingerproductproposemode": { category: "Impronte", name: "Modalità di proposta prodotto con impronta digitale" },
-    "Intestazione1": { category: "Scontrino", name: "Scontrino intestazione rigo1" },
-    "Intestazione2": { category: "Scontrino", name: "Scontrino intestazione rigo2" },
-    "Intestazione3": { category: "Scontrino", name: "Scontrino intestazione rigo3" },
-    "Isfiera": { category: "Configurazione", name: "Distributore fiera" },
-    "OrarioFineGiorno": { category: "Configurazione", name: "Orario fine profilo giorno" },
-    "OrarioInizioGiorno": { category: "Configurazione", name: "Orario inizio profilo giorno" },
-    "PolliciDisplay": { category: "Configurazione", name: "Dimensione display" },
-    "Reject05": { category: "Configurazione", name: "rifiuto 5 centesimi" },
-    "Reject10": { category: "Configurazione", name: "rifiuto 10 centesimi" },
-    "Reject20": { category: "Configurazione", name: "rifiuto 20 centesimi" },
-    "Reject50": { category: "Configurazione", name: "rifiuto 50 centesimi" },
-    "Reject100": { category: "Configurazione", name: "rifiuto 1 euro" },
-    "Reject200": { category: "Configurazione", name: "rifiuto 2 euro" },
-    "Rejectb5": { category: "Configurazione", name: "rifiuto 5 euro" },
-    "Rejectb10": { category: "Configurazione", name: "rifiuto 10 euro" },
-    "Rejectb20": { category: "Configurazione", name: "rifiuto 20 euro" },
-    "Rejectb50": { category: "Configurazione", name: "rifiuto 50 euro" },
-    "NumHopper": { category: "Configurazione", name: "numero hopper" },
-    "OnlinieServiceDisabled": { category: "Configurazione", name: "servizio online disabilitato" },
-    "LisPrintOnError": { category: "Configurazione", name: "stampa LIS su errore" },
-    "SogliaI0mA": { category: "Soglie", name: "soglia corrente I0 [mA]" },
-    "SogliaI1mA": { category: "Soglie", name: "soglia corrente I1 [mA]" },
-    "SogliaI2mA": { category: "Soglie", name: "soglia corrente I2 [mA]" },
-    "TempoCiclo": { category: "Soglie", name: "tempo ciclo massimo [sec]" },
-    "IMinimamA": { category: "Soglie", name: "soglia corrente fermo [mA]" },
-    "SogliaT1ms": { category: "Soglie", name: "tempo soglia 1 [ms]" },
-    "SogliaI0mASpiInt": { category: "Soglie", name: "soglia corrente I0 [mA] per Spirali Interne" },
-    "SogliaT1mSSpiInt": { category: "Soglie", name: "tempo soglia 1 [ms] per Spirali Interne" },
-    "SogliaT0mSSpiInt": { category: "Soglie", name: "tempo soglia 0 [ms] per Spirali Interne" },
-    "SogliaT0mS": { category: "Soglie", name: "tempo soglia 0 [ms] per Spirali Interne" },
-    "SogliaI1mASpiInt": { category: "Soglie", name: "soglia corrente I1 [mA] per Spirali Interne" },
-    "SogliaI1mASpiExt": { category: "Soglie", name: "soglia corrente I1 [mA] per Spirali Esterne" },
-    "SogliaI0mASpiExt": { category: "Soglie", name: "soglia corrente I0 [mA] per Spirali Esterne" },
-    "TempoCicloSpiInt": { category: "Soglie", name: "tempo ciclo massimo [sec] per Spirali Interne" },
-    "IMinimamASpiInt": { category: "Soglie", name: "soglia corrente fermo [mA] per Spirali Interne" },
-    "SogliaT0mSSpiExt": { category: "Soglie", name: "tempo soglia 0 [ms] per Spirali Esterne" },
-    "SogliaT1mSSpiExt": { category: "Soglie", name: "tempo soglia 1 [ms] per Spirali Esterne" },
-    "TempoCicloSpiExt": { category: "Soglie", name: "tempo ciclo massimo [sec] per Spirali Esterne" },
-    "IMinimamASpiExt": { category: "Soglie", name: "soglia corrente fermo [mA] per Spirali Esterne" },
-    "TemperaturaFrigoA": { category: "Frigo", name: "temperatura frigo A [°C]" },
-    "TemperaturaFrigoB": { category: "Frigo", name: "temperatura frigo B [°C]" },
-    "IsteresiFrigoA": { category: "Frigo", name: "isteresi frigo A [°C]" },
-    "IsteresiFrigoB": { category: "Frigo", name: "isteresi frigo B [°C]" },
-    "FrigoPollTime": { category: "Frigo", name: "tempo campionamento diagnostica frigo [min]" },
-    "Video0": { category: "Video", name: "video 0" },
-    "Video1": { category: "Video", name: "video 1" },
-    "Video2": { category: "Video", name: "video 2" },
-    "Video3": { category: "Video", name: "video 3" },
-    "Video4": { category: "Video", name: "video 4" },
-    "Video5": { category: "Video", name: "video 5" },
-    "Video6": { category: "Video", name: "video 6" },
-    "VolVideo": { category: "Video", name: "volume video" },
-    "FrigoAlarmAHoldoffTime": { category: "Frigo", name: "tempo limite allarme frigo [min]" },
-    "FrigoAlarmBHoldoffTime": { category: "Frigo", name: "tempo limite allarme frigo B [min]" },
-    "DeltaAlarmFrigoA": { category: "Frigo", name: "limite allarme frigo A [°C]" },
-    "DeltaAlarmFrigoB": { category: "Frigo", name: "limite allarme frigo B [°C]" },
-    "WebcamModel": { category: "Webcam", name: "modello webcam" },
-    "Primaprodotto": { category: "Configurazione", name: "primo prodotto" },
-    "SbloccoRRWithMotor": { category: "Configurazione", name: "sblocco RRW con motore" },
-    "CreditoMaxCommon": { category: "Configurazione", name: "credito massimo comune" },
-    "TitoloSuCategoria": { category: "Configurazione", name: "titolo su categoria" },
-    "SatispayCryptedToken": { category: "Satispay", name: "token Satispay" },
-    "EnableAudioRepeat": { category: "Audio", name: "abilita ripetizione audio" },
-    "TimeAudioRepeat": { category: "Audio", name: "tempo ripetizione audio [sec]" },
-    "LabelBlinking": { category: "Configurazione", name: "lampeggio etichetta" },
-    "NetPoolEnhanced": { category: "Rete", name: "pooling migliorato" },
-    "AmFtpServerName": { category: "Rete", name: "nome server FTP" },
-    "AmFtpPortNumber": { category: "Rete", name: "porta FTP" },
-    "xBorsellinoValueLimit": { category: "Borsellino", name: "limite valore borsellino" },
-    "VolProfiloNotte": { category: "Audio", name: "volume profilo notte" },
-    "VolProfiloGiorno": { category: "Audio", name: "volume profilo giorno" },
-    "SensTempEnable": { category: "Ingressi-Uscite", name: "abilita sensore temperatura" },
-    "sono key SensLuceEnable": { category: "Ingressi-Uscite", name: "abilita sensore luce" },
-    "TimeoutVideoStart": { category: "Video", name: "timeout avvio video [sec]" },
-    "ContNight": { category: "Configurazione", name: "contatore notte" },
-    "LumNight": { category: "Configurazione", name: "luminosità notte" },
-    "ContDay": { category: "Configurazione", name: "contatore giorno" },
-    "LumDay": { category: "Configurazione", name: "luminosità giorno" },
-    "TempoLampadaErogazione": { category: "Configurazione", name: "tempo lampada erogazione [sec]" },
-    "OnlineServiceDisabled": { category: "Configurazione", name: "servizio online disabilitato" },
-    "SensLuceEnable": { category: "Ingressi-Uscite", name: "abilita sensore luce" },
+const mappingDescription: { [key: string]: { description: string } } = {
+    "funz_antiscasso": { description: "Abilita antiscasso" },
+    "funz_autodiagnosi": { description: "Autodiagnosi (verifica errori su chiusura porte)" },
+    "funz_scontrinoric": { description: "Abilita scontrino ricaricabile" },
+    "funz_colparlante": { description: "Abilita colonna parlante" },
+    "funz_prelievomot": { description: "Abilita prelievo motorizzato" },
+    "funz_prelievoweb": { description: " " },
+    "funz_venditore": { description: "Abilita venditore automatico 2.0" },
+    "funz_borsellino": { description: "Abilita borsellino elettronico" },
+    "funz_magazzino": { description: " " },
+    "funz_doppiaetic": { description: "Abilita doppia etichetta" },
+    "funz_fisarmonica": { description: "Proponi alternativa su prodotto esaurito" },
+    "funz_vocal": { description: "Abilita controllo vocale" },
+    "funz_tabaintask": { description: "Abilita tabaintask" },
+    "funz_satispay": { description: "Abilita Satispay" },
+    "funz_affaregiorno": { description: "Proponi offerte su presenza cliente" },
+    "funz_scansia": { description: " " },
+    "funz_predittiva": { description: " " },
+    "funz_broadcast": { description: "Abilita visual broadcast" },
+    "funz_rgbcontest": { description: "Abilita RGB contestuale" },
+    "funz_verc19": { description: " " },
+    "funz_contigioco": { description: "Abilita conti Gioco" },
+    "funz_ccard": { description: "Abilita carte gioco" },
+    "funz_vcrypto": { description: "Abilita Vendo Crypto" },
+    "funz_cryptomerch": { description: "Abilita CryptoMerchant" },
+    "funz_gcrypto": { description: "Abilita Gift Crypto" },
+    "funz_broadcast_est": { description: "Abilita visual broadcast" },
+    "funz_broadcast_est_id": { description: " " },
+    "funz_erog_time": { description: " " },
+    "bc_pv_class": { description: " " },
+    "funz_energy": { description: "Abilita risparmio energetico" },
+    "bc_pmijakalalead": { description: "Abilita Banner philip morris" },
+    "bc_pmibannertext": { description: "Abilita Banner pholip morris" },
+    "funz_floor_banner": { description: "Abilita banner basso" },
 };
 
-/*
-const fingerproductproposemode = {
-    0:{name: "Ultimo acquisto"},
-    1: {name: "Più acquistato"},
-    2: {name: "Non proporre" },
-}
+export const paramCategoryMapping: { [key: string ]: { category: string; description: string } } = {
+    "Enable": { category: Category.Pos, description: "Abilita Pax" },
+    "SpendingDefaultTerminal": { category: Category.Pos, description: "Terminale di default per spending" },
+    "EnableCardTransactionMono": { category: Category.Pos, description: "Abilita acquisto prodotti di monopolio" },
+    "DisableCardTransactionGv": { category: Category.Pos, description: "Inibisci acquisto Gratta e Vinci" },
+    "MincCardTransactionMono": { category: Category.Pos, description: "Importo minimo per acquisto prodotti di monopolio" },
+    "MinCardTransactionnonMono": { category: Category.Pos, description: "Importo minimo per acquisto prodotti NON di monopolio" },
+    "MaxCardTransaction": { category: Category.Pos, description: "Importo massimo per acquisto prodotti" },
+    "LockReceiptPrint": { category: Category.Pos, description: "Rimozione stampa ricevuta transazione" },
+    "SerialNumber": { category: Category.Pos, description: "Numero di serie" },
+    "TerminalId": { category: Category.Pos, description: "Id terminale" },
+    "IpcentroServizi": { category: Category.Pos, description: "Indirizzo ip centro servizi" },
+    "PortaCentroServizi": { category: Category.Pos, description: "Porta centro servizi" },
+    "IdCertificato": { category: Category.Pos, description: "Id certificato" },
+    "CodAzienda": { category: Category.Pos, description: "Codice azienda" },
+    "ProtTrasporto": { category: Category.Pos, description: "Protocollo trasporto" },
+    "IgnoreTechnicalParameter": { category: Category.Pos, description: "Ignora parametri tecnici" },
+    "BillPayment": { category: "Funzionalità Aggiuntive", description: "Abilita Bill Payment" },
+    "Spending": { category: "Funzionalità Aggiuntive", description: "Abilita spending" },
+    "IdCertificatopax": { category: Category.Pos, description: "Id certificato PAX" },
+    "TipoCertificato": { category: Category.Pos, description: "Tipo certificato" },
+    "Idpersonalizzazione": { category: Category.Pos, description: "Id personalizzazione PAX" },
+    "Personalizzazione": { category: Category.Pos, description: "Personalizzazione" },
+    "CodicePos": { category: Category.Lis, description: "Codice POS servizi LIS" },
+    "OnlineCryptedPassword": { category: Category.Lis, description: "PIN servizi LIS" },
+    "Onlineservicedisabled": { category: Category.Lis, description: "Disabilita servizi LIS" },
+    "Lisprintonerror": { category: Category.Lis, description: "Scontrino su transazione fallita LIS" },
+    "SatispayEnable": { category: Category.Satispay, description: "Proponi Satispay" },
+    "SatispayCryptedoken": { category: Category.Satispay, description: "Token" },
+    "SatispayShortToken": { category: Category.Satispay, description: "Codice di attivazione" },
+    "SatispayCryptedKeyId": { category: Category.Satispay, description: "KeyId" },
+    "BorsellinoEnabled": { category: Category.Borsellino, description: "Abilita borsellino elettronico" },
+    "BorsellinoValueLimitCentesimi": { category: Category.Borsellino, description: "Limite borsellino (€)" },
+    "AbilitaVenditore2": { category: Category.Configurazione, description: "Abilita venditore automatico 2.0- funz_venditore "},
+    "AbilitaInvioGiorno": { category: Category.Configurazione, description: "Abilita invio giornaliero" },
+    "AbilitaInvioSettimana": { category: Category.Configurazione, description: "Abilita invio settimanale" },
+    "AbilitaInvioMese": { category: Category.Configurazione, description: "Abilita invio mensile" },
+    "OrarioInvioVenditore": { category: Category.Configurazione, description: "Orario invio" },
+    "EsauritoVisibile": { category: Category.Configurazione, description: "Segnala prodotto esaurito" },
+    "TimerProdottoAlternativo": { category: Category.Configurazione, description: "Tempo prodotto alternativo (sec)" },
+    "ProponiAlternativa": { category: Category.Configurazione, description: "Proponi alternativa su prodotto esaurito - fisarmonica" },
+    "AlternativaGiocoFumo": { category: Category.Configurazione, description: "Proponi alternativa Tabacco/Gioco" },
+    "EnablePromoProximity": { category: Category.Configurazione, description: "Proponi offerte su presenza cliente - Affaregiorno" },
+    "EnableProductAudio": { category: Category.Configurazione, description: "Riproduci name prodotto sulla scelta" },
+    "EnableScontrinoRicaricabile": { category: Category.Configurazione, description: "Abilita scontrino ricaricabile" },
+    "EnableSpeechToText": { category: Category.ComandoVocale, description: "Abilita comandi vocali" },
+    "SpeechPartialResults": { category: Category.ComandoVocale, description: "Abilita scrittura in tempo reale" },
+    "Sttprossimity": { category: Category.ComandoVocale, description: "Avvia processo su sensore di prossimità" },
+    "AudioOnSpeech": { category: Category.ComandoVocale, description: "Abilita audio su sensore di prossimità" },
+    "Speechautostartsecondtime": { category: Category.ComandoVocale, description: "Abilita avvio automatico dopo risposta" },
+    "SpeechTimeoutForVideo": { category: Category.ComandoVocale, description: "Timeout riavvio video (sec)" },
+    "SpeechMaxRetrySilence": { category: Category.ComandoVocale, description: "Numero tentativi su silenzio" },
+    "SpeechMaxRetryBad": { category: Category.ComandoVocale, description: "Numero tentativi su parola non capita" },
+    "SpeechMaxRetryNotInDa": { category: Category.ComandoVocale, description: "numero tentativi su prodotto non trovato" },
+    "Speechoffsetposms": { category: Category.ComandoVocale, description: "offset positivo avvio servizio (ms)" },
+    "Speechoffsetnegms": { category: Category.ComandoVocale, description: "offset negativo avvio servizio (ms)" },
+    "SpeechMinChar": { category: Category.Configurazione, description: "numero minimo caratteri" },
+    "GestionaleCryptedToken": { category: "Gestionale", description: "token gestionale" },
+    "TipoGestionale": { category: "Gestionale", description: "marca gestionale" },
+    "VideoEnable": { category: Category.Video, description: "abilita video pubblicitari" },
+    "EnableVideoBroadcastEst": { category: Category.Video, description: "abilita visual broadcast" },
+    "EnableFloorBanner": { category: Category.Video, description: "abilita banner basso" },
+    "TempoAlarm": { category: Category.Configurazione, description: "tempo sirena allarme (sec)" },
+    "TempoAttesaResto": { category: Category.Configurazione, description: "tempo attesa resto (sec)" },
+    "DisableCarrello": { category: Category.Configurazione, description: "disabilita carrello" },
+    "NumPedate": { category: Category.Configurazione, description: "numero massimo colpi" },
+    "TempoPedate": { category: Category.Configurazione, description: "tempo filtro colpi (sec)" },
+    "SogliaAccelerometro": { category: Category.Configurazione, description: "soglia accelerometro" },
+    "Remotoscassoenabled": { category: Category.Configurazione, description: "combinatore remoto su sospetto di scasso abilitato" },
+    "TempoCombinatoreRemoto": { category: Category.Configurazione, description: "tempo filtro combinatore remoto (sec)" },
+    "DisablePhotoAlarm": { category: Category.Configurazione, description: "disabilita allarme fotocellule" },
+    "email1": { category: Category.Configurazione, description: "email 1" },
+    "email2": { category: Category.Configurazione, description: "email 2" },
+    "email3": { category: Category.Configurazione, description: "email 3" },
+    "email4": { category: Category.Configurazione, description: "email 4" },
+    "AutoPricesEnabled": { category: Category.Configurazione ,description: "abilita prezzi automatici" },
+    "Reversepanelorder": { category: Category.Configurazione, description: "inverti ordine pannelli" },
+    "NetflixSound": { category: Category.Configurazione, description: "abilita suono di benvenuto" },
+    "CheckExitProg": { category: Category.Configurazione, description: "autodiagnosi: verifica errori su chiusura porta" },
+    "AudioOnInput": { category: Category.Configurazione, description: "abilita audio su cambio stato sensori" },
+    "AudioMicroProduct": { category: Category.Configurazione ,description: "abilita colonna parlante" },
+    "Disablecarrello": { category: Category.Configurazione ,description: "disabilita proposta prodotti a fine vendita (carrello)" },
+    "TempoAperturaCassetto": { category: Category.Configurazione ,description: "tempo apertura sportello (sec)" },
+    "EbableTabaInTask": { category: Category.Configurazione, description: "abilita applicazione TabainTask" },
+    "RestoMaxCommon": {category: Category.Configurazione, description: "resto massimo comune"},
+    "TempoAcquistoCommon": {category: Category.Configurazione ,description: "tempo accettazione denaro (sec)"},
+    "TimerSceltaProdotto": {category: Category.Configurazione, description: "tempo scelta prodotto (sec)"},
+    "TimerConvalidaEta": {category: Category.Configurazione, description: "tempo convalida età (sec)"},
+    "TimerConfermaProdotto": {category: Category.Configurazione ,description: "tempo conferma prodotto (sec)"},
+    "TimerMetodiPagamento": {category: Category.Configurazione, description: "tempo scelta metodo di pagamento (sec)"},
+    "TimerComeProseguire": {category: Category.Configurazione, description: "tempo scelta come proseguire (sec)"},
+    "Delayerogazioneprodotto": {category: Category.Configurazione, description: "ritardo erogazione prodotto (sec)"},
+    "Azione1": {category: Category.Scontrino, description: "scontrino azione riga 1"},
+    "Azione2": {category: Category.Scontrino, description: "scontrino azione riga 2"},
+    "Azione3": {category: Category.Scontrino, description: "scontrino azione riga 3"},
+    "ScontrinoNote1": {category: Category.Scontrino, description: "scontrino note riga 1"},
+    "ScontrinoNote2": {category: Category.Scontrino, description: "scontrino note riga 2"},
+    "ScontrinoNote3": {category: Category.Scontrino, description: "scontrino note riga 3"},
+    "Righeavanzamentocarta": {category: Category.Scontrino, description: "righe avanzamento carta"},
+    "Tg2460jamdelay": {category: Category.Configurazione, description: "tg2460: ritardo filtro jam (sec)"},
+    "Excludetg2460antijam": {category: Category.Configurazione, description: "tg2460: esclusione movimento jam"},
+    "Tg2460recuperocartaimmediato": {category: Category.Configurazione ,description: "tg2460: recupero carta immediato"},
+    "PwdProgrammazione": {category: Category.Configurazione ,description: "password accesso programmazione"},
+    "IDImprontaSpeciale1": {category: Category.Impronte, description: "id impronta speciale 1"},
+    "IDImprontaSpeciale2": {category: Category.Impronte, description: "id impronta speciale 2"},
+    "IDImprontaSpeciale3": {category: Category.Impronte, description: "id impronta speciale 3"},
+    "IDImprontaSpeciale4": {category: Category.Impronte, description: "id impronta speciale 4"},
+    "IDImprontaspeciale5": {category: Category.Impronte, description: "id impronta speciale 5"},
+    "IDImprontaspecialeDip1": {category: Category.Impronte, description: "id impronta speciale dipendente 1"},
+    "IDimprontaspecialeDip2": {category: Category.Impronte, description: "id impronta speciale dipendente 2"},
+    "IDimprontaspecialeDip3": {category: Category.Impronte, description: "id impronta speciale dipendente 3"},
+    "IDimprontaspecialeDip4": {category: Category.Impronte, description: "id impronta speciale dipendente 4"},
+    "IDimprontaspecialeDip5": {category: Category.Impronte, description: "id impronta speciale dipendente 5"},
+    "QrImageFile" :{category: Category.Corrispettivi, description: "file immagine QR"},
+    "Cfspeciale1": {category: Category.Configurazione, description: "tessera speciale 1"},
+    "Cfspeciale2": {category: Category.Configurazione, description: "tessera speciale 2"},
+    "Cfspeciale3": {category: Category.Configurazione, description: "tessera speciale 3"},
+    "Cfspeciale4": {category: Category.Configurazione, description: "tessera speciale 4"},
+    "Cfspeciale5": {category: Category.Configurazione, description: "tessera speciale 5"},
+    "SensPresenzaEnable": {category: Category.Proximity, description: "abilita gestione sensore presenza"},
+    "ProxyFiltType": {category: Category.Proximity, description: "tipo filtro sensore presenza"},
+    "ProxyDistLimit": {category: Category.Proximity, description: "distanza presenza persona [mm]", },
+    "ProxyTimeIn": {category: Category.Proximity, description: "tempo minimo presenza persona [ms]"},
+    "ProxyTimeOut": {category: Category.Proximity, description: "tempo minimo assenza persona [ms]"},
+    "RipristinoAutomaticoSpirali": {category: Category.Configurazione, description: "ripristino automatico spirali"},
+    "TemperaturaFanOn": {category: Category.Configurazione, description: "temperatura accensione ventole [°C]"},
+    "TemperaturaFanOff": {category: Category.Configurazione, description: "temperatura spegnimento ventole [°C]"},
+    "OrarioAccensioneDeluxe": {category: Category.Configurazione, description: "orario accensione pannello [Manuale]"},
+    "OrarioSpegnimentoDeluxe": {category: Category.Configurazione, description: "orario spegnimento pannello [Manuale]"},
+    "Ignorephotomaster": {category: Category.Configurazione , description: "fotocellule assenti"},
+    "SmsAccount": {category: Category.Skebby, description: "account SMS"},
+    "SmsCryptedPassword": {category: Category.Skebby, description: "password SMS"},
+    "Bitsperled": {category: Category.Luci , description: "bits per LED"},
+    "Wrgbtype": {category: Category.Luci , description: "tipo WRGB"},
+    "Numled": {category: Category.Luci , description: "numero LED"},
+    "Piecesize": {category: Category.Luci , description: "dimensione cluster"},
+    "Brightidle": {category: Category.Luci , description: "luminosità utente non presente min. 0-max. 255"},
+    "Brightpres": {category: Category.Luci , description: "luminosità utente presente min. 0-max. 255"},
+    "Brightseg": {category: Category.Luci , description: "luminosità segmenti min. 0-max. 255"},
+    "Effsegenabled": {category: Category.Luci , description: "tipo effetto periferiche"},
+    "Effsegspeed": {category: Category.Luci , description: "velocità effetto periferiche"},
+    "Color1seg": {category: Category.Luci , description: "colore 1 segmento periferica"},
+    "Color2seg": {category: Category.Luci , description: "colore 2 segmento periferica"},
+    "Color3seg": {category: Category.Luci , description: "colore 3 segmento periferica"},
+    "Effbaseidle": {category: Category.Luci , description: "tipo effetto segmento base idle"},
+    "Effbaseidlespeed": {category: Category.Luci , description: "velocità effetto segmento base idle"},
+    "Optionbaseidle": {category: Category.Luci , description: "opzione effetto base idle"},
+    "Color1baseidle": {category: Category.Luci , description: "colore 1 segmento base idle"},
+    "Color2baseidle": {category: Category.Luci , description: "colore 2 segmento base idle"},
+    "Color3baseidle": {category: Category.Luci , description: "colore 3 segmento base idle"},
+    "Effbasepres": {category: Category.Luci , description: "tipo effetto segmento base persona presente"},
+    "Effbasepresspeed": {category: Category.Luci , description: "velocità effetto segmento base persona presente"},
+    "Color1basepres": {category: Category.Luci , description: "colore 1 segmento base persona presente"},
+    "Color2basepres": {category: Category.Luci , description: "colore 2 segmento base persona presente"},
+    "Color3basepres": {category: Category.Luci , description: "colore 3 segmento base persona presente"},
+    "Cassprelstart": {category: Category.Luci, description: "inizio cassetto prelievo"},
+    "Cassprelend": {category: Category.Luci, description: "fine cassetto prelievo"},
+    "Micstart": {category: Category.Luci, description: "inizio microfono"},
+    "Micend": {category: Category.Luci, description: "fine microfono"},
+    "Moneystart": { category: Category.Luci, description: "inizio accettazione denaro" },
+    "Moneyend": { category: Category.Luci, description: "fine accettazione denaro" },
+    "Money2start": { category: Category.Luci, description: "inizio accettazione denaro 2" },
+    "Money2end": { category: Category.Luci, description: "fine accettazione denaro 2" },
+    "Agestart": { category: Category.Luci, description: "inizio convalida età" },
+    "Ageend": { category: Category.Luci, description: "fine convalida età" },
+    "Prnstart": { category: Category.Luci, description: "inizio stampante" },
+    "Prnend": { category: Category.Luci, description: "fine stampante" },
+    "Virtmoneystart": { category: Category.Luci, description: "inizio pagamenti virtuali" },
+    "Virtmoneyend": { category: Category.Luci, description: "fine pagamenti virtuali" },
+    "Gvstart": { category: Category.Luci, description: "inizio G&V" },
+    "Gvend": { category: Category.Luci, description: "fine G&V" },
+    "Cassslavestart": { category: Category.Luci, description: "inizio cassetto slave" },
+    "Cassslaveend": { category: Category.Luci, description: "fine cassetto slave" },
+    "Sl1bitsperled": { category: Category.Luci, description: "bits per LED (Slave Tabacco 1)" },
+    "Sl1wrgbtype": { category: Category.Luci, description: "tipo WRGB (Slave Tabacco 1)" },
+    "Sl1numled": { category: Category.Luci, description: "numero LED (Slave Tabacco 1)" },
+    "Sl1piecesize": { category: Category.Luci, description: "Dimensione cluster (Slave Tabacco 1)" },
+    "Sl2bitsperled": { category: Category.Luci, description: "Bits per LED (Slave Tabacco 2)" },
+    "Sl2wrgbtype": { category: Category.Luci, description: "Tipo WRGB" },
+    "DHCPEnabled": { category: Category.Rete, description: "Abilita DHCP" },
+    "IPAddress": { category: Category.Rete, description: "Indirizzo IP per IP statico" },
+    "SubnetMask": { category: Category.Rete, description: "Maschera di sottorete per IP statico" },
+    "Telefono1" : { category: Category.Skebby, description: "Telefono 1" },
+    "Telefono2" : { category: Category.Skebby, description: "Telefono 1" },
+    "Telefono3" : { category: Category.Skebby, description: "Telefono 1" },
+    "Telefono4" : { category: Category.Skebby, description: "Telefono 1" },
+    "GatewayAddress": { category: Category.Rete, description: "Indirizzo gateway per IP statico" },
+    "DnsPrimary": { category: Category.Rete, description: "DNS primario per IP statico" },
+    "DnsSecondary": { category: Category.Rete, description: "DNS secondario per IP statico" },
+    "FtpUrl": { category: Category.Rete, description: "URL connessione FTP" },
+    "FtpPort": { category: Category.Rete, description: "Porta connessione FTP" },
+    "EnableBrightnessDayNight": { category: Category.Configurazione, description: "Abilita gestione luminosità" },
+    "LumProfiloGiorno": { category: Category.Configurazione, description: "Luminosità profilo giorno" },
+    "LumProfiloNotte": { category: Category.Configurazione, description: "Luminosità profilo notte" },
+    "Inviocorrispettivomode": { category: Category.Corrispettivi, description: "Modalità di invio corrispettivo" },
+    "AdeUniqueId": { category: Category.Corrispettivi, description: "Codice univoco" },
+    "AdeLat": { category: Category.Corrispettivi, description: "Latitudine" },
+    "AdeLon": { category: Category.Corrispettivi, description: "Longitudine" },
+    "PlanoInUse": { category: Category.Configurazione, description: "Planogramma in uso" },
+    "LookappUrl": { category: Category.Corrispettivi, description: "URL Web Services" },
+    "EnableCassettoMot": { category: Category.Configurazione, description: "Abilita cassetto motore" },
+    "RigheAvanzamentoCarta": { category: Category.Scontrino, description: "Righe avanzamento carta" },
+    "FingerEnabled": { category: Category.Configurazione, description: "Abilita impronta digitale" },
+    "Fingerproductproposedmode": { category: Category.Configurazione ,description: "Modalità di proposta prodotto con impronta digitale" },
+    "Matricola": { category: Category.Configurazione, description: "Matricola distributore" },
+    "MachineModel": { category: Category.Configurazione, description: "Modello distributore" },
+    "Simularicariche": { category: Category.Configurazione ,description: "Simula servizi LIS" },
+    "Devmotorparam.tempolampadaerogazione": { category: Category.Soglie, description: "Tempo lampada erogazione [sec]" },
+    "Devmotorparam.sogliai0ma": { category: Category.Soglie, description: "Soglia corrente I0 [mA]" },
+    "Devmotorparam.sogliat0ms": { category: Category.Soglie, description: "Tempo soglia 0 [ms]" },
+    "Devmotorparam.sogliai1ma": { category: Category.Soglie, description: "Soglia corrente I1 [mA]" },
+    "Devmotorparam.sogliat1ms": { category: Category.Soglie, description: "Tempo soglia 1 [ms]" },
+    "Devmotorparam.sogliai2ma": { category: Category.Soglie, description: "Soglia corrente I2 [mA]" },
+    "Devmotorparam.sogliat2ms": { category: Category.Soglie, description: "Tempo soglia 2 [ms]" },
+    "Devmotorparam.sogliai3ma": { category: Category.Soglie, description: "Soglia corrente I3 [mA]" },
+    "Devmotorparam.tempociclo": { category: Category.Soglie, description: "Tempo ciclo massimo [sec]" },
+    "Devmotorparam.iminimama": { category: Category.Soglie, description: "Soglia corrente fermo [mA]" },
+    "Spiraliinterne": { category: Category.Soglie, description: "Spirali interne" },
+    "Devmotorparam.sogliai0maspiint": { category: Category.Soglie, description: "Soglia corrente I0 [mA] per Spirali Interne" },
+    "Devmotorparam.sogliat0msspiint": { category: Category.Soglie, description: "Tempo soglia 0 [ms] per Spirali Interne" },
+    "Devmotorparam.sogliai1maspiint": { category: Category.Soglie, description: "Soglia corrente I1 [mA] per Spirali Interne" },
+    "Devmotorparam.sogliat1msspiint": { category: Category.Soglie, description: "Tempo soglia 1 [ms] per Spirali Interne" },
+    "Devmotorparam.sogliai2maspiint": { category: Category.Soglie, description: "Soglia corrente I2 [mA] per Spirali Interne" },
+    "Devmotorparam.tempociclospiint": { category: Category.Soglie, description: "Tempo ciclo massimo [sec] per Spirali Interne" },
+    "Devmotorparam.iminimamaspiint": { category: Category.Soglie, description: "Soglia corrente fermo [mA] per Spirali Interne" },
+    "Devfrigoparam.frigomancante": { category: Category.Frigo, description: "Slave disattiva frigo" },
+    "Adimacparam.temperaturalavoro": { category: Category.Frigo, description: "Adimacparam Temperatura lavoro [°C]" },
+    "Adimacparam.isteresi": { category: Category.Frigo, description: "Adimacparam Isteresi [°C]" },
+    "Adimacparam.periodosbrinamento": { category: Category.Frigo, description: "Adimacparam Periodo sbrinamento [h]" },
+    "Adimacparam.duratasbrinamento": { category: Category.Frigo, description: "Adimacparam Durata sbrinamento [min]" },
+    "Sensneggv": { category: Category.Frigo, description: "Logica fine corsa Gv" },
+    "SogliaI0mAGv": { category: Category.Gv, description: "Soglia corrente I0 [mA] Gv" },
+    "SogliaT0mSGv": { category: Category.Gv, description: "Tempo soglia 0 [ms] Gv" },
+    "SogliaI1mAGv": { category: Category.Gv, description: "Soglia corrente I1 [mA] Gv" },
+    "EnergySaving": { category: Category.Configurazione ,description: "Abilita risparmio energetico" },
+    "Defaultvendlanguage": { category: Category.Configurazione, description: "Lingua base di vendita" },
+    "LogistaAbil": { category: Category.Corrispettivi, description: "Abilita Logista" },
+    "fingerproductproposemode": { category: Category.Impronte, description: "Modalità di proposta prodotto con impronta digitale" },
+    "Intestazione1": { category: Category.Scontrino, description: "Scontrino intestazione rigo1" },
+    "Intestazione2": { category: Category.Scontrino, description: "Scontrino intestazione rigo2" },
+    "Intestazione3": { category: Category.Scontrino, description: "Scontrino intestazione rigo3" },
+    "Isfiera": { category: Category.Configurazione ,description: "Distributore fiera" },
+    "OrarioFineGiorno": { category: Category.Configurazione ,description: "Orario fine profilo giorno" },
+    "OrarioInizioGiorno": { category: Category.Configurazione, description: "Orario inizio profilo giorno" },
+    "PolliciDisplay": { category: Category.Configurazione, description: "Dimensione display" },
+    "Reject05": { category: Category.Configurazione, description: "rifiuto 5 centesimi" },
+    "Reject10": { category: Category.Configurazione, description: "rifiuto 10 centesimi" },
+    "Reject20": { category: Category.Configurazione, description: "rifiuto 20 centesimi" },
+    "Reject50": { category: Category.Configurazione ,description: "rifiuto 50 centesimi" },
+    "Reject100": { category: Category.Configurazione ,description: "rifiuto 1 euro" },
+    "Reject200": { category: Category.Configurazione ,description: "rifiuto 2 euro" },
+    "Rejectb5": { category: Category.Configurazione ,description: "rifiuto 5 euro" },
+    "Rejectb10": { category: Category.Configurazione ,description: "rifiuto 10 euro" },
+    "Rejectb20": { category: Category.Configurazione, description: "rifiuto 20 euro" },
+    "Rejectb50": { category: Category.Configurazione ,description: "rifiuto 50 euro" },
+    "NumHopper": { category: Category.Configurazione ,description: "numero hopper" },
+    "OnlinieServiceDisabled": { category: Category.Configurazione ,description: "servizio online disabilitato" },
+    "LisPrintOnError": { category: Category.Configurazione ,description: "stampa LIS su errore" },
+    "SogliaI0mA": { category: Category.Soglie, description: "soglia corrente I0 [mA]" },
+    "SogliaI1mA": { category: Category.Soglie, description: "soglia corrente I1 [mA]" },
+    "SogliaI2mA": { category: Category.Soglie, description: "soglia corrente I2 [mA]" },
+    "TempoCiclo": { category: Category.Soglie, description: "tempo ciclo massimo [sec]" },
+    "IMinimamA": { category: Category.Soglie, description: "soglia corrente fermo [mA]" },
+    "SogliaT1ms": { category: Category.Soglie, description: "tempo soglia 1 [ms]" },
+    "SogliaI0mASpiInt": { category: Category.Soglie, description: "soglia corrente I0 [mA] per Spirali Interne" },
+    "SogliaT1mSSpiInt": { category: Category.Soglie, description: "tempo soglia 1 [ms] per Spirali Interne" },
+    "SogliaT0mSSpiInt": { category: Category.Soglie, description: "tempo soglia 0 [ms] per Spirali Interne" },
+    "SogliaT0mS": { category: Category.Soglie, description: "tempo soglia 0 [ms] per Spirali Interne" },
+    "SogliaI1mASpiInt": { category: Category.Soglie, description: "soglia corrente I1 [mA] per Spirali Interne" },
+    "SogliaI1mASpiExt": { category: Category.Soglie, description: "soglia corrente I1 [mA] per Spirali Esterne" },
+    "SogliaI0mASpiExt": { category: Category.Soglie, description: "soglia corrente I0 [mA] per Spirali Esterne" },
+    "TempoCicloSpiInt": { category: Category.Soglie, description: "tempo ciclo massimo [sec] per Spirali Interne" },
+    "IMinimamASpiInt": { category: Category.Soglie, description: "soglia corrente fermo [mA] per Spirali Interne" },
+    "SogliaT0mSSpiExt": { category: Category.Soglie, description: "tempo soglia 0 [ms] per Spirali Esterne" },
+    "SogliaT1mSSpiExt": { category: Category.Soglie, description: "tempo soglia 1 [ms] per Spirali Esterne" },
+    "TempoCicloSpiExt": { category: Category.Soglie, description: "tempo ciclo massimo [sec] per Spirali Esterne" },
+    "IMinimamASpiExt": { category: Category.Soglie, description: "soglia corrente fermo [mA] per Spirali Esterne" },
+    "TemperaturaFrigoA": { category: Category.Frigo, description: "temperatura frigo A [°C]" },
+    "TemperaturaFrigoB": { category: Category.Frigo, description: "temperatura frigo B [°C]" },
+    "IsteresiFrigoA": { category: Category.Frigo, description: "isteresi frigo A [°C]" },
+    "IsteresiFrigoB": { category: Category.Frigo, description: "isteresi frigo B [°C]" },
+    "FrigoPollTime": { category: Category.Frigo, description: "tempo campionamento diagnostica frigo [min]" },
+    "Video0": { category: Category.Video, description: "video 0" },
+    "Video1": { category: Category.Video, description: "video 1" },
+    "Video2": { category: Category.Video, description: "video 2" },
+    "Video3": { category: Category.Video, description: "video 3" },
+    "Video4": { category: Category.Video, description: "video 4" },
+    "Video5": { category: Category.Video, description: "video 5" },
+    "Video6": { category: Category.Video, description: "video 6" },
+    "VolVideo": { category: Category.Video, description: "volume video" },
+    "FrigoAlarmAHoldoffTime": { category: Category.Frigo, description: "tempo limite allarme frigo [min]" },
+    "FrigoAlarmBHoldoffTime": { category: Category.Frigo, description: "tempo limite allarme frigo B [min]" },
+    "DeltaAlarmFrigoA": { category: Category.Frigo, description: "limite allarme frigo A [°C]" },
+    "DeltaAlarmFrigoB": { category: Category.Frigo, description: "limite allarme frigo B [°C]" },
+    "WebcamModel": { category: "Webcam", description: "modello webcam" },
+    "Primaprodotto": { category: Category.Configurazione, description: "primo prodotto" },
+    "SbloccoRRWithMotor": { category: Category.Configurazione ,description: "sblocco RRW con motore" },
+    "CreditoMaxCommon": { category: Category.Configurazione ,description: "credito massimo comune" },
+    "TitoloSuCategoria": { category: Category.Configurazione, description: "titolo su categoria" },
+    "SatispayCryptedToken": { category: Category.Satispay, description: "token Satispay" },
+    "EnableAudioRepeat": { category: Category.Audio, description: "abilita ripetizione audio" },
+    "TimeAudioRepeat": { category: Category.Audio, description: "tempo ripetizione audio [sec]" },
+    "LabelBlinking": { category: Category.Configurazione, description: "lampeggio etichetta" },
+    "NetPoolEnhanced": { category: Category.Rete, description: "pooling migliorato" },
+    "AmFtpServerName": { category: Category.Rete, description: "nome server FTP" },
+    "AmFtpPortNumber": { category: Category.Rete, description: "porta FTP" },
+    "xBorsellinoValueLimit": { category: Category.Borsellino, description: "limite valore borsellino" },
+    "VolProfiloNotte": { category: Category.Audio, description: "volume profilo notte" },
+    "VolProfiloGiorno": { category: Category.Audio, description: "volume profilo giorno" },
+    "SensTempEnable": { category: Category.Configurazione, description: "abilita sensore temperatura" },
+    "sono key SensLuceEnable": { category: Category.Configurazione, description: "abilita sensore luce" },
+    "TimeoutVideoStart": { category: Category.Video, description: "timeout avvio video [sec]" },
+    "ContNight": { category: Category.Configurazione ,description: "contatore notte" },
+    "LumNight": { category: Category.Configurazione, description: "luminosità notte" },
+    "ContDay": { category: Category.Configurazione, description: "contatore giorno" },
+    "LumDay": { category: Category.Configurazione ,description: "luminosità giorno" },
+    "TempoLampadaErogazione": { category: Category.Configurazione, description: "tempo lampada erogazione [sec]" },
+    "OnlineServiceDisabled": { category: Category.Configurazione ,description: "servizio online disabilitato" },
+    "SensLuceEnable": { category: Category.Configurazione, description: "abilita sensore luce" },
+    "BetPassionEnable": { category:Category.BetPassion, description: "Abilita BetPassion" },
+    "BetPassionUsername": { category:Category.BetPassion, description: "BetPassion Username" },
+    "BetPassionCryptedPin": { category:Category.BetPassion, description: "BetPassion Pin" },
+    "BetPassionSatispayEnable": { category:Category.BetPassion, description: "Abilita pagamenti con Satispay" },
+    "BetPassionPosEnable": { category:Category.BetPassion, description: "Abilita pagamenti con Carte/Bancomat" },
+    "BetPassionMaxContantiValue": { category:Category.BetPassion, description: "BetPassion valore massimo in contanti" },
+    "BetPassionMaxVirtualValue": { category:Category.BetPassion, description: "BetPassion valore massimo in moneta virtuale" },
+    "MrPayCryptedPassword": { category: "MrPay", description: "MrPay Password" },
+    "MrPayEnableContiGioco": { category: "MrPay", description: "Abilita Conti Gioco" },
+    "MrPayEnableCarteGioco": { category: "MrPay", description: "Abilita Carte Gioco" },
+    "MrPayEnableGiftCrypto": { category: "MrPay", description: "Abilita Gift Crypto" },
+    "MrPayEnableVendoCrypto": { category: "MrPay", description: "Abilita Vendo Crypto" },
+    "MrPayUserId": { category: "MrPay", description: "MrPay UserId" },
+    "MrPayMaxTaglioValue": { category: "MrPay", description: "Conti/carte gioco taglio massimo" },
+    "MrPayMaxTaglioValueVendoCrypto": { category: "MrPay", description: "Vendo Crypto taglio massimo" },
+    "MrPayMinCartaValue": { category: "MrPay", description: "Conti/carte gioco taglio minimo con carta" },
+    "MrPayMinCartaValueVendoCrypto": { category: "MrPay", description: "Vendo Crypto taglio minimo con carta" },
+    "MrPayWsPassphrase": { category: "MrPay", description: "MrPay Passphrase" },
+    "MrPayWsSuffix": { category: "MrPay", description: "MrPay Suffix" },
+    "EffettoLuceDa": { category: Category.Luci, description: "Effetto luce da" },
+    "EffettoLuceDaSpeed": { category: Category.Luci, description: "Velocità effetto luce da" },
+    "SttProssimity": { category: Category.Configurazione, description: "Stato prossimità" },
+    "SensNegGv": { category: Category.Gv, description: "Sensore negativo Gv" },
+    "SpeechAutoStartSecondTime": { category: Category.Audio, description: "Speech auto start second time" },
+    "Gamma": { category: Category.Configurazione, description: "Gamma" },
+    "Theme": { category: Category.Configurazione, description: "Tema" },
+    "ProponiBorsellinoIfNonDecidibile": { category: Category.Borsellino, description: "Proponi borsellino se non decidibile" },
+    "CassMsBuioStartup": { category: Category.Luci, description: "Tempo buio corrente startup [ms]" },
+    "CassMsBuioRuntime": { category: Category.Luci, description: "Tempo buio corrente runtime [ms]" },
+    "CassLimitCurrRuntime": { category: Category.Luci, description: "Limite corrente runtime [mA]" },
+    "PesoFiltroIIR": { category: Category.Configurazione, description: "Numero massimo Pedate IIR" },
+    "SpeechOffsetNegMs": { category: Category.Audio, description: "Offset negativo avvio servizio [ms]" },
+    "TempoCampionamento": { category: Category.Audio, description: "Tempo campionamento [sec]" },
+    "funz_antiscasso": { category: Category.VTE, description: "Abilita antiscasso" },
+    "funz_autodiagnosi": { category: Category.VTE, description:"Autodiagnosi (verifica errori su chiusura porte)" },
+    "funz_scontrinoric": { category: Category.VTE, description:"Abilita scontrino ricaricabile"},
+    "funz_colparlante": { category: Category.VTE, description:"Abilita colonna parlante"},
+    "funz_prelievomot": { category: Category.VTE, description:"Abilita prelievo motorizzato "},
+    "funz_prelievoweb": { category: Category.VTE, description:" "},
+    "funz_venditore": { category: Category.VTE, description:"Abilita venditore automatico 2.0"},
+    "funz_borsellino": { category: Category.VTE, description:"Abilita borsellino elettronico"},
+    "funz_magazzino": { category: Category.VTE, description:" "},
+    "funz_doppiaetic": { category: Category.VTE, description:"Abilita doppia etichetta "},
+     "funz_fisarmonica": { category: Category.VTE, description:"Proponi alternativa su prodotto esaurito"},
+    "funz_vocal": { category: Category.VTE, description:"Abilita controllo vocale "},
+    "funz_tabaintask": { category: Category.VTE, description:"Abilita tabaintask "},
+    "funz_satispay": { category: Category.VTE, description:"Abilita Satispay"},
+    "funz_affaregiorno": { category: Category.VTE, description:"Proponi offerte su presenza cliente"},
+    "funz_scansia": { category: Category.VTE, description:" "},
+     "funz_predittiva": { category: Category.VTE, description:" "},
+    "funz_broadcast": { category: Category.VTE, description:"Abilita visual broadcast"},
+    "funz_rgbcontest": { category: Category.VTE, description:"Abilita RGB contestuale"},
+    "funz_verc19": { category: Category.VTE, description:" "},
+     "funz_contigioco": { category: Category.VTE, description:" Abilita conti Gioco"},
+    "funz_ccard": { category: Category.VTE, description:"Abilita carte gioco"},
+    "funz_vcrypto": { category: Category.VTE, description:"Abilita Vendo Crypto"},
+    "funz_cryptomerch": { category: Category.VTE, description:"Abilita CryptoMerchant"},
+    "funz_gcrypto": { category: Category.VTE, description:"Abilita Gift Crypto"},
+    "funz_broadcast_est": { category: Category.VTE, description:"Abilita visual broadcast"},
+    "funz_broadcast_est_id": { category: Category.VTE, description:" "},
+    "funz_erog_time": { category: Category.VTE, description:" "},
+    "bc_pv_class": { category: Category.VTE, description:" "},
+    "funz_energy": { category: Category.VTE, description:"Abilita risparmio energetico"},
+    "bc_pmijakalalead": { category: Category.VTE, description:"Abilita Banner philip morris "},
+    "bc_pmibannertext": { category: Category.VTE, description:"Abilita Banner pholip morris  "},
+    "funz_floor_banner": { category: Category.VTE, description:"Abilita banner basso "},
 
-const modCorrispettivi = {
-    0: { name: "Automatico" },
-    1: { name: "Manuale" },
-}
-
-const bpParamMappingNew = {
-    "BetPassionEnable": { name: "Abilita BetPassion" },
-    "BetPassionUsername": { name: "BetPassion Username" },
-    "BetPassionCryptedPin": { name: "BetPassion Pin" },
-    "BetPassionSatispayEnable": { name: "Abilita pagamenti con Satispay" },
-    "BetPassionPosEnable": { name: "Abilita pagamenti con Carte/Bancomat" },
-    "BetPassionMaxContantiValue": { name: "BetPassion valore massimo in contanti" },
-    "BetPassionMaxVirtualValue": { name: "BetPassion valore massimo in moneta virtuale" },
 };
-const mpParam={
-    "MrPayCryptedPassword": { name: "MrPay Password" },
-    "MrPayEnableContiGioco": { name: "Abilita Conti Gioco" },
-    "MrPayEnableCarteGioco": { name: "Abilita Carte Gioco" },
-    "MrPayEnableGiftCrypto": { name: "Abilita Gift Crypto"},
-    "MrPayEnableVendoCrypto": { name: "Abilita Vendo Crypto"},
-    "MrPayUserId": { name: "MrPay UserId" },
-    "MrPayMaxTaglioValue": { name: "Conti/carte gioco taglio massimo" },
-    "MrPayMaxTaglioValueVendoCrypto": { name: "Vendo Crypto taglio massimo" },
-    "MrPayMinCartaValue": { name: "Conti/carte gioco taglio minimo con carta" },
-    "MrPayMinCartaValueVendoCrypto": { name: "Vendo Crypto taglio minimo con carta" },
-    "MrPayWsPassphrase": { name: "MrPay Passphrase" },
-    "MrPayWsSuffix": { name: "MrPay Suffix" },
+
+export function mapErogDevLayout(obj: any) {
+    return{
+        category: Category.Motori,
+        tipo: obj.ErogDevType || obj.ErogDevType,
+        ingresso: obj.InOutNumBase0 || "0",
+        codiceProdotto: obj.ProductCode || "undefined",
+        capacita: obj.TErogMotori?.Capacity || obj.Capacity || "0",
+    }
 }
 
-const panelBehaviour = {
-    0: { name: "Automatico" },
-    1: { name: "Manuale" },
+export function mapTsParam(obj: any) {
+    return {
+        category: Category.Pannelli,
+        name: obj.Name,
+        visibile: obj.Visible || "false",
+        numeroMassimoOggetti: obj.NumMaxItem || undefined,
+        immagine: obj.PanelImageName,
+        online: obj.Online || "false",
+    }
 }
 
-const prioErog = {
-    0: { name: "Rendiresto" },
-    1: { name: "Hopper" },
+export function mapHopperParam(obj: any) {
+    return {
+        category: Category.Hopper,
+        numero: obj.Name ,
+        ingresso: obj.InOutNumBase0 || "0",
+        valore: obj.CoinValue,
+        canaleSmistamento: obj.CoinSorter,
+    }
 }
 
-const peoplegoneonspeech = {
-    0: { name: "Nessuna azione" },
-    1: { name: "Va nei pannelli" },
+export function mapFingerInfo(obj: any) {
+    return {
+        category: Category.Impronte,
+        ID: obj.ID || obj.FingerID,
+        qualita: obj.EnrolledQuality,
+        cf: obj.PeopleID,
+    }
 }
 
-const photolevel = {
-    0: {name: "Default"},
-    1: {name: "Controllo solo spirali"},
-    2: {name:"Nessun controllo (disabilitate)"},
-}*/
-// Definizioni di tipi e interfacce
+export function mapMoneyLineAcceptParam(obj: any) {
 
-interface DateTimeObject {
-    value: number | string;
-    scale: 'DAYS' | 'HOURS' | 'MINUTES' | 'SECONDS' | 'MILLISECONDS';
+    return {
+        category: Category.Sicurezza,
+        valoreTaglio: obj.LineValue,
+        numeroPezziPrimaBlocco: obj.PcsFilterLimit,
+        tempoDisabilitazione: obj.TimeDisable,
+        tempoCampionatura: obj.WindowFilter,
+        abilitaGestioneTempo: obj.TimeFeatureEnabled,
+    }
 }
 
-interface FileInfo {
-    datetime: Date;
-    name: string;
-    subcategory: string;
+export function mapVolumeDays(obj: any) {
+    // console.log(obj);
+    if (!obj.Day)
+        return "";
+    return {
+        category: Category.Audio,
+        giorno: obj.Day,
+        volumeGiorno: obj.VolProfiloGiorno ,
+        volumeNotte: obj.VolProfiloNotte,
+    }
 }
 
-interface Translation {
-    category: string;
-    name: string;
+export function mapDeviceParam(obj: any) {
+
+    return {
+        category: Category.DeviceList,
+        tipoDispositivo: obj.DeviceType,
+        Qt: obj.Molteplicity,
+        Seriale: obj.DevSerialID || "non letto",
+        Canale: obj.Channel || "non letto",
+    }
 }
 
-interface EnumParam {
-    [key: string]: Translation;
+export function mapPosParam(obj: any) {
+    return {
+        category: Category.Pos,
+        tipo: obj.DeviceType,
+        seriale: obj.DevSerialID || "non letto",
+        abilitato: obj.Enable || obj.DevIngenico?.IngenicoParam?.Enable || "undefined",
+        ip: obj.DevIngenico?.IngenicoParam?.IpAddress || "undefined",
+        dhcpEnable: obj.DevIngenico?.IngenicoParam?.DhcpEnabled || "undefined",
+        bloccoRicevuta: obj.LockReceiptPrint || obj.DevIngenico?.IngenicoParam?.LockReceiptPtrint || "undefined",
+        porta: obj.DevIngenico?.IngenicoParam?.Port || "undefined",
+        numeroSerie: obj.SerialNumber || "undefined",
+    }
 }
 
-interface ParamMapping {
-    [key: string]: {
-        name: string;
+export function mapProfili(obj: any) {
+    return {
+        category: Category.Pos,
+        profilo: obj.TerminalName || "undefined",
+        codiceAzienda: obj.CodAzienda || "undefined",
+        idCertificato: obj.IdCertificato || "undefined",
+        idCertificatoPax: obj.IdCertificatoPax || "undefined",
+        idPersonalizzazione: obj.IdPersonalizzazione || "undefined",
+        idCentroServizi: obj.IpCentroServizi || "undefined",
+        personalizzazione: obj.Personalizzazione || "undefined",
+        portaCentroServizi: obj.PortaCentroServizi || "undefined",
+        terminalId: obj.TerminalId || "undefined",
+        bancaCliente: obj.TerminalName || "undefined",
+        tipoCertificato: obj.TipoCertificato || "undefined",
+        spending: obj.Spending || "undefined",
+    }
+}
+
+export function mapVTEContractPackages(obj: any) {
+    let traduction;
+    if (obj.name && mappingDescription[obj.name]) {
+        traduction = mappingDescription[obj.name].description || obj.name || "undefined";
+    } else {
+        traduction = obj.name || "undefined";
+    }
+    return {
+        category: Category.VTE,
+        description: traduction,
+        datainizio: obj.datastart || "undefined",
+        datafine: obj.dataend || "undefined",
     };
 }
 
-// Esempio di mappature per bpParam, mpParam, etc.
-const bpParamMapping: ParamMapping = {};
-const mpParam: ParamMapping = {};
-const peoplegoneonspeech: Record<string, string> = {};
-const photolevel: Record<string, { name: string }> = {};
-
-// Funzione per convertire l'offset in una data/ora
-function convertToDateTime(dateTimeObj: DateTimeObject): Date | string {
-    const offset = typeof dateTimeObj.value === 'number' ? dateTimeObj.value : parseFloat(dateTimeObj.value);
-    let scaleMultiplier = 1;
-
-    if (offset === -1) return "Orario non settato";
-
-    // Determina il moltiplicatore in base alla scala
-    switch (dateTimeObj.scale) {
-        case "DAYS":
-            scaleMultiplier = 24; // 24 ore in un giorno
-            break;
-        case "HOURS":
-            scaleMultiplier = 1;
-            break;
-        case "MINUTES":
-            scaleMultiplier = 1 / 60; // 60 minuti in un'ora
-            break;
-        case "SECONDS":
-            scaleMultiplier = 1 / 3600; // 3600 secondi in un'ora
-            break;
-        case "MILLISECONDS":
-            scaleMultiplier = 1 / 3600000; // 3600000 millisecondi in un'ora
-            break;
-        default:
-            console.error("Scala non gestita");
-            return '';
+export function mapFavorite(obj: any) {
+    return {
+        category: Category.Favoriti,
+        nome: obj.ItemTitle,
+        description: obj.ItemSubtitle,
     }
-
-    // Calcola l'offset in millisecondi e crea la data/ora
-    const millisecondsOffset = offset * scaleMultiplier * 3600000; // 3600000 millisecondi in un'ora
-    const epochTime = Date.parse("1970-01-01T00:00:00Z"); // Tempo di riferimento (Epoch Unix)
-    const resultDate = new Date(epochTime + millisecondsOffset);
-    return resultDate;
 }
 
-// Funzione per analizzare il timestamp dei video
-function parseTimeStampVideo(fileStrings: string[]): FileInfo[] {
-    return fileStrings.map(fileString => {
-        const filenameParts = fileString.split('-');
-        const datetimeString = filenameParts.slice(0, 3).join('-');
-        const year = parseInt(datetimeString.slice(0, 4), 10);
-        const month = parseInt(datetimeString.slice(4, 6), 10);
-        const day = parseInt(datetimeString.slice(6, 8), 10);
-        const hour = parseInt(filenameParts[3], 10);
-        const minutes = parseInt(filenameParts[4], 10);
-        const seconds = parseInt(filenameParts[5], 10);
-        const datetime = new Date(Date.UTC(year, month - 1, day, hour, minutes, seconds));
-        return {
-            datetime,
-            name: filenameParts[6],
-            subcategory: "videoweek"
-        };
-    });
+export function mapPlanoGrammi(obj: any) {
+    return {
+        category: Category.Planogrammi,
+        "posizione a video": obj.PosIndexBase1 || "undefined",
+        prodotto: obj.Code || "vuoto",
+        "posizione fisica": obj.ColumnNameForEdit || "undefined",
+    }
 }
 
-// Funzione per tradurre un valore singolo
-const translateSingleValue = (name: string, value: any, category: string) => ({
-    category,
-    name,
-    value,
-});
+export function mapMotor(obj: any) {
+    console.log(obj);
+    return {
+        category: Category.Motori,
+        Nome: obj.Name || "undefined",
+        Tipo: obj.erogType || "undefined",
+        ingresso: obj.InOutNumBase0 || "0",
+        capacita: obj.TErogMotori?.Capacity || obj.Capacity || "0",
+        codiceProdotto: obj.ProductCode || "undefined",
+    }
+}
 
-// Funzione per tradurre un oggetto
-const translateObject = (paramValues: any, mapping: ParamMapping, category: string) => {
-    const values = Object.keys(paramValues).map(key => {
-        const value = paramValues[key];
-        const translatedValues = mapping[key];
-        if (translatedValues) {
-            return {
-                name: translatedValues.name,
-                value,
-            };
-        }
-        return null;
-    }).filter(value => value !== null);
-    return { category, value: values };
+export function mapFridgeParam(obj: any, number: string){
+    return {
+        category: Category.Frigo,
+        "Frigo Nr": number || "0",
+        "Spirali Qt": obj.NumSpirali || "undefined",
+        "Delta Allarme Condensatore C": obj.DeltaTemperaturaAllarmeCondensatore || "undefined",
+        "Temp Frigo C": obj.TemperaturaLavoro || "undefined",
+        "Isteresi": obj.Isteresi || "undefined",
+        "Sbrinamento [min]": obj.PeriodoSbrinamento || "undefined",
+        "Durata Sbrinamento [min]": obj.DurataSbrinamento || "undefined",
+        "Allarme Condensatore C": obj.TemperaturaAllarmeCondensatore || "undefined",
+        "Warning Condensatore C": obj.TemperaturaWarningCondensatore || "undefined",
+        "Campionamento Diagnostica [sec]": obj.FrigoPollTime || "undefined",
+        "Limite Allarme [sec]": obj.FrigoAlarmHoldoffTime || "undefined",
+        "Delta AllarmeFrigo [sec]": obj.DeltaAlarm || "undefined",
+        "Soglia Corrente I0 [mA]": obj.SogliaI0mA || "undefined",
+        "Soglia [ms]": obj.SogliaT0mS || "undefined",
+        "Soglia CorrenteI1 [mA]": obj.SogliaI1mA || "undefined",
+        "Ciclo Massimo [sec]": obj.TempoCiclo || "undefined",
+        "Soglia fermo corrente [mA]": obj.IMinimamA || "undefined",
+    }
+}
+
+export const mapPhotolevel: { [value: number]: { category: string; description: string, value: string } } = {
+    0: { category: Category.Configurazione, description:"Livello fotocellule", value: "Default" },
+    1: { category: Category.Configurazione, description:"Livello fotocellule",value: "Controllo solo spirali" },
+    2: { category: Category.Configurazione, description:"Livello fotocellule",value: "Nessun controllo (disabilitate)" },
 };
-
-// Funzione principale di traduzione dei parametri
-function translateParam(inputObj: any): any {
-    const key = Object.keys(inputObj)[0];
-    const paramValue = inputObj[key];
-    const translation = EnumParam[key];
-    const isTranslation = translation !== undefined;
-
-    switch (key.toLowerCase()) {
-        case "bpparam":
-            return translateObject(paramValue, bpParamMapping, "BetPassion");
-        case "intmotlayout":
-            return translateSingleValue("Motori", paramValue, "Motori");
-        case "erogdevlayout":
-            return translateSingleValue("Motori", paramValue, "Motori");
-        case "tsparam":
-            return translateSingleValue("Pannelli", paramValue, "Pannelli");
-        case "hopperparam":
-            return translateSingleValue("Hopper", paramValue, "Hopper");
-        case "fingerinfo":
-            return translateSingleValue("Impronte", paramValue, "Impronte");
-        case "moneylineacceptparam":
-            return translateSingleValue("Sicurezza Speciale", paramValue, "Sicurezza Speciale");
-        case "volumedays":
-            return translateSingleValue("Volume", paramValue, "Volume");
-        case "orarioiniziogiorno":
-            return translateSingleValue("Profilo Inizio Giorno", convertToDateTime(paramValue), "Volume");
-        case "orariofinegiorno":
-            return translateSingleValue("Profilo Fine Giorno", convertToDateTime(paramValue), "Volume");
-        case "videoweek":
-            return translateSingleValue("VideoWeek", parseTimeStampVideo(paramValue), "Video");
-        case "device":
-            return translateSingleValue("Device", paramValue, "Device List");
-        case "mpparam":
-            return translateObject(paramValue, mpParam, "MrPay");
-        case "orarioaccensionedeluxe":
-            return translateSingleValue("Orario Accensione Deluxe", convertToDateTime(paramValue), translation?.category ?? "Unknown");
-        case "orariospegnimentodeluxe":
-            return translateSingleValue("Orario Spegnimento Deluxe", convertToDateTime(paramValue), translation?.category ?? "Unknown");
-        case "orarioinviovenditore":
-            return translateSingleValue("Orario Invio Venditore", convertToDateTime(paramValue), translation?.category ?? "Unknown");
-        case "favorites":
-            return translateSingleValue("Favorites", paramValue, "Favorites");
-        case "peoplegoneonspeech":
-            return translateSingleValue("Comando Vocale", peoplegoneonspeech[paramValue], "Comando Vocale");
-        case "vtecontractpackages":
-            return translateSingleValue("VTE", paramValue.VTEContractPackages, "VTE");
-        case "photolevel":
-            return translateSingleValue("Fotocellule", photolevel[paramValue]?.name ?? "Unknown", "Configurazione");
-        case "devicetype":
-            if (paramValue === "IngenicoIUC160b")
-                return translateSingleValue("Ingenico Single IUC160b", inputObj.DevIngenico?.IngenicoParam, "Ingenico Single IUC160b");
-            if (paramValue === "IngenicoIUP250")
-                return translateSingleValue("Ingenico IUP250", inputObj.DevIngenico?.IngenicoParam, "Ingenico IUP250");
-            if (paramValue === "Am_Frigo")
-                return translateSingleValue("Frigo", inputObj.AmMocoFrigo?.FrigoParamList, "Frigo");
-            if (paramValue === "PaxIM20")
-                return translateSingleValue("Pax", inputObj.DevPax?.PaxParam, "Pax");
-            break;
-        default:
-            if (!isTranslation) {
-                return translateSingleValue(key, paramValue, "Undefined");
-            }
-            return translateSingleValue(translation.name, paramValue, translation.category);
-    }
-}
-
-export { translateParam, EnumParam };
-

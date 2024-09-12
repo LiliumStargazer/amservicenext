@@ -3,6 +3,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Button from "@/features/home/components/Button";
 import Input from "@/features/home/components/Input";
+import usePasswordLevels from "@/features/home/hooks/usePasswordLevels";
 
 interface CardProps {
 
@@ -10,52 +11,14 @@ interface CardProps {
     description: string;
     icon?: object;
     imageSrc?: object;
-    placeholder?: string;
+    id: string;
     url?: string;
-    cardKey?: string;
     scale?: number;
     color?: string;
-    router?: any;
     isInput?: boolean;
-    onButtonClick?: () => void;
-    passwordLevels?: {
-        level1: string;
-        level2: string;
-        level3: string;
-        level4: string;
-        setPassword: (password: string) => void;
-        password: string;
-    };
-    onInputChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onKeyDown?: any;
-    event?: any;
-    value?: string;
-    id?: string;
     isButtonEnabled?: boolean;
 }
 
-function createButtonProps(router: object | undefined, id: string | undefined, onButtonClick: (() => void) | undefined ,
-    isButtonEnabled: boolean | undefined) {
-
-    const buttonProps: any = {};
-    buttonProps.isButtonEnabled = !!isButtonEnabled;
-    if (router) buttonProps.router = router;
-    if (id) buttonProps.id = id;
-    if (onButtonClick) buttonProps.onClick = onButtonClick;
-    return buttonProps;
-}
-
-function createInputProps(placeholder: string | undefined, id: string | undefined,
-                          onInputChange: ((event: React.ChangeEvent<HTMLInputElement>) => void) | undefined,
-                          isInput: boolean | undefined, onKeyDown: any | undefined) {
-    const inputProps: any = {};
-    if (placeholder) inputProps.placeholder = placeholder;
-    if (id) inputProps.id = id;
-    if (onInputChange) inputProps.onChange = onInputChange;
-    inputProps.isInput = !!isInput;
-    if (onKeyDown) inputProps.onKeyDown = onKeyDown;
-    return inputProps;
-}
 
 function createImageProps(imageSrc: object | undefined, title: string | undefined, imageStyle: React.CSSProperties | undefined) {
     const imageProps: any = {};
@@ -97,25 +60,16 @@ function renderRegularCard(icon: object | undefined, imageSrc: object | undefine
     );
 }
 
-const Card: React.FC<CardProps> = (props) => {
-
-    const { title = "undefined", description ="undefined", icon, imageSrc, placeholder, id,
-        scale, color, router, isInput, onButtonClick, passwordLevels, onInputChange, isButtonEnabled = true,
-        onKeyDown} = props;
+const Card: React.FC<CardProps> = ({title = "undefined", description ="undefined", icon, imageSrc, id,
+                                   scale, color, isButtonEnabled = true, isInput=false} ) => {
 
     const imageContainerStyle: React.CSSProperties = { height: '200px', width: '100%', overflow: 'hidden' };
     const iconStyle: React.CSSProperties = color ? { color: color } : { color: "#e32400" };
     const imageStyle: React.CSSProperties = scale ? { transform: `scale(${scale})`, objectFit: 'cover' } : { objectFit: 'cover' };
-
-    let level1, level2, level3, level4;
-
-    if (passwordLevels) {
-        ({ level1, level2, level3, level4 } = passwordLevels);
-    }
+    const { level1, level2, level3, level4 } = usePasswordLevels();
     const fontAwesomeIconProps = createFontAwesomeIconProps(icon, iconStyle);
     const imageProps = createImageProps(imageSrc, title, imageStyle);
-    const inputProps = createInputProps(placeholder, id, onInputChange, isInput, onKeyDown);
-    const buttonProps = createButtonProps(router, id, onButtonClick, isButtonEnabled);
+
 
     return (
         <div className="card w-80 bg-base-100 shadow-xl">
@@ -140,8 +94,8 @@ const Card: React.FC<CardProps> = (props) => {
             <h2 className="card-title">{title}</h2>
             <p>{description}</p>
             <div className="join justify-end">
-                <Input {...inputProps}/>
-                <Button {...buttonProps} />
+                <Input isInput={isInput} id={id}/>
+                <Button isButtonEnabled={isButtonEnabled} id={id} />
             </div>
           </div>
         </div>

@@ -57,7 +57,7 @@ const Dialog: React.FC = () => {
     return (
         <dialog id={dialogId} className="modal" open={isDialogOpen}>
             <div className="modal-box">
-                <h3 className="font-bold text-lg">Translation events from Alive!</h3>
+                <h3 className="font-bold text-lg">Event Detail</h3>
                 <div className="py-4 whitespace-normal break-words">{box}</div>
                 <div className="modal-action">
                     <form method="dialog">

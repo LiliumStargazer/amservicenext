@@ -1,8 +1,9 @@
+
 export function isEmpty(backupSelected: string): boolean {
     return backupSelected === '';
 }
 
-export function isChanged(storedSerial: string, serial: string): boolean {
+export function isChanged(storedSerial: string | null, serial: string): boolean {
     return storedSerial !== serial;
 }
 
@@ -48,3 +49,45 @@ export const onClickOpenWindow = (url: string, inputValue: string) => {
     const finalUrl = url.includes("{input}") ? url.replace("{input}", inputValue) : url;
     window.open(finalUrl, "_blank");
 }
+
+export const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export function convertTimestampToDate(ticks: number): string {
+
+    const epochDifferenceInMilliseconds = (new Date('1970-01-01').getTime() - new Date('0001-01-01').getTime());
+    const milliseconds = (ticks / 10000) - epochDifferenceInMilliseconds;
+    const date = new Date(milliseconds);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+}
+
+
+export const trimAndFormatSerial = (serial: string): string => {
+    let serialTrimmed = serial.trim();
+    if (serialTrimmed.length === 4) {
+        serialTrimmed = "0" + serialTrimmed;
+    }
+    return serialTrimmed;
+};
+
+export const getSerialValidationMessage = (serial: string): string => {
+    if (serial === "") {
+        return "Please type a serial number";
+    } else if (isNaN(parseInt(serial, 10))) {
+        return "Serial number must be a number";
+    } else if (serial.length < 4) {
+        return "Serial number too short";
+    } else if (serial.length > 5) {
+        return "Serial number too long";
+    }
+    return "valid";
+};
+

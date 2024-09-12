@@ -66,9 +66,10 @@ export const getSerialValidationServer = (serial: string): Promise<SerialValidat
     apiRequest<SerialValidationResult>(`/api/backups/serial-numbers/exists`, { serial });
 export const getBackupList = (serial: string): Promise<BackupListResponse> =>
     apiRequest<BackupListResponse>(`/api/backups/lists`, { serial });
-export const downloadExtractAndReadBackup = (serial: string, backupSelected: string) => apiRequest<any>(`/api/backups/data`, { serial, backup: backupSelected });
+export const getBackupDataFromServer = (serial: string, backupSelected: string) => apiRequest<any>(`/api/backups/data`, { serial, backup: backupSelected });
 export const readFrigoTable = (serial: string, backupSelected: string) => apiRequest<any>(`/api/backups/fridge/data`, { serial, backup: backupSelected });
-export const getParam = (serial: string, backupSelected: string) => apiRequest<any>(`/api/backups/params`, { serial, backup: backupSelected });
+export const getParam = (serial: string, backupSelected: string, id: string) => apiRequest<any>(`/api/backups/params/data`, { serial, backup: backupSelected, id });
+export const getParamIds = (serial: string, backupSelected: string) => apiRequest<any>(`/api/backups/params/ids`, {serial, backup: backupSelected});
 
 export const getEventsAliveViaSrv = () => apiRequest<any[]>(`/api/events/alive`, {});
 export const getTicketHistoryViaSrv = () => apiRequest<any[]>(`/api/srv-ticket-history`, {});

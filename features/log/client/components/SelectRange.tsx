@@ -13,7 +13,7 @@ const SelectRange: React.FC = () => {
 
     return (
         <select className="select select-bordered  max-w-xs" onChange={handleSelect}>
-            <option disabled selected>Points per time ( default: every All )  </option>
+            <option disabled selected>Points per time ( default: All )  </option>
             <option value="0">All</option>
             <option value="15">every 15 min</option>
             <option value="30">every 30 min</option>

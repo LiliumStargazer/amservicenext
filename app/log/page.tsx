@@ -23,6 +23,7 @@ import Button from "@/features/log/client/components/Button";
 import Input from "@/features/log/client/components/Input";
 import Pagination from "@/features/log/client/components/Pagination";
 import SelectRange from "@/features/log/client/components/SelectRange";
+import SelectParam from "@/features/log/client/components/SelectParam";
 
 const Log: React.FC = () => {
     const table = useStore(state => state.table);
@@ -41,6 +42,10 @@ const Log: React.FC = () => {
         }
     }, [loading, logDaMaster, message, pathname]);
 
+    useEffect(() => {
+
+    }, [loading]);
+
     return (
         <div>
             <div className="navbar bg-base-100">
@@ -53,6 +58,7 @@ const Log: React.FC = () => {
                     <IconSoftware />
                     {table === "frigo" && <SelectRange />}
                     {table === "frigo" && <Pagination />}
+                    {table === "param"  && <SelectParam />}
                 </div>
                 <div className="navbar-center">
                     {table === "master" && logDaMaster.length > 0 && <InputSearch />}

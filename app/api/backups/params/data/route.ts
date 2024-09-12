@@ -12,6 +12,10 @@ export async function GET(req: Request): Promise<NextResponse> {
     const searchParams = new URLSearchParams(url.search);
     const serial = searchParams.get('serial');
     const backup = searchParams.get('backup');
+    let id = searchParams.get('id');
+
+    if ( !id )
+        id = "MAX(ID)";
 
     if (!serial || !backup) {
         return NextResponse.json({ error: 'Missing serial or backup parameter' });
@@ -20,8 +24,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     try {
         const systemPaths = createSystemPaths(serial, backup);
         systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
-
-        let query = 'SELECT Data FROM Param WHERE ID=(SELECT MAX(ID) FROM Param)';
+        let query = `SELECT Data FROM Param WHERE ID=(SELECT ${id} FROM Param)`;
         let backupName = systemPaths.localBackupUnzippedFile;
         let softwareType: 'android' | 'windows' = 'android';
 

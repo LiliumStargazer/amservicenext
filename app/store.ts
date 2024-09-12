@@ -47,6 +47,12 @@ interface State {
     setGridApi: (value: any | null) => void;
     intervalMinutes: number;
     setIntervalMinutes: (value: number) => void;
+    categorySelected: string | null;
+    setCategorySelected: (value: string | null) => void;
+    aliveSerial: string;
+    setAliveSerial: (value: string) => void;
+    password: string;
+    setPassword: (value: string) => void;
 }
 
 const useStore = create<State>((set) => ({
@@ -96,6 +102,12 @@ const useStore = create<State>((set) => ({
     setGridApi: (value) => set({ gridApi: value }),
     intervalMinutes: 0,
     setIntervalMinutes: (value) => set({ intervalMinutes: value }),
+    categorySelected: null,
+    setCategorySelected: (value) => set({ categorySelected: value }),
+    aliveSerial: '',
+    setAliveSerial: (value) => set({ aliveSerial: value }),
+    password: '',
+    setPassword: (value) => set({ password: value }),
 }));
 
 export default useStore;
