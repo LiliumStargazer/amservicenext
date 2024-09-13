@@ -19,7 +19,7 @@ const Login: React.FC = () => {
         <div>
             <Header  />
             <div className="flex flex-col items-center ">
-                <div className="grid grid-cols-5 gap-5 mt-5 mb-28">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-5 mb-28">
                     <Card
                         title="Am Log"
                         id={"amlog"}
