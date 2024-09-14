@@ -112,6 +112,8 @@ useEffect(() => {
             }
         } catch (err) {
             console.error('Error fetching finger transactions:', err);
+            setTable('master');
+            setMessage('Error fetching finger transactions:');
         } finally {
             setLoading(false);
         }
