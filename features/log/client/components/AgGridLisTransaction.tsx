@@ -33,7 +33,7 @@ enum LisErrorCode {
     LisContractNotValid = 812
 }
 
-const agGridLisTransaction = () => {
+const AgGridLisTransaction = () => {
     const serial = useStore(state => state.serial);
     const backupSelected = useStore(state => state.backupSelected);
     const [fingerTransaction, setFingerTransaction] = useState<any[]>([]);
@@ -92,9 +92,10 @@ useEffect(() => {
         setLoading(true);
         try {
             const results = await getLisTransaction(serial, backupSelected);
-            if (!results) {
+            console.log(results);
+            if (!results || results.length === 0) {
                 setTable('master');
-                setMessage('No data found');
+                setMessage('No lis data found');
             } else {
                 const fingerTransaction = Object.entries(results).map(([, value]) => ({
                     Date: formatStringDateOrder( (value as any).DataOraR ) ,
@@ -138,4 +139,4 @@ useEffect(() => {
     );
 }
 
-export default agGridLisTransaction;
+export default AgGridLisTransaction;
