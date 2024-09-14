@@ -1,3 +1,4 @@
+// Desc: Route to get backup data
 import { createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile } from "@/features/log/server/backup-handler";
 import { NextResponse } from "next/server";
 import {handleError} from "@/features/shared/client/utils/error-handler";
@@ -15,12 +16,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     try {
         const systemPaths = createSystemPaths(serial, backup);
         systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
-        let backupName = systemPaths.localBackupUnzippedFile;
-
-        let query = `SELECT strftime('%Y-%m-%d %H:%M:%S', LogBorsellino.DataOra/10000000 - 62135596800, 'unixepoch') AS DataOraR, LogBorsellino.* FROM LogBorsellino ORDER BY LogBorsellino.DataOra`;
-        if (backupName.includes("DbBackup")) {
-            query = `SELECT  strftime('%Y-%m-%d %H:%M:%S', LogBorsellino.DataOra/10000000 - 62135596800, 'unixepoch') AS DataOraR,  LogBorsellino.* FROM LogBorsellino ORDER BY LogBorsellino.DataOra`;
-        }
+        let query = 'SELECT  strftime(\'%Y-%m-%d %H:%M:%S\', LisTransaction.DataOra/10000000 - 62135596800, \'unixepoch\') AS DataOraR,  LisTransaction.* FROM LisTransaction ORDER BY LisTransaction.Id';
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
         return NextResponse.json(results);
     } catch (error) {

@@ -132,6 +132,10 @@ const DropDownMenu: React.FC = () => {
                     </button>
                 </li>
                 <li>
+                    <button onClick={() => setTable("fingertransaction")}>Fingers Transactions
+                    </button>
+                </li>
+                <li>
                     <button onClick={() => handleFrigoClick()}>Frigo</button>
                 </li>
                 <li>

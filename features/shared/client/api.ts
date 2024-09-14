@@ -70,7 +70,9 @@ export const getBackupDataFromServer = (serial: string, backupSelected: string) 
 export const readFrigoTable = (serial: string, backupSelected: string) => apiRequest<any>(`/api/backups/fridge/data`, { serial, backup: backupSelected });
 export const getParam = (serial: string, backupSelected: string, id: string) => apiRequest<any>(`/api/backups/params/data`, { serial, backup: backupSelected, id });
 export const getParamIds = (serial: string, backupSelected: string) => apiRequest<any>(`/api/backups/params/ids`, {serial, backup: backupSelected});
-export const getLisTransaction = (serial: string, backupSelected: string) => apiRequest<any>(`/api/backups/fingers-transactions`, { serial, backup: backupSelected });
+export const getLisTransaction = (serial: string, backupSelected: string) => apiRequest<any>(`/api/backups/lis-transactions`, { serial, backup: backupSelected });
+export const getFingersTransaction = (serial: string, backupSelected: string) => apiRequest<any>(`/api/backups/fingers-transactions`, { serial, backup: backupSelected });
+
 
 export const getEventsAliveViaSrv = () => apiRequest<any[]>(`/api/events/alive`, {});
 export const getTicketHistoryViaSrv = () => apiRequest<any[]>(`/api/srv-ticket-history`, {});
