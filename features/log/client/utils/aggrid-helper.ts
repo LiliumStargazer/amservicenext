@@ -6,7 +6,7 @@ import {
     convertToState,
     eventsColors
 } from "./event-converter";
-import {formatStringToDate} from "@/features/shared/client/utils/utils";
+import {formatStringDateOrder} from "@/features/shared/client/utils/utils";
 
 interface LogRow {
     DataOraR: string;
@@ -62,7 +62,7 @@ export function mapLogDaMaster(logDaMaster: LogRow[], isConverted = true): Resul
         let DevId: string = '';
 
         if (!isConverted) {
-            formattedDate = formatStringToDate(row.DataOraR);
+            formattedDate = formatStringDateOrder(row.DataOraR);
             convertedState = convertToState(parseInt(row.State));
             DevId = row.DevId ? row.DevId : 'undefined';
             devProducer = row.DevProducer ? row.DevProducer : DevId;

@@ -25,7 +25,7 @@ export function isGreaterThanOne(string: string): boolean {
     return false;
 }
 
-export function formatStringToDate(stringaInput: string): string {
+export function formatStringDateOrder(stringaInput: string): string {
     let dataInput = new Date(stringaInput);
     let giorno = dataInput.getDate();
     let mese = dataInput.getMonth() + 1;
@@ -36,6 +36,19 @@ export function formatStringToDate(stringaInput: string): string {
 export function getTimeString(stringaInput: string): string {
     let part = stringaInput.split(" ");
     return part[1];
+}
+
+export function convertToDate(dateTimeString: string): Date {
+    const [datePart, timePart] = dateTimeString.split(' ');
+    const [day, month, year] = datePart.split('-');
+    const formattedDateString = `${year}-${month}-${day}T${timePart}`;
+    return new Date(formattedDateString);
+}
+
+export function getTimeFromData(dateTimeString: string): string {
+    const [, timePart] = dateTimeString.split(' ');
+
+    return timePart;
 }
 
 export function calculateDaysBetweenDates(dateStartStr: string, dateEndStr: string): number {

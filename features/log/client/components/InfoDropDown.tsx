@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {v4 as uuidv4} from 'uuid';
 import useStore from "@/app/store";
-import {formatStringToDate} from "@/features/shared/client/utils/utils";
+import {formatStringDateOrder} from "@/features/shared/client/utils/utils";
 
 const InfoDropDown: React.FC = () => {
     const [backupInfo, setBackupInfo] = useState<any>([]);
@@ -21,7 +21,7 @@ const InfoDropDown: React.FC = () => {
                 return {
                     date: dateObj,
                     backup: {
-                        date: formatStringToDate ( backupItem[2]),
+                        date: formatStringDateOrder ( backupItem[2]),
                         name: backupItem[0],
                         size: backupItem[1]
                     }

@@ -24,8 +24,10 @@ import Input from "@/features/log/client/components/Input";
 import Pagination from "@/features/log/client/components/Pagination";
 import SelectRange from "@/features/log/client/components/SelectRange";
 import SelectParam from "@/features/log/client/components/SelectParam";
+import AgGridLisTransaction from "@/features/log/client/components/AgGridLisTransaction";
 
 const Log: React.FC = () => {
+
     const table = useStore(state => state.table);
     const logDaMaster = useStore(state => state.logDaMaster);
     const loading = useStore(state => state.loading);
@@ -79,6 +81,7 @@ const Log: React.FC = () => {
                         {!loading && table === "frigo" && <Chart /> }
                         {!loading && table === "frigo" && <AggridFrigo />}
                         {!loading && table === "param" && <Param />}
+                        {!loading && table === "listransaction" && < AgGridLisTransaction />}
                     </div>
                 </div>
             </div>

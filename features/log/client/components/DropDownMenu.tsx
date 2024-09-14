@@ -128,16 +128,21 @@ const DropDownMenu: React.FC = () => {
                     <button onClick={() => setTable("master")}>Master</button>
                 </li>
                 <li>
+                    <button onClick={() => setTable("listransaction")}>Lis Transactions
+                    </button>
+                </li>
+                <li>
                     <button onClick={() => handleFrigoClick()}>Frigo</button>
                 </li>
                 <li>
-                    <button onClick={() => handleParamClick() }>Param
+                    <button onClick={() => handleParamClick()}>Param
                     </button>
                 </li>
                 <li>
-                    <button onClick={() => handleExportClick() }>Export To Excel
+                    <button onClick={() => handleExportClick()}>Export To Excel
                     </button>
                 </li>
+
             </ul>
         </div>
     );

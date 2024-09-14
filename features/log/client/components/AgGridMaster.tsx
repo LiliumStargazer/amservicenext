@@ -11,6 +11,7 @@ import AgGrid from "@/features/shared/client/components/AgGrid";
 
 
 const AgGridMaster: React.FC = () => {
+
     const logDaMaster = useStore(state => state.logDaMaster);
     const searchValue = useStore(state => state.searchValue);
     const setGridApi = useStore(state => state.setGridApi);

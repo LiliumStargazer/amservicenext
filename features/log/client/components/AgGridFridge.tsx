@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import useStore from "@/app/store";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import {formatStringToDate, getTimeString} from "@/features/shared/client/utils/utils";
+import {formatStringDateOrder, getTimeString} from "@/features/shared/client/utils/utils";
 import {translateFrigoState} from "@/features/log/client/utils/event-converter";
 import AgGrid from "@/features/shared/client/components/AgGrid";
 import {defaultColDef} from "@/features/log/client/utils/aggrid-helper";
@@ -35,7 +35,7 @@ const AggridFrigo: React.FC = () => {
         const frigoDataCopy = [...frigoData];
 
         let arrayTables = frigoDataCopy.reduce((tablesObject, rowFrigoData) => {
-            const formattedDate = formatStringToDate(rowFrigoData.DataOraR );
+            const formattedDate = formatStringDateOrder(rowFrigoData.DataOraR );
             const state = translateFrigoState(rowFrigoData.FrigoState);
             const formattedTemp1 = parseFloat(rowFrigoData.Temperature1).toFixed(2) + "°";
             const alarmTemp = parseFloat(rowFrigoData.Temp1) >= rowFrigoData.WarnAlarm ? "ON" : "OFF";
