@@ -110,7 +110,6 @@ export function mapLogDaMaster(logDaMaster: LogRow[], isConverted = true): Resul
                 Time: row.Time!
             };
         }
-
         return result;
     });
 }

@@ -10,7 +10,6 @@ export async function GET(req: Request): Promise<NextResponse> {
     if (!serial) {
         return NextResponse.json({ error: 'Missing serial parameter' });
     }
-
     try {
         const systemPaths = createSystemPaths(serial);
         const sftpConnector = new SftpConnector();

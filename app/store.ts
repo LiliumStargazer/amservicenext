@@ -9,6 +9,8 @@ interface State {
     setBackupList: (value: any[]) => void;
     backupSelected: string;
     setBackupSelected: (value: string) => void;
+    latestBackup: string;
+    setlatestBackup: (value: string) => void;
     logDaMaster: any[];
     setLogDaMaster: (value: any[]) => void;
     searchValue: string;
@@ -64,6 +66,8 @@ const useStore = create<State>((set) => ({
     setBackupList: (value) => set({ backupList: value }),
     backupSelected: '',
     setBackupSelected: (value) => set({ backupSelected: value }),
+    latestBackup: '',
+    setlatestBackup: (value) => set({ latestBackup: value }),
     logDaMaster: [],
     setLogDaMaster: (value) => set({ logDaMaster: value }),
     searchValue: '',

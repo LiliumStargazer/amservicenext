@@ -1,5 +1,5 @@
 import React from 'react';
-import {getParam, readFrigoTable} from "@/features/shared/client/api";
+import {getParam, getFridgeData} from "@/features/shared/client/api";
 import useStore from "@/app/store";
 import ExcelJS from "exceljs";
 import {GridApi} from 'ag-grid-community';
@@ -92,7 +92,7 @@ const DropDownMenu: React.FC = () => {
 
     const handleFrigoClick = async () => {
 
-        const result = await handleDataFetch(readFrigoTable, setFrigoData);
+        const result = await handleDataFetch(getFridgeData, setFrigoData);
         if (result) {
             setTable("frigo");
         } else {

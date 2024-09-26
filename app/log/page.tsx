@@ -5,7 +5,7 @@ import {  usePathname } from "next/navigation";
 import loading_lottie from "@/public/loading_lottie.json";
 import no_data_lottie from "@/public/no_data_lottie.json";
 import useStore from "@/app/store";
-import SelectBackup from "@/features/log/client/components/Select";
+import SelectBackup from "@/features/log/client/components/SelectBackup";
 import InfoDropDown from "@/features/log/client/components/InfoDropDown";
 import IconSoftware from "@/features/log/client/components/IconSoftware";
 import Badge from "@/features/log/client/components/Badge";
@@ -14,18 +14,24 @@ import InputSearch from "@/features/log/client/components/InputSearch";
 import DropDownMenu from "@/features/log/client/components/DropDownMenu";
 import Alert from "@/features/log/client/components/Alert";
 import AnimationLottie from "@/features/shared/client/components/AnimationLottie";
-import AggridFrigo from "@/features/log/client/components/AgGridFridge";
-import AgGridMaster from "@/features/log/client/components/AgGridMaster";
+import AggridFrigo from "@/features/log/client/components/tables/AgGridFridge";
+import AgGridMaster from "@/features/log/client/components/tables/AgGridMaster";
 import Dialog from "@/features/log/client/components/Dialog";
 import Chart from "@/features/log/client/components/Chart";
 import Param from "@/features/log/client/components/Param";
-import Button from "@/features/log/client/components/Button";
+import GetButton from "@/features/log/client/components/buttons/GetButton";
 import Input from "@/features/log/client/components/Input";
 import Pagination from "@/features/log/client/components/Pagination";
 import SelectRange from "@/features/log/client/components/SelectRange";
 import SelectParam from "@/features/log/client/components/SelectParam";
-import AgGridLisTransaction from "@/features/log/client/components/AgGridLisTransaction";
-import AgGridFingersTransaction from "@/features/log/client/components/AgGridFingersTransaction";
+import AgGridLisTransaction from "@/features/log/client/components/tables/AgGridLisTransaction";
+import AgGridFingersTransaction from "@/features/log/client/components/tables/AgGridFingersTransaction";
+import FingerButton from "@/features/log/client/components/buttons/FingerButton";
+import ParamButton from "@/features/log/client/components/buttons/ParamButton";
+import FridgeButton from "@/features/log/client/components/buttons/FridgeButton";
+import ExcelButton from "@/features/log/client/components/buttons/ExcelButton";
+import LisButton from "@/features/log/client/components/LisButton";
+import MasterButton from "@/features/log/client/components/buttons/MasterButton";
 
 const Log: React.FC = () => {
 
@@ -54,7 +60,7 @@ const Log: React.FC = () => {
             <div className="navbar bg-base-100">
                 <div className="navbar-start space-x-2 ">
                     <Input />
-                    <Button />
+                    <GetButton />
                     {table === "master" && backupList.length > 0 && <SelectBackup />}
                     {table === "master" && backupList.length > 0 && <InfoDropDown />}
                     {storedSerial && <Badge />}
@@ -63,10 +69,18 @@ const Log: React.FC = () => {
                     {table === "frigo" && <Pagination />}
                     {table === "param"  && <SelectParam />}
                 </div>
-                <div className="navbar-center">
-                    {table === "master" && logDaMaster.length > 0 && <InputSearch />}
+                    <div className="navbar-center">
+                        {table === "master" && logDaMaster.length > 0 && <InputSearch />}
+                    </div>
+                <div>
                 </div>
-                <div className="navbar-end space-x-2 ">
+                <div className="navbar-end space-x-4 ">
+                    <MasterButton />
+                    <ParamButton />
+                    <FridgeButton />
+                    <FingerButton/>
+                    <ExcelButton />
+                    <LisButton />
                     <ButtonNav />
                     {pathname === "/log" && logDaMaster.length > 0 && <DropDownMenu />}
                 </div>

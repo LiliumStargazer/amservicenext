@@ -34,9 +34,9 @@ enum LisErrorCode {
 }
 
 const AgGridLisTransaction = () => {
-    const serial = useStore(state => state.serial);
+    const storedSerial = useStore(state => state.storedSerial);
     const backupSelected = useStore(state => state.backupSelected);
-    const [fingerTransaction, setFingerTransaction] = useState<any[]>([]);
+    const [fingerTransactionRows, setFingerTransactionRows] = useState<any[]>([]);
     const setTable = useStore(state => state.setTable);
     const setMessage = useStore(state => state.setMessage);
     const [loading, setLoading] = useState(false);
@@ -91,13 +91,15 @@ useEffect(() => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const results = await getLisTransaction(serial, backupSelected);
-            console.log(results);
+            if (storedSerial==null || storedSerial !== '')
+                return;
+
+            const results = await getLisTransaction(storedSerial, backupSelected);
             if (!results || results.length === 0) {
                 setTable('master');
                 setMessage('No lis data found');
             } else {
-                const fingerTransaction = Object.entries(results).map(([, value]) => ({
+                const map = Object.entries(results).map(([, value]) => ({
                     Date: formatStringDateOrder( (value as any).DataOraR ) ,
                     Time: getTimeFromData( (value as any).DataOraR ),
                     ID: (value as any).ID,
@@ -109,7 +111,7 @@ useEffect(() => {
                     TelNum: (value as any).TelNum,
                     TransactionId: (value as any).TransactionId,
                 }));
-                setFingerTransaction(fingerTransaction);
+                setFingerTransactionRows(map);
             }
         } catch (err) {
             console.error('Error fetching finger transactions:', err);
@@ -122,7 +124,7 @@ useEffect(() => {
     fetchData().catch(err => console.error('Error in fetchData:', err));
 }, []);
 
-    if (loading || fingerTransaction.length === 0){
+    if (loading || fingerTransactionRows.length === 0){
         return (
             <div style={containerStyle}>
                 <div className="skeleton" style={containerStyle} ></div>
@@ -132,7 +134,7 @@ useEffect(() => {
 
     return (
         <AgGrid
-            rows={fingerTransaction}
+            rows={fingerTransactionRows}
             colDefs={colDef}
             defaultColDef={defaultColDef}
         />

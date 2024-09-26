@@ -2,10 +2,15 @@ import React, {useEffect, useState} from "react";
 import {v4 as uuidv4} from 'uuid';
 import useStore from "@/app/store";
 import {formatStringDateOrder} from "@/features/shared/client/utils/utils";
+import {getBackupList} from "@/features/shared/client/api";
 
 const InfoDropDown: React.FC = () => {
     const [backupInfo, setBackupInfo] = useState<any>([]);
-    const backupList = useStore(state => state.backupList);
+    const [backupList, setBackupList] = useState([]);
+    const storedSerial = useStore(state => state.storedSerial);
+    const setMessage = useStore(state => state.setMessage);
+
+
 
     useEffect(() => {
         if (backupList.length > 0) {
