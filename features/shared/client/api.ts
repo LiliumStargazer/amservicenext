@@ -78,6 +78,11 @@ export const getLisTransaction = (serial: string, backupSelected: string) =>
     apiRequest<any>(`/api/backups/lis-transactions`, { serial, backup: backupSelected });
 export const getFingersTransaction = (serial: string, backupSelected: string) =>
     apiRequest<any>(`/api/backups/fingers-transactions`, { serial, backup: backupSelected });
+export const getLatestData = (serial: string, backupSelected: string) =>
+    apiRequest<any>(`/api/backups/latestData`, { serial, backup: backupSelected });
+
+export const getDataByDate = (serial: string, backupSelected: string, currentDate: string) =>
+    apiRequest<any>(`/api/backups/dataByDate`, { serial, backup: backupSelected, date: currentDate });
 
 export const getEventsAliveViaSrv = () =>
     apiRequest<any[]>(`/api/events/alive`, {});

@@ -10,7 +10,7 @@ import useWindowSize from "@/features/shared/client/hooks/useWindowSize";
 import { formatStringDateOrder, getTimeFromData, } from "@/features/shared/client/utils/utils";
 
 const AgGridFingersTransaction = () => {
-    const serial = useStore(state => state.serial);
+    const serial = useStore(state => state.tempSerial);
     const backupSelected = useStore(state => state.backupSelected);
     const [fingerTransaction, setFingerTransaction] = useState<any[]>([]);
     const setTable = useStore(state => state.setTable);

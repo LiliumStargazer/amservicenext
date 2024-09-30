@@ -2,7 +2,7 @@ import { createSystemPaths } from "@/features/log/server/backup-handler";
 import SftpConnector from "@/features/log/server/ftp-handler";
 import { NextResponse } from "next/server";
 import * as Sentry from '@sentry/nextjs';
-import {handleError} from "@/features/shared/client/utils/error-handler";
+import {logErrorAndRespond} from "@/features/shared/client/utils/error-handler";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -20,6 +20,6 @@ export async function GET(req: Request): Promise<NextResponse> {
         return NextResponse.json(backupLists);
     } catch (error) {
         console.log('Error while getting backup lists from api-route:', error);
-        return handleError(error);
+        return logErrorAndRespond(error);
     }
 }

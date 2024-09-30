@@ -9,9 +9,9 @@ import {defaultColDef} from "@/features/log/client/utils/aggrid-helper";
 import {getFridgeData} from "@/features/shared/client/api";
 import useWindowSize from "@/features/shared/client/hooks/useWindowSize";
 
-const AggridFrigo = () => {
+const AgGridFridge = () => {
     const [loading, setLoading] = useState(false);
-    const storedSerial = useStore(state => state.storedSerial);
+    const storedSerial = useStore(state => state.serial);
     const backupSelected = useStore(state => state.backupSelected);
     const setMessage = useStore(state => state.setMessage);
     const setTable = useStore(state => state.setTable);
@@ -153,4 +153,4 @@ const AggridFrigo = () => {
     )
 }
 
-export default AggridFrigo;
+export default AgGridFridge;

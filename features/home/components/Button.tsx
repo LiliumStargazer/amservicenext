@@ -3,18 +3,17 @@ import useStore from "@/app/store";
 
 import {getSerialValidationMessage, onClickOpenWindow, trimAndFormatSerial} from "@/features/shared/client/utils/utils";
 import {useRouter} from "next/navigation";
-import useHandleDownloadBackup from "@/features/shared/client/hooks/useHandleDownloadBackup";
-
+import useValidateSerialAndNavigate from "@/features/shared/client/hooks/useValidateSerialAndNagivate";
 
 const Button  = ({ isButtonEnabled, id }: { isButtonEnabled: boolean, id:string }) => {
 
     const loading = useStore(state => state.loading);
     const aliveSerial = useStore(state => state.aliveSerial);
-    const serial = useStore(state => state.serial);
     const setMessage = useStore(state => state.setMessage);
+    const serialTemp = useStore(state => state.serialTemp);
     const classNameButton = loading ? "btn btn-sm btn-info btn-disabled" : "btn btn-sm btn-info";
     const router = useRouter();
-    const downloadBackup = useHandleDownloadBackup(router);
+    const validateSerialAndNavigate = useValidateSerialAndNavigate();
 
     const onClickWithValue = () => {
 
@@ -26,12 +25,12 @@ const Button  = ({ isButtonEnabled, id }: { isButtonEnabled: boolean, id:string 
             onClickOpenWindow("https://alive2.amdistributori.it:8443/dettaglio-distributore/?serialnumber={input}", aliveSerial);
     }
 
-    const handleDownloadBackupClick = async () => {
-        await downloadBackup(serial);
-    };
+    const handleClickLog = async () => {
+        await validateSerialAndNavigate(serialTemp);
+    }
 
     const buttonProps = {
-        ...(id === "amlog" && { onClick: handleDownloadBackupClick }),
+        ...(id === "amlog" && { onClick: handleClickLog }),
         ...(id === "alive" && { onClick: () => onClickWithValue() }),
         ...(id === "amclub" && { onClick: () => onClickOpenWindow("https://amclub.amdistributori.it/admin", "") }),
         ...(id === "amwiki" && { onClick: () => onClickOpenWindow("https://docs.amdistributori.it/", "") }),

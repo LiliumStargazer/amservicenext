@@ -1,4 +1,4 @@
-import {handleError} from "@/features/shared/client/utils/error-handler";
+import {logErrorAndRespond} from "@/features/shared/client/utils/error-handler";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +11,6 @@ export function GET(req: Request): NextResponse {
         throw new Error("Sentry Example API Route Error");
     } catch (error) {
         Sentry.captureException(error);
-        return handleError(error);
+        return logErrorAndRespond(error);
     }
 }

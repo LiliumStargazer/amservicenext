@@ -4,7 +4,6 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/features/shared/client/style/gridStyle.css";
 import useWindowSize from "@/features/shared/client/hooks/useWindowSize";
-import { useAgGridConfigLogMaster } from "@/features/log/client/hooks/useAgGridConfigLogMaster";
 import {defaultColDef, mapLogDaMaster} from "@/features/log/client/utils/aggrid-helper";
 import Dialog from "@/features/log/client/components/Dialog";
 import AgGrid from "@/features/shared/client/components/AgGrid";
@@ -55,7 +54,7 @@ function Extract() {
         return String( params.data.IDR ) ;
     }, []);
 
-    const { colDefs, options } = useAgGridConfigLogMaster({rows, getRowIds, isExtracted: true});
+    //const { colDefs, options } = useAgGridConfigLogMaster({rows, getRowIds, isExtracted: true});
 
     return (
         <div>

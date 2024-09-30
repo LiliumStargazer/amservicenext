@@ -3,7 +3,7 @@ import useStore from "@/app/store";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
 import "@/features/log/client/components/tables/gridStyle.css";
-import { GridReadyEvent, CellClickedEvent, CellDoubleClickedEvent, ColDef , RowClassParams, } from "ag-grid-community";
+import { GridReadyEvent, CellClickedEvent, CellDoubleClickedEvent, ColDef , RowClassParams, FilterChangedEvent } from "ag-grid-community";
 import {
     convertT1,
     convertT2,
@@ -14,7 +14,7 @@ import {
     getRowColorClass,
     matchLogEventWithAliveEvents
 } from "@/features/log/client/utils/aggrid-helper";
-import {getBackupDataFromServer, getEventsAliveViaSrv} from "@/features/shared/client/api";
+import { getEventsAliveViaSrv, getLatestData, getDataByDate } from "@/features/shared/client/api";
 import { formatStringDateOrder } from "@/features/shared/client/utils/utils";
 import LottieAnimation from "lottie-react";
 import useWindowSize from "@/features/shared/client/hooks/useWindowSize";
@@ -23,6 +23,7 @@ import { convertToDevType, convertToFase, convertToState } from "@/features/log/
 import AnimationLottie from "@/features/shared/client/components/AnimationLottie";
 import loading_lottie from "@/public/loading_lottie.json";
 import no_data_lottie from "@/public/no_data_lottie.json";
+import { debounce } from 'lodash';
 
 
 interface RowData {
@@ -42,7 +43,7 @@ interface RowData {
     Time: string;
 }
 
-const AgGridMaster: React.FC = () => {
+const AgGridMasterLog: React.FC = () => {
     const searchValue = useStore(state => state.searchValue);
     const serial = useStore(state => state.serial);
     const backupSelected = useStore(state => state.backupSelected);
@@ -54,6 +55,9 @@ const AgGridMaster: React.FC = () => {
     const setIsDialogOpen = useStore(state => state.setIsDialogOpen);
     const setDialogContent = useStore(state => state.setDialogContent);
     const [loading, setLoading] = useState(true);
+    const [currentDate, setCurrentDate] = useState('');
+    const [dataChange, setDataChange] = useState(false);
+    const [previousDate, setPreviousDate] = useState('');
 
     const gridApiRef = useRef<any>(null);
 
@@ -184,23 +188,78 @@ const AgGridMaster: React.FC = () => {
         return String(params.data.IDR);
     }, []);
 
+
+    const incrementDate = useCallback(
+        debounce(() => {
+            setLoading(true);
+            setPreviousDate(currentDate);
+            const newDate = new Date(currentDate);
+            newDate.setDate(newDate.getDate() + 1);
+            const newDateString = newDate.toISOString();
+            setDataChange(true);
+            setCurrentDate(newDateString);
+        }, 300),
+        [currentDate, setCurrentDate, setDataChange]
+    );
+
+
+    const decrementDate = useCallback(
+        debounce(() => {
+            setLoading(true);
+            setPreviousDate(currentDate);
+            const newDate = new Date(currentDate);
+            newDate.setDate(newDate.getDate() - 1);
+            const newDateString = newDate.toISOString();
+            setDataChange(true)
+            setCurrentDate(newDateString);; // Aggiorna solo la parte della data
+        }, 300), // Adjust the delay as needed (300ms in this example)
+        [currentDate, setCurrentDate, setDataChange]
+    );
+
+    const onFilterChanged = useCallback((event: FilterChangedEvent) => {
+        const dateFilterModel = event.api.getFilterModel()['DataOraR'];
+        if (dateFilterModel && dateFilterModel.dateFrom) {
+            const selectedDate = new Date(dateFilterModel.dateFrom);
+            setCurrentDate(selectedDate.toISOString());
+            setDataChange(true);
+        }
+    }, [setCurrentDate, setDataChange]);
+
+
+    const getRowsMap = useCallback((backupData: any) => {
+        return backupData.map((value: any, rowIndex: number) => ({
+            IDR: rowIndex,
+            DataOraR: formatStringDateOrder(value.DataOraR),
+            EventString: value.EventString,
+            State: convertToState(parseInt(value.State)),
+            DevProducer: convertToDevType(parseInt(value.DevProducer ? value.DevProducer : value.DevId)),
+            DevIndex: value.DevIndex ? value.DevIndex : value.RelIndex,
+            SubIndex: value.SubIndex,
+            DevClass: value.DevClass,
+            Tag1: convertT1(value.EventString, value.Tag1),
+            Tag2: convertT2(value.EventString, value.Tag2),
+            Tag3: value.Tag3,
+            Tag4: convertT4(value.EventString, value.Tag4).value,
+            Fase: convertToFase(parseInt(value.Fase)),
+            TagData: convertTagData(value.EventString, value.TagData, value.Tag1, value.Tag2, value.Tag3),
+            Time: value.DataOraR.slice(11),
+            rowColor: getRowColorClass(value.EventString),
+        }));
+    }, [formatStringDateOrder, convertToState, convertToDevType, convertT1, convertT2, convertT4, convertToFase, convertTagData, getRowColorClass]);
+
     const onGridReady = useCallback((params: GridReadyEvent) => {
+        console.log('Grid ready');
         gridApiRef.current = params.api;
-        params.api.paginationGoToLastPage();
-    }, []);
 
-    useEffect(() => {
-
-        const fetchData = async () => {
-            if (!serial || serial.length === 0 || !backupSelected || backupSelected.length === 0 || logDataFetched) {
-                setLoading(false);
-                return;
-            }
-
+        const fetchDataOnGridReady = async () => {
             try {
                 setMessage('');
-                setLoading(true);
-                const backupData = await getBackupDataFromServer(serial, backupSelected);
+                if (!serial || logDataFetched){
+                    return;
+                }
+
+                const backupData = await getLatestData(serial, backupSelected);
+
                 if (backupData.error) {
                     setMessage("Database corrupted: " + backupData.error);
                     return;
@@ -209,28 +268,12 @@ const AgGridMaster: React.FC = () => {
                 if (!backupData || backupData.length === 0)
                     return;
 
-                const rows = backupData.map((value: any, rowIndex: number) => ({
-                    IDR: rowIndex,
-                    DataOraR: formatStringDateOrder(value.DataOraR),
-                    EventString: value.EventString,
-                    State: convertToState(parseInt(value.State)),
-                    DevProducer: convertToDevType(parseInt(value.DevProducer ? value.DevProducer : value.DevId)),
-                    DevIndex: value.DevIndex ? value.DevIndex : value.RelIndex,
-                    SubIndex: value.SubIndex,
-                    DevClass: value.DevClass,
-                    Tag1: convertT1(value.EventString, value.Tag1),
-                    Tag2: convertT2(value.EventString, value.Tag2),
-                    Tag3: value.Tag3,
-                    Tag4: convertT4(value.EventString, value.Tag4).value,
-                    Fase: convertToFase(parseInt(value.Fase)),
-                    TagData: convertTagData(value.EventString, value.TagData, value.Tag1, value.Tag2, value.Tag3),
-                    Time: value.DataOraR.slice(11),
-                    rowColor: getRowColorClass(value.EventString),
-                }));
+                const lenght = backupData.length -1;
+                setCurrentDate(backupData[lenght].DataOraR )
+                const rows = getRowsMap(backupData);
 
                 setLogData(rows);
                 setLogDataFetched(true);
-
             } catch (error) {
                 console.error('Error while downloading backup:', error);
                 setMessage("An error occurred while downloading the backup.");
@@ -238,23 +281,69 @@ const AgGridMaster: React.FC = () => {
                 setLoading(false);
             }
         }
-        fetchData().catch(err => console.error('Error in fetchData:', err));
+        setLoading(true);
+        if (logDataFetched) {
+            const lenght = logData.length -1;
+            setCurrentDate(logData[lenght].DataOraR )
+            const rows = getRowsMap(logData);
+            setLogData(rows);
+            setLoading(false);
+        }else{
+            fetchDataOnGridReady().catch(err => console.error('Error in fetchData:', err));
+        }
     }, [serial, backupSelected]);
 
-    if (loading && !logDataFetched) {
-        return (
-            <div className="flex justify-center items-center h-screen" style={containerStyle}>
-                <div>
-                    <LottieAnimation
-                        animationData={loading_lottie}
-                        loop
-                        autoPlay
-                        style={{ width: 400, height: 400 }}
-                    />
-                </div>
-            </div>
-        );
-    }
+
+    useEffect(() => {
+        if (gridApiRef.current) {
+            const params: GridReadyEvent = {
+                api: gridApiRef.current,
+                type: 'gridReady',
+                context: {},
+            };
+            if (serial && serial.length > 0)
+                onGridReady(params);
+        }
+    }, [serial, onGridReady]);
+
+
+   useEffect(() => {
+        if (!currentDate || currentDate.length == 0 || !logDataFetched || !dataChange) {
+            console.log('nothing is changed');
+            console.log('currentDate', currentDate);
+            console.log('logDataFetched', logDataFetched);
+            console.log('dataChange', dataChange);
+            return;
+        } else {
+            try {
+                const fetchDataOnDateChange = async () => {
+                    if (!serial) return;
+
+                    const backupData = await getDataByDate(serial, backupSelected, currentDate);
+                    console.log('backupData', backupData);
+                    if (backupData.error) {
+                        setMessage("Database corrupted: " + backupData.error);
+                        return;
+                    }
+                    if (!backupData || backupData.length === 0){
+                        setCurrentDate(previousDate);
+                        return;
+                    }
+                    const rows = getRowsMap(backupData);
+                    setLogData(rows);
+                    setDataChange(false);
+                };
+                setLoading(true);
+                fetchDataOnDateChange().catch(err => console.error('Error in fetchData:', err));
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [currentDate]);
+
+
 
     if (!loading && !logDataFetched) {
         return (
@@ -265,10 +354,16 @@ const AgGridMaster: React.FC = () => {
             </div>
         );
     }
+
     return (
         <div style={containerStyle}>
+            <div className="mt-1 mb-3 ml-3">
+                <button className="btn btn-info mr-3" onClick={decrementDate}>-1 Day</button>
+                <button className="btn btn-info" onClick={incrementDate}>+1 Day</button>
+            </div>
             <div className={"ag-theme-quartz-dark compact"} style={gridStyle}>
                 <AgGridReact<RowData>
+                    loading={loading}
                     rowData={logData}
                     columnDefs={colDefsBase}
                     defaultColDef={defaultColDef}
@@ -277,12 +372,10 @@ const AgGridMaster: React.FC = () => {
                     onCellDoubleClicked={onCellDoubleClicked}
                     animateRows={false}
                     cacheQuickFilter={true}
-                    rowBuffer={200}
+                    rowBuffer={500}
                     getRowId={getRowIds}
                     rowClassRules={rowClassRules}
-                    pagination={true}
-                    paginationPageSizeSelector={[100, 200, 500]}
-                    paginationPageSize={200}
+                    onFilterChanged={onFilterChanged}
                     onGridReady={onGridReady}
                 />
             </div>
@@ -291,4 +384,4 @@ const AgGridMaster: React.FC = () => {
     );
 }
 
-export default AgGridMaster;
+export default AgGridMasterLog;

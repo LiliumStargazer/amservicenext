@@ -1,6 +1,6 @@
 import { createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile } from "@/features/log/server/backup-handler";
 import { NextResponse } from "next/server";
-import {handleError} from "@/features/shared/client/utils/error-handler";
+import {logErrorAndRespond} from "@/features/shared/client/utils/error-handler";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -24,6 +24,6 @@ export async function GET(req: Request): Promise<NextResponse> {
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
         return NextResponse.json(results);
     } catch (error) {
-        return handleError(error);
+        return logErrorAndRespond(error);
     }
 }

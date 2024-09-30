@@ -24,11 +24,15 @@ export async function GET(req: Request): Promise<NextResponse> {
         await unzipFile(systemPaths);
         systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
 
-        let query = 'SELECT * FROM EventiView';
+
+        let query = ' SELECT * FROM EventiView WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiView)';
         if (systemPaths.localBackupUnzippedFile.includes("DbBackup")) {
-            query = 'SELECT * FROM EventiAll';
+            query = ' SELECT * FROM EventiAll WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiAll)';
         }
+
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
+
+
         return NextResponse.json(results);
     } catch (error) {
         return logErrorAndRespond(error);

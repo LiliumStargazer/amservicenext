@@ -272,3 +272,4 @@ export const eventsColors: Record<string, string> = {
     "EV_ING_NOCOMM": "#dc3545",
     "EV_PAX_ERROR": "#dc3545",
 };
+

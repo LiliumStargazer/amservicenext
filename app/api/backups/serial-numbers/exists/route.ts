@@ -1,7 +1,10 @@
 import { createSystemPaths } from "@/features/log/server/backup-handler";
 import SftpConnector from "@/features/log/server/ftp-handler";
 import { NextResponse } from "next/server";
-import {handleError} from "@/features/shared/client/utils/error-handler";
+import {logErrorAndRespond} from "@/features/shared/client/utils/error-handler";
+import path from "path";
+import fs from "fs";
+import os from "os";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -12,10 +15,11 @@ export async function GET(req: Request): Promise<NextResponse> {
     }
     try {
         const systemPaths = createSystemPaths(serial);
+        console.log('systemPaths', systemPaths.toString());
         const sftpConnector = new SftpConnector();
         const result = await sftpConnector.isSerialNumberOnSftp(systemPaths);
         return NextResponse.json(result);
     } catch (error) {
-        return handleError(error);
+        return logErrorAndRespond(error);
     }
 }

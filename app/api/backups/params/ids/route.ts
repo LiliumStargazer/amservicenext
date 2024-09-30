@@ -3,7 +3,7 @@
 import { createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile } from "@/features/log/server/backup-handler";
 import { NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
-import { handleError } from "@/features/shared/client/utils/error-handler";
+import { logErrorAndRespond } from "@/features/shared/client/utils/error-handler";
 
 
 export async function GET(req: Request): Promise<NextResponse> {
@@ -26,6 +26,6 @@ export async function GET(req: Request): Promise<NextResponse> {
         return NextResponse.json(result);
     } catch (error) {
         Sentry.captureException(error);
-        return handleError(error);
+        return logErrorAndRespond(error);
     }
 }

@@ -3,7 +3,7 @@ import useStore from "@/app/store";
 
 
 const useReset = () => {
-    const setStoredSerial = useStore(state => state.setStoredSerial);
+    const setStoredSerial = useStore(state => state.setSerial);
     const setBackupList = useStore(state=> state.setBackupList);
     const setBackupSelected = useStore(state=> state.setBackupSelected);
     const setLogDaMaster = useStore(state=> state.setLogDaMaster);

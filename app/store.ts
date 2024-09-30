@@ -1,8 +1,10 @@
 import { create } from 'zustand'
 
 interface State {
-    serial: string;
-    setSerial: (value: string) => void;
+    serialTemp: string;
+    setSerialTemp: (value: string) => void;
+    serial: string | null;
+    setSerial: (value: string ) => void;
     softwareType: string;
     setSoftwareType: (value: string) => void;
     backupList: any[];
@@ -10,17 +12,17 @@ interface State {
     backupSelected: string;
     setBackupSelected: (value: string) => void;
     latestBackup: string;
-    setlatestBackup: (value: string) => void;
-    logDaMaster: any[];
-    setLogDaMaster: (value: any[]) => void;
+    setLatestBackup: (value: string) => void;
+    logData: any[];
+    setLogData: (value: any[]) => void;
+    logDataFetched: boolean;
+    setLogDataFetched: (value: boolean) => void;
     searchValue: string;
     setSearchValue: (value: string) => void;
     loading: boolean;
     setLoading: (value: boolean) => void;
     message: string;
     setMessage: (value: string) => void;
-    storedSerial: string | null;
-    setStoredSerial: (value: string | null) => void;
     alertMessage: string;
     setAlertMessage: (value: string) => void;
     frigoData: any[];
@@ -58,26 +60,28 @@ interface State {
 }
 
 const useStore = create<State>((set) => ({
+    serialTemp: '',
+    setSerialTemp: (value) => set({ serialTemp: value }),
+    softwareType: '',
     serial: '',
     setSerial: (value) => set({ serial: value }),
-    softwareType: '',
     setSoftwareType: (value) => set({ softwareType: value }),
     backupList: [],
     setBackupList: (value) => set({ backupList: value }),
     backupSelected: '',
     setBackupSelected: (value) => set({ backupSelected: value }),
     latestBackup: '',
-    setlatestBackup: (value) => set({ latestBackup: value }),
-    logDaMaster: [],
-    setLogDaMaster: (value) => set({ logDaMaster: value }),
+    setLatestBackup: (value) => set({ latestBackup: value }),
+    logData: [],
+    setLogData: (value) => set({ logData: value }),
+    logDataFetched: false,
+    setLogDataFetched: (value) => set({ logDataFetched: value }),
     searchValue: '',
     setSearchValue: (value) => set({ searchValue: value }),
     loading: false,
     setLoading: (value) => set({ loading: value }),
     message: '',
     setMessage: (value) => set({ message: value }),
-    storedSerial: null,
-    setStoredSerial: (value) => set({ storedSerial: value }),
     alertMessage: '',
     setAlertMessage: (value) => set({ alertMessage: value }),
     frigoData: [],

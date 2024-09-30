@@ -8,7 +8,7 @@ interface SelectBackupProps {}
 const SelectBackup: React.FC<SelectBackupProps> = () => {
     const backupSelected = useStore(state => state.backupSelected);
     const setBackupSelected = useStore(state => state.setBackupSelected);
-    const storedSerial = useStore(state => state.storedSerial);
+    const serial = useStore(state => state.serial);
     const setMessage = useStore(state => state.setMessage);
     const setBackupList = useStore(state => state.setBackupList);
     const [backupArray, setBackupArray] = useState<React.ReactNode[]>([]);
@@ -28,10 +28,10 @@ const SelectBackup: React.FC<SelectBackupProps> = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!storedSerial || storedSerial.length === 0) return;
+            if (!serial || serial.length === 0) return;
 
             try {
-                const backupListTemp = await getBackupList(storedSerial);
+                const backupListTemp = await getBackupList(serial);
                 if (backupListTemp.error || !Array.isArray(backupListTemp)) {
                     setMessage("No database files: " + backupListTemp.error);
                     return;
@@ -60,7 +60,7 @@ const SelectBackup: React.FC<SelectBackupProps> = () => {
             }
         };
         fetchData().catch(err => console.error('Error in fetchData:', err));
-    }, [storedSerial]);
+    }, [serial]);
 
     return (
         <select

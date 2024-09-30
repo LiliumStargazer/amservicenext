@@ -5,7 +5,7 @@ import {convertTimestampToDate} from "@/features/shared/client/utils/utils";
 
 const SelectParam = () => {
     const param = useStore(state => state.param);
-    const serial = useStore(state => state.storedSerial) ?? '';
+    const serial = useStore(state => state.serial) ?? '';
     const backupSelected = useStore(state => state.backupSelected);
     const setParam = useStore(state => state.setParam);
     const setCategorySelected = useStore(state => state.setCategorySelected);

@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 
-export function handleError(error: unknown): NextResponse {
+export function logErrorAndRespond(error: unknown): NextResponse {
     Sentry.captureException(error);
 
     if (error instanceof Error) {

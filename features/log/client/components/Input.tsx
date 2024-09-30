@@ -1,28 +1,27 @@
-import React, {ChangeEvent, KeyboardEvent} from "react";
+import React, { ChangeEvent, KeyboardEvent } from "react";
 import useStore from "@/app/store";
+import useValidateSerialAndNavigate from "@/features/shared/client/hooks/useValidateSerialAndNagivate";
 
-import {useRouter} from "next/navigation";
-import useHandleDownloadBackup from "@/features/shared/client/hooks/useHandleDownloadBackup";
-
-
-const Input= () => {
-    const setSerial = useStore(state => state.setSerial);
-    const serial = useStore(state => state.serial);
-    const router = useRouter();
-    const downloadBackup = useHandleDownloadBackup(router);
+const Input = () => {
+    const setSerialTemp = useStore(state => state.setSerialTemp);
+    const serialTemp = useStore(state => state.serialTemp);
+    const validateSerialAndNavigate = useValidateSerialAndNavigate();
 
     const handleKeyDownOnLog = async (event: KeyboardEvent) => {
-        if (event.key === "Enter" ) {
-            await downloadBackup(serial);
+        if (event.key === "Enter") {
+            await validateSerialAndNavigate(serialTemp);
         }
-    }
+    };
 
-    return <input type="text"
-                  className="input input-md input-bordered join-item max-w-36"
-                  onChange={(event: ChangeEvent<HTMLInputElement>) => setSerial(event.target.value)}
-                  placeholder = "Type Serial"
-                  onKeyDown={handleKeyDownOnLog}
-    />;
-}
+    return (
+        <input
+            type="text"
+            className="input input-md input-bordered join-item max-w-36"
+            onChange={(event: ChangeEvent<HTMLInputElement>) => setSerialTemp(event.target.value)}
+            onKeyDown={handleKeyDownOnLog}
+            placeholder="Type Serial"
+        />
+    );
+};
 
 export default Input;

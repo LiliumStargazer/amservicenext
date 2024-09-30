@@ -38,9 +38,9 @@ const DropDownMenu: React.FC = () => {
     const setMessage = useStore(state => state.setMessage);
     const gridApi = useStore(state => state.gridApi) as GridApi | null;
     const searchValue = useStore(state => state.searchValue);
-    const storedSerial = useStore(state => state.storedSerial) ?? '';
+    const storedSerial = useStore(state => state.serial) ?? '';
     const backupSelected = useStore(state => state.backupSelected);
-    const logDaMaster = useStore(state => state.logDaMaster);
+    const logDaMaster = useStore(state => state.logData);
     const setFrigoData = useStore(state => state.setFrigoData);
     const setParam = useStore(state => state.setParam);
     const setLoading = useStore(state => state.setLoading);

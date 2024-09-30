@@ -12,6 +12,7 @@ interface AgGridProps {
     onGridReady?: (params: any) => void;
     immutableData?: boolean; // Add this line
     getRowNodeId?: (data: any) => any;
+    onFirstDataRendered?: (params: any) => void;
 }
 
 
@@ -24,6 +25,7 @@ const AgGrid: React.FC<AgGridProps> = ({
     defaultColDef,
     onGridReady,
     immutableData,getRowNodeId
+
 }) => {
     const { height: windowHeight } = useWindowSize();
     const height = Number.isFinite(windowHeight) ? windowHeight : 0;

@@ -11,6 +11,7 @@ interface SystemPaths {
     localBackupDirectory: string;
     localBackupZippedFile: string;
     localBackupUnzippedFile: string | null;
+    toString(): string;
 }
 
  function createSystemPaths(matricola: string, backupName: string = ""): SystemPaths {
@@ -25,7 +26,16 @@ interface SystemPaths {
         remoteBackupFile,
         localBackupDirectory,
         localBackupZippedFile,
-        localBackupUnzippedFile: null
+        localBackupUnzippedFile: null,
+        toString() {
+            return `SystemPaths {
+                remoteDirectory: ${this.remoteDirectory},
+                remoteBackupFile: ${this.remoteBackupFile},
+                localBackupDirectory: ${this.localBackupDirectory},
+                localBackupZippedFile: ${this.localBackupZippedFile},
+                localBackupUnzippedFile: ${this.localBackupUnzippedFile}
+            }`;
+        }
     };
 }
 

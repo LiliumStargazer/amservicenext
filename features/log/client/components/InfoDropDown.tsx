@@ -7,7 +7,7 @@ import {getBackupList} from "@/features/shared/client/api";
 const InfoDropDown: React.FC = () => {
     const [backupInfo, setBackupInfo] = useState<any>([]);
     const [backupList, setBackupList] = useState([]);
-    const storedSerial = useStore(state => state.storedSerial);
+    const storedSerial = useStore(state => state.serial);
     const setMessage = useStore(state => state.setMessage);
 
 

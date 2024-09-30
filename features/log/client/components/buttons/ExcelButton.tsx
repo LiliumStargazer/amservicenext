@@ -6,7 +6,7 @@ import ExcelJS from "exceljs";
 import {GridApi} from 'ag-grid-community';
 
 const ExcelButton: React.FC = () => {
-    const logDaMaster = useStore(state => state.logDaMaster);
+    const logDaMaster = useStore(state => state.logData);
     const setMessage = useStore(state => state.setMessage);
     const searchValue = useStore(state => state.searchValue);
     const gridApi = useStore(state => state.gridApi) as GridApi | null;

@@ -91,14 +91,14 @@ export const trimAndFormatSerial = (serial: string): string => {
     return serialTrimmed;
 };
 
-export const getSerialValidationMessage = (serial: string): string => {
-    if (serial === "") {
+export const getSerialValidationMessage = (serialTemp: string): string => {
+    if (serialTemp === "") {
         return "Please type a serial number";
-    } else if (isNaN(parseInt(serial, 10))) {
+    } else if (isNaN(parseInt(serialTemp, 10))) {
         return "Serial number must be a number";
-    } else if (serial.length < 4) {
+    } else if (serialTemp.length < 4) {
         return "Serial number too short";
-    } else if (serial.length > 5) {
+    } else if (serialTemp.length > 5) {
         return "Serial number too long";
     }
     return "valid";

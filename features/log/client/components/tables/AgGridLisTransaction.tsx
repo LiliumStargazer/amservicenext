@@ -34,7 +34,7 @@ enum LisErrorCode {
 }
 
 const AgGridLisTransaction = () => {
-    const storedSerial = useStore(state => state.storedSerial);
+    const storedSerial = useStore(state => state.serial);
     const backupSelected = useStore(state => state.backupSelected);
     const [fingerTransactionRows, setFingerTransactionRows] = useState<any[]>([]);
     const setTable = useStore(state => state.setTable);

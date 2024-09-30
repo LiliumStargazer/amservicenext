@@ -1,4 +1,5 @@
 import Client from 'ssh2-sftp-client';
+const path = require('path');
 
 interface SystemPaths {
     remoteDirectory: string;
@@ -31,6 +32,7 @@ class SftpConnector {
 
     async isSerialNumberOnSftp(systemPaths: SystemPaths): Promise<boolean> {
         try {
+
             await this.createSftpSession();
             const result = await this.sftp.exists(systemPaths.remoteDirectory.toString());
             return typeof result === 'string';
