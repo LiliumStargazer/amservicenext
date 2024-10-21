@@ -1,121 +1,113 @@
 import { create } from 'zustand'
 
 interface State {
-    serialTemp: string;
-    setSerialTemp: (value: string) => void;
-    serial: string | null;
-    setSerial: (value: string ) => void;
-    softwareType: string;
-    setSoftwareType: (value: string) => void;
-    backupList: any[];
-    setBackupList: (value: any[]) => void;
-    backupSelected: string;
-    setBackupSelected: (value: string) => void;
-    latestBackup: string;
-    setLatestBackup: (value: string) => void;
-    logData: any[];
-    setLogData: (value: any[]) => void;
-    logDataFetched: boolean;
-    setLogDataFetched: (value: boolean) => void;
-    searchValue: string;
-    setSearchValue: (value: string) => void;
-    loading: boolean;
-    setLoading: (value: boolean) => void;
-    message: string;
-    setMessage: (value: string) => void;
-    alertMessage: string;
-    setAlertMessage: (value: string) => void;
-    frigoData: any[];
-    setFrigoData: (value: any[]) => void;
-    frigoNumber: number;
-    setFrigoNumber: (value: number) => void;
-    frigoTables: Record<string, any>;
-    setFrigoTables: (value: Record<string, any>) => void;
-    frigoSelected: number;
-    setFrigoSelected: (value: number) => void;
-    dataFrigoCharts: any[];
-    setDataFrigoCharts: (value: any[]) => void;
+    IDParam: string;
     activeTab: number;
-    setActiveTab: (value: number) => void;
-    table: string;
-    setTable: (value: string) => void;
-    param: Record<string, any>;
-    setParam: (value: Record<string, any>) => void;
-    eventsTranslatedByAlive: Record<string, any>;
-    setEventsTranslatedByAlive: (value: Record<string, any>) => void;
-    isDialogOpen: boolean;
-    setIsDialogOpen: (value: boolean) => void;
-    dialogContent: object | any[];
-    setDialogContent: (value: object | any[]) => void;
-    gridApi: null;
-    setGridApi: (value: any | null) => void;
-    intervalMinutes: number;
-    setIntervalMinutes: (value: number) => void;
-    categorySelected: string | null;
-    setCategorySelected: (value: string | null) => void;
+    alertMessage: string;
     aliveSerial: string;
-    setAliveSerial: (value: string) => void;
+    backupList: any[];
+    backupSelected: string;
+    dataFrigoCharts: any[];
+    dialogContent: object | any[];
+    eventsTranslatedByAlive: Record<string, any>;
+    excelEvents: any[];
+    frigoData: any[];
+    frigoNumber: number;
+    frigoSelected: number;
+    gridApiStore: null;
+    intervalMinutes: number;
+    isDialogOpen: boolean;
+    isSearchEmpty: boolean;
+    latestBackup: string;
+    loadingGlobal: boolean;
+    message: string;
     password: string;
+    searchValueDebounced: string;
+    serial: string;
+    serialTemp: string;
+    setActiveTab: (value: number) => void;
+    setAlertMessage: (value: string) => void;
+    setAliveSerial: (value: string) => void;
+    setBackupList: (value: any[]) => void;
+    setBackupSelected: (value: string) => void;
+    setDataFrigoCharts: (value: any[]) => void;
+    setDialogContent: (value: object | any[]) => void;
+    setEventsTranslatedByAlive: (value: Record<string, any>) => void;
+    setExcelEvents: (value: any[]) => void;
+    setFrigoData: (value: any[]) => void;
+    setFrigoNumber: (value: number) => void;
+    setFrigoSelected: (value: number) => void;
+    setGridApiStore: (value: any | null) => void;
+    setIDParam: (value: string) => void;
+    setIntervalMinutes: (value: number) => void;
+    setIsDialogOpen: (value: boolean) => void;
+    setIsSearchEmpty: (value: boolean) => void;
+    setLatestBackup: (value: string) => void;
+    setLoadingGlobal: (value: boolean) => void;
+    setMessage: (value: string) => void;
     setPassword: (value: string) => void;
+    setSearchValueDebounced: (value: string) => void;
+    setSerial: (value: string) => void;
+    setSerialTemp: (value: string) => void;
+    setSoftwareType: (value: string) => void;
+    setTable: (value: string) => void;
+    softwareType: string;
+    table: string;
 }
 
 const useStore = create<State>((set) => ({
-    serialTemp: '',
-    setSerialTemp: (value) => set({ serialTemp: value }),
-    softwareType: '',
-    serial: '',
-    setSerial: (value) => set({ serial: value }),
-    setSoftwareType: (value) => set({ softwareType: value }),
-    backupList: [],
-    setBackupList: (value) => set({ backupList: value }),
-    backupSelected: '',
-    setBackupSelected: (value) => set({ backupSelected: value }),
-    latestBackup: '',
-    setLatestBackup: (value) => set({ latestBackup: value }),
-    logData: [],
-    setLogData: (value) => set({ logData: value }),
-    logDataFetched: false,
-    setLogDataFetched: (value) => set({ logDataFetched: value }),
-    searchValue: '',
-    setSearchValue: (value) => set({ searchValue: value }),
-    loading: false,
-    setLoading: (value) => set({ loading: value }),
-    message: '',
-    setMessage: (value) => set({ message: value }),
-    alertMessage: '',
-    setAlertMessage: (value) => set({ alertMessage: value }),
-    frigoData: [],
-    setFrigoData: (value) => set({ frigoData: value }),
-    frigoNumber: 0,
-    setFrigoNumber: (value) => set({ frigoNumber: value }),
-    frigoTables: {},
-    setFrigoTables: (value) => set({ frigoTables: value }),
-    frigoSelected: 0,
-    setFrigoSelected: (value) => set({ frigoSelected: value }),
-    dataFrigoCharts: [],
-    setDataFrigoCharts: (value) => set({ dataFrigoCharts: value }),
+    IDParam: '',
     activeTab: 1,
-    setActiveTab: (value) => set({ activeTab: value }),
-    table: 'Home',
-    setTable: (value) => set({ table: value }),
-    param: {},
-    setParam: (value) => set({ param: value }),
-    eventsTranslatedByAlive: {},
-    setEventsTranslatedByAlive: (value) => set({ eventsTranslatedByAlive: value }),
-    isDialogOpen: false,
-    setIsDialogOpen: (value) => set({ isDialogOpen: value }),
-    dialogContent: [],
-    setDialogContent: (value) => set({ dialogContent: value }),
-    gridApi: null,
-    setGridApi: (value) => set({ gridApi: value }),
-    intervalMinutes: 0,
-    setIntervalMinutes: (value) => set({ intervalMinutes: value }),
-    categorySelected: null,
-    setCategorySelected: (value) => set({ categorySelected: value }),
+    alertMessage: '',
     aliveSerial: '',
-    setAliveSerial: (value) => set({ aliveSerial: value }),
+    backupList: [],
+    backupSelected: '',
+    dataFrigoCharts: [],
+    dialogContent: [],
+    eventsTranslatedByAlive: {},
+    excelEvents: [],
+    frigoData: [],
+    frigoNumber: 0,
+    frigoSelected: 0,
+    gridApiStore: null,
+    intervalMinutes: 0,
+    isDialogOpen: false,
+    isSearchEmpty: true,
+    latestBackup: '',
+    loadingGlobal: false,
+    message: '',
     password: '',
-    setPassword: (value) => set({ password: value }),
+    searchValueDebounced: '',
+    serial: '',
+    serialTemp: '',
+    softwareType: '',
+    table: 'no_table',
+    setActiveTab: (value) => set({activeTab: value}),
+    setAlertMessage: (value) => set({alertMessage: value}),
+    setAliveSerial: (value) => set({aliveSerial: value}),
+    setBackupList: (value) => set({backupList: value}),
+    setBackupSelected: (value) => set({backupSelected: value}),
+    setDataFrigoCharts: (value) => set({dataFrigoCharts: value}),
+    setDialogContent: (value) => set({dialogContent: value}),
+    setEventsTranslatedByAlive: (value) => set({eventsTranslatedByAlive: value}),
+    setExcelEvents: (value) => set({excelEvents: value}),
+    setFrigoData: (value) => set({frigoData: value}),
+    setFrigoNumber: (value) => set({frigoNumber: value}),
+    setFrigoSelected: (value) => set({frigoSelected: value}),
+    setGridApiStore: (value) => set({gridApiStore: value}),
+    setIDParam: (value) => set({IDParam: value}),
+    setIntervalMinutes: (value) => set({intervalMinutes: value}),
+    setIsDialogOpen: (value) => set({isDialogOpen: value}),
+    setIsSearchEmpty: (value) => set({isSearchEmpty: value}),
+    setLatestBackup: (value) => set({latestBackup: value}),
+    setLoadingGlobal: (value) => set({loadingGlobal: value}),
+    setMessage: (value) => set({message: value}),
+    setPassword: (value) => set({password: value}),
+    setSearchValueDebounced: (value) => set({searchValueDebounced: value}),
+    setSerial: (value) => set({serial: value}),
+    setSerialTemp: (value) => set({serialTemp: value}),
+    setSoftwareType: (value) => set({softwareType: value}),
+    setTable: (value) => set({table: value}),
 }));
 
 export default useStore;

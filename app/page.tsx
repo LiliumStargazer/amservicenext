@@ -9,9 +9,13 @@ import taiga from "@/public/images/taiga-2.svg";
 import vte from "@/public/images/vtenext.png";
 import tableau from "@/public/images/tableau-software.svg";
 import amlog from "@/public/images/image2.jpg";
-import Card from "@/features/home/components/Card";
-import Header from "@/features/shared/client/components/Header";
-import Footer from "@/features/shared/client/components/Footer";
+import amacademy from "@/public/amacademy.png";
+import json from "@/public/images/json.png";
+import Header from "@/src/client/components/shared/Header";
+import Card from "@/src/client/components/home/Card";
+import Footer from "@/src/client/components/shared/Footer";
+
+
 
 const Login: React.FC = () => {
 
@@ -29,7 +33,7 @@ const Login: React.FC = () => {
                     />
                     <Card
                         title={"Password"}
-                        description="Calcolatore di password per i servizi tecnici"
+                        description="Password per i servizi tecnici"
                         color={"#63E6BE"}
                         id={"ampassword"}
                         isButtonEnabled={false}
@@ -46,7 +50,7 @@ const Login: React.FC = () => {
                     <Card
                         title="Am Club"
                         id={"amclub"}
-                        description="Consolle di gestione dei distributori per i clienti"
+                        description="Dashboard Consolle di gestione dei distributori per i clienti"
                         imageSrc={amclublogo}
                     />
                     <Card
@@ -74,6 +78,19 @@ const Login: React.FC = () => {
                         id={"shop"}
                         description="Dashboard shop clienti"
                         imageSrc={prestaShop}
+                        scale={0.6}
+                    />
+                    <Card
+                        title="AM Academy"
+                        id={"academy"}
+                        description="Corsi di aggiornamento"
+                        imageSrc={amacademy}
+                    />
+                    <Card
+                        title="JSON Server"
+                        id={"json"}
+                        description="piattaforma di configurazione dei distributori"
+                        imageSrc={json}
                         scale={0.6}
                     />
                     <Card

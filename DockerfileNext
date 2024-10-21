@@ -58,7 +58,7 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-COPY ./params /app/params
+COPY src/server/params /app/params
 RUN chown -R nextjs:nodejs /app/params
 
 USER nextjs

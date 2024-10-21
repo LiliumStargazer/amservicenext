@@ -1,4 +1,4 @@
-import {logErrorAndRespond} from "@/features/shared/client/utils/error-handler";
+import {logErrorAndRespond} from "@/src/server/error-handler";
 
 export const dynamic = "force-dynamic";
 
