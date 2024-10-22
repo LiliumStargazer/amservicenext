@@ -20,15 +20,27 @@ export async function GET(req: Request): Promise<NextResponse> {
     startOfDayDate.setHours(0, 0, 0, 0);
     endOfDay.setHours(23, 59, 59, 999);
 
+    function formatDateToLocalString(date: any) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Mesi da 0 a 11
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+    const startOfDayString = formatDateToLocalString(startOfDayDate);
+    const endOfDayString = formatDateToLocalString(endOfDay);
+
     try {
         const systemPaths = createSystemPaths(serial, backup);
         systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
 
-        let query = `SELECT * FROM EventiView WHERE DataOraR BETWEEN '${startOfDayDate.toISOString()}' AND '${endOfDay.toISOString()}'`;
+        let query = `SELECT * FROM EventiView WHERE DataOraR BETWEEN '${startOfDayString}' AND '${endOfDayString}'`;
         if (systemPaths.localBackupUnzippedFile.includes("DbBackup")) {
-            query = `SELECT * FROM EventiAll WHERE DataOraR BETWEEN '${startOfDayDate.toISOString()}' AND '${endOfDay.toISOString()}'`;
+            query = `SELECT * FROM EventiAll WHERE DataOraR BETWEEN '${startOfDayString}' AND '${endOfDayString}'`;
         }
-
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
         return NextResponse.json(results);
 

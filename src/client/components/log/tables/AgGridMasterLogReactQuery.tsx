@@ -13,6 +13,7 @@ import LoadingOverlayAgGrid from "@/src/client/components/log/tables/LoadingOver
 import { useQuery } from '@tanstack/react-query';
 import {apiGetEventsByDate, apiGetEventsFromLatestBackup} from "@/src/client/api/apiBackend";
 import {apiGetAliveEventsCorsHandling, apiGetSelectedEvents} from "@/src/client/api/api";
+import datepicker from "@/src/client/components/log/Datepicker";
 
 const AgGridMasterLogReactQuery = () => {
     const searchValueDebounced = useStore(state => state.searchValueDebounced);
@@ -28,17 +29,19 @@ const AgGridMasterLogReactQuery = () => {
     const loadingGlobal = useStore(state => state.loadingGlobal);
     const setLoadingGlobal = useStore(state => state.setLoadingGlobal);
     const [logData, setLogData] = useState<RowData[]>([]);
-   // const [isDateChanged, setIsDateChanged] = useState(false);
-    const isDateChanged = useStore(state => state.isDateChanged);
-    const setIsDateChanged = useStore(state => state.setIsDateChanged);
+    //const isDateChanged = useStore(state => state.isDateChanged);
+    //const setIsDateChanged = useStore(state => state.setIsDateChanged);
+    const [isDateChanged, setIsDateChanged] = useState(false);
     const [isExtractData, setIsExtractData] = useState(false);
     const [event, setEvent] = useState<any>(null);
     const [isAliveEvent,setIsAliveEvent ] = useState(false);
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState<any>(null);
     const [gridApi, setGridApi] = useState<any>(null);
     const [selectedEventsResult, setSelectedEventsResult] = useState<RowData[]>([]);
     const [loading, setLoading] = useState(false);
     const datePickerDate = useStore(state => state.datePickerDate);
+    const setSearchValueDebounced = useStore(state => state.setSearchValueDebounced);
+
 
     useEffect(() => {
         if (loadingGlobal) {
@@ -49,40 +52,28 @@ const AgGridMasterLogReactQuery = () => {
     }, [loadingGlobal, loading, setLoading,setLoadingGlobal]);
 
     useEffect(() => {
-
-        if (!isDateChanged)
-            return;
-
-        if (searchValueDebounced.length !== 0){// DataOraR
-            // const [year, month, day] = dateFilterModel.dateFrom.split(' ')[0].split('-');
-            // const dayWithoutLeadingZero = parseInt(day, 10);
-            // const monthWithoutLeadingZero = parseInt(month, 10);
-            // const dateString = `${dayWithoutLeadingZero}/${monthWithoutLeadingZero}/${year}`;
-            // const filteredData = selectedEventsResult.filter((row) => row.DataOraR.includes(dateString));
-            // gridApi.setGridOption('rowData', filteredData);
-            // setExcelEvents(filteredData);
-            return;
-        }
-        else {
-            //temporaneo
+        console.log(date);
+        if (date === null)
             setDate(datePickerDate.toISOString());
-            // setDate(date.toISOString());
+        else {
+            console.log(datePickerDate.toISOString());
+            setDate(datePickerDate.toISOString());
             setIsDateChanged(true);
-
         }
-    }, [datePickerDate, isDateChanged, setIsDateChanged, setDate, searchValueDebounced]);
+
+    }, [datePickerDate ]);
 
 
     const { isLoading: isLoadingLatestBackup, isError: isErrorLatestBackup, data: latestDataBackup, error: errorLatestBackup } = useQuery({
-        queryKey: ['eventsFromLatestBackup', serial, backupSelected, searchValueDebounced, table],
+        queryKey: ['eventsFromLatestBackup', serial, backupSelected, logData, table],
         queryFn: () => apiGetEventsFromLatestBackup(serial, backupSelected),
-        enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && searchValueDebounced.length === 0 && table === 'master',
+        enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && logData.length === 0 && table === 'master',
     });
 
     const {isLoading: isLoadingDataByDate, isError: isErrorDataByDate, data: dataByDate, error: errorDataByDate, isSuccess: isSuccessDataByDate} = useQuery({
-        queryKey: ['eventsFromDataByDate',serial, backupSelected, date, isExtractData, isDateChanged, table],
+        queryKey: ['eventsFromDataByDate',serial, backupSelected, table, date, isDateChanged, isExtractData ],
         queryFn: () => apiGetEventsByDate(serial, backupSelected, date),
-        enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && ( isExtractData || isDateChanged ) && table === 'master' ,
+        enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && table === 'master' && ( isExtractData || isDateChanged ),
     });
 
     const {isLoading: isLoadingAliveEvent, isError: isErrorAliveEvent, data: aliveEvent, error: errorAliveEvent} = useQuery({
@@ -96,6 +87,7 @@ const AgGridMasterLogReactQuery = () => {
         queryFn: () => apiGetSelectedEvents(serial, backupSelected, searchValueDebounced),
         enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && searchValueDebounced.length !== 0 && table === 'master',
     });
+
 
     useEffect(() => {
 
@@ -133,6 +125,7 @@ const AgGridMasterLogReactQuery = () => {
     }, [latestDataBackup, isLoadingLatestBackup, isErrorLatestBackup, errorLatestBackup, setMessage, setTable]);
 
     useEffect(() => {
+
         if (isLoadingDataByDate) {
             setLoadingGlobal(true);
             return;
@@ -148,14 +141,12 @@ const AgGridMasterLogReactQuery = () => {
             if (dataByDate && dataByDate.length !== 0) {
 
                 if (isDateChanged) {
-                    console.log('isSuccessDataByDate', isSuccessDataByDate);
-                    console.log('isDateChanged', isDateChanged);
-                    console.log('dataByDate', dataByDate);
                     const rows = getRowsMap(dataByDate);
                     gridApi.setGridOption('rowData', rows);
                     setMessage('');
                     setLoadingGlobal(false);
                     setIsDateChanged(false);
+                    setSearchValueDebounced('');
                     return;
                 }
 
@@ -171,12 +162,13 @@ const AgGridMasterLogReactQuery = () => {
                     localStorage.clear();
                     localStorage.setItem('rowID', JSON.stringify(event.data.IDR));
                     localStorage.setItem('extractedData', JSON.stringify(mappedRows));
+                    setLoadingGlobal(false);
+                    setIsExtractData(false);
                     setTimeout(() => {
                         newWindow.location.href = '/extracted-days-events';
                         newWindow.focus();
                     }, 100);
-                    setLoadingGlobal(false);
-                    setIsExtractData(false);
+                    return;
                 }
             }
             else{
@@ -185,7 +177,7 @@ const AgGridMasterLogReactQuery = () => {
             }
         }
 
-    }, [isLoadingDataByDate, isErrorDataByDate, dataByDate, errorDataByDate, isDateChanged, event]);
+    }, [isLoadingDataByDate, isErrorDataByDate, dataByDate, errorDataByDate, isDateChanged, event, setSearchValueDebounced, setMessage]);
 
     useEffect(() => {
         if (isLoadingAliveEvent) {
@@ -239,7 +231,7 @@ const AgGridMasterLogReactQuery = () => {
             setLoadingGlobal(false);
         } else {
             console.log('selectedEvents', selectedEvents);
-            setMessage("No data found.");
+            setMessage("No selected events found.");
             setLoadingGlobal(false);
         }
     }, [isLoadingSelectedEvents, isErrorSelectedEvents, selectedEvents, errorSelectedEvents, searchValueDebounced ]);
@@ -247,20 +239,26 @@ const AgGridMasterLogReactQuery = () => {
 
     const onCellClicked = useCallback((event: CellClickedEvent) => {
         console.log('onCellClicked', event);
-        setEvent(event);
-        const [day, month, year] = event.data.DataOraR.split('/');
-        setDate( new Date(Date.UTC(Number(year), Number(month) - 1, Number(day))).toISOString())
 
         if (event.colDef.field === 'IDR' &&  searchValueDebounced.length === 0){
             setMessage('filter something first...');
+            setEvent(event);
             return;
         }
 
-        if (event.colDef.field === 'IDR' &&  searchValueDebounced.length !== 0  ){
+        if (event.colDef.field === 'IDR' ){
+
+            setEvent(event);
+            const [day, month, year] = event.data.DataOraR.split('/');
+            console.log('day', day, 'month', month, 'year', year);
+            const newDate = new Date(year, month - 1, day);
+            console.log('newDate', newDate.toISOString());
+            setDate(newDate.toISOString());
+            //setDate( new Date(Date.UTC(Number(year), Number(month) - 1, Number(day))).toISOString());
             setIsExtractData(true);
         }
 
-    }, [searchValueDebounced]);
+    }, [searchValueDebounced, setEvent, setDate, setIsExtractData]);
 
     const onCellDoubleClicked = useCallback((event: CellDoubleClickedEvent) => {
         if ( event && event.colDef.field === 'EventString' ){
@@ -269,43 +267,6 @@ const AgGridMasterLogReactQuery = () => {
         }
     }, []);
 
-    const onFilterChanged = useCallback((event: FilterChangedEvent) => {
-
-        // const dateFilterModel = event.api.getFilterModel()['DataOraR'];
-        // const inputDate = event.api.getFilterModel()['DataOraR'].filter;
-        // const [day, month, year] = inputDate.split('/').map(Number);
-        // const date = new Date(year, month - 1, day);
-        // console.log("date", date.toString());
-        //
-        // if (dateFilterModel && dateFilterModel.dateFrom) {
-        //     if (searchValueDebounced.length !== 0){// DataOraR
-        //         const [year, month, day] = dateFilterModel.dateFrom.split(' ')[0].split('-');
-        //         const dayWithoutLeadingZero = parseInt(day, 10);
-        //         const monthWithoutLeadingZero = parseInt(month, 10);
-        //         const dateString = `${dayWithoutLeadingZero}/${monthWithoutLeadingZero}/${year}`;
-        //         const filteredData = selectedEventsResult.filter((row) => row.DataOraR.includes(dateString));
-        //         gridApi.setGridOption('rowData', filteredData);
-        //         setExcelEvents(filteredData);
-        //         return;
-        //     }
-        //     else{
-        //         const selectedDate = new Date(dateFilterModel.dateFrom);
-        //         //temporaneo
-        //         setDate(selectedDate.toISOString());
-        //         // setDate(date.toISOString());
-        //         setIsDateChanged(true);
-        //
-        //     }
-        // }
-        //
-        // if (dateFilterModel === undefined && searchValueDebounced.length !==0){
-        //     gridApi.setGridOption('rowData', selectedEventsResult);
-        // }
-
-    }, [searchValueDebounced, selectedEventsResult]);
-
-
-
     const onGridReady = useCallback((params: GridReadyEvent) => {
 
         setGridApiStore(params.api);
@@ -313,17 +274,7 @@ const AgGridMasterLogReactQuery = () => {
     }, [searchValueDebounced]);
 
     const colDefsBase: ColDef<RowData>[] = useMemo(() => [
-        // { headerName: 'Data', field: 'DataOraR', flex: 1, minWidth: 140, cellStyle: { whiteSpace: 'nowrap' }, filter: 'agDateColumnFilter', sortable: false, floatingFilter: true,
-        //     filterParams: {
-        //         minValidYear: 2000,
-        //         maxValidYear: 2035,
-        //         inRangeFloatingFilterDateFormat: "Do MMM YYYY",
-        //
-        //     },
-        //     suppressHeaderFilterButton: true,
-        //     suppressFloatingFilterButton: true,
-        // },
-        { headerName: 'Data', field: 'DataOraR', flex: 1, minWidth: 140, cellStyle: { whiteSpace: 'nowrap' }, type:"string", filter: false, sortable: false, floatingFilter: true,
+        { headerName: 'Data', field: 'DataOraR', flex: 1, minWidth: 140, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter: true,
             suppressHeaderFilterButton: true,
             suppressFloatingFilterButton: true,
         },
@@ -356,7 +307,6 @@ const AgGridMasterLogReactQuery = () => {
                     onCellDoubleClicked={onCellDoubleClicked}
                     rowClassRules={rowClassRules}
                     animateRows={false}
-                    onFilterChanged={onFilterChanged}
                     onGridReady={onGridReady}
                     loadingOverlayComponent={LoadingOverlayAgGrid}
                     loadingOverlayComponentParams={{ loadingMessage: "One moment please..." }}

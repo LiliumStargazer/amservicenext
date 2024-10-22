@@ -28,7 +28,7 @@ services:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 3600 --label-enable
+    command: --interval 600 --label-enable
     restart: always
 
   cronjob:
@@ -37,5 +37,3 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
     restart: always
-
-

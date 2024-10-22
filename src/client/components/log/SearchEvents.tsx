@@ -22,7 +22,6 @@ const SearchEvents: React.FC = () => {
     }, [debouncedSetSearchValue]);
 
     useEffect(() => {
-        console.log("searchValueDebounced", searchValueDebounced);
         setSearchValue(searchValueDebounced);
     }, [searchValueDebounced]);
 
