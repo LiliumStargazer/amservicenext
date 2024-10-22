@@ -33,7 +33,7 @@ const AgGridMasterLogReactQuery = () => {
     //const setIsDateChanged = useStore(state => state.setIsDateChanged);
     const [isDateChanged, setIsDateChanged] = useState(false);
     const [isExtractData, setIsExtractData] = useState(false);
-    const [event, setEvent] = useState<any>(null);
+    const [eventState, setEventState] = useState<any>(null);
     const [isAliveEvent,setIsAliveEvent ] = useState(false);
     const [date, setDate] = useState<any>(null);
     const [gridApi, setGridApi] = useState<any>(null);
@@ -160,7 +160,7 @@ const AgGridMasterLogReactQuery = () => {
                     }
                     const mappedRows = getRowsMap(dataByDate);
                     localStorage.clear();
-                    localStorage.setItem('rowID', JSON.stringify(event.data.IDR));
+                    localStorage.setItem('rowID', JSON.stringify(eventState.data.IDR));
                     localStorage.setItem('extractedData', JSON.stringify(mappedRows));
                     setLoadingGlobal(false);
                     setIsExtractData(false);
@@ -177,7 +177,7 @@ const AgGridMasterLogReactQuery = () => {
             }
         }
 
-    }, [isLoadingDataByDate, isErrorDataByDate, dataByDate, errorDataByDate, isDateChanged, event, setSearchValueDebounced, setMessage]);
+    }, [isLoadingDataByDate, isErrorDataByDate, dataByDate, errorDataByDate, isDateChanged, eventState, setSearchValueDebounced, setMessage]);
 
     useEffect(() => {
         if (isLoadingAliveEvent) {
@@ -191,20 +191,20 @@ const AgGridMasterLogReactQuery = () => {
         }
 
         if (isAliveEvent && aliveEvent) {
-            const rowEvent = event.data.EventString;
+            const rowEvent = eventState.data.EventString;
             const matchedEvent = aliveEvent.find((event) => event.EventString === rowEvent);
             if (matchedEvent) {
                 setDialogContent(matchedEvent);
                 setIsDialogOpen(true);
             } else {
                 console.error('matchedEvent is undefined or null');
-                setMessage('Not found event in alive');
+                setMessage('Not found eventState in alive');
             }
             setLoadingGlobal(false);
             setIsAliveEvent(false);
         }
 
-    }, [isLoadingAliveEvent, isErrorAliveEvent, aliveEvent, errorAliveEvent, isAliveEvent, event]);
+    }, [isLoadingAliveEvent, isErrorAliveEvent, aliveEvent, errorAliveEvent, isAliveEvent, eventState]);
 
     useEffect(() => {
 
@@ -242,27 +242,25 @@ const AgGridMasterLogReactQuery = () => {
 
         if (event.colDef.field === 'IDR' &&  searchValueDebounced.length === 0){
             setMessage('filter something first...');
-            setEvent(event);
+            setEventState(event);
             return;
         }
 
-        if (event.colDef.field === 'IDR' ){
-
-            setEvent(event);
+        if (event.colDef.field === 'IDR' && searchValueDebounced.length !== 0){
+            setEventState(event);
             const [day, month, year] = event.data.DataOraR.split('/');
             console.log('day', day, 'month', month, 'year', year);
             const newDate = new Date(year, month - 1, day);
             console.log('newDate', newDate.toISOString());
             setDate(newDate.toISOString());
-            //setDate( new Date(Date.UTC(Number(year), Number(month) - 1, Number(day))).toISOString());
             setIsExtractData(true);
         }
 
-    }, [searchValueDebounced, setEvent, setDate, setIsExtractData]);
+    }, [searchValueDebounced ]);
 
     const onCellDoubleClicked = useCallback((event: CellDoubleClickedEvent) => {
         if ( event && event.colDef.field === 'EventString' ){
-            setEvent(event);
+            setEventState(event);
             setIsAliveEvent(true);
         }
     }, []);
