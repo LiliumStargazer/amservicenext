@@ -109,8 +109,6 @@ const Chart: React.FC = () => {
                         selected={startDate}
                         onChange={date => setStartDate(date)}
                         dateFormat="dd/MM/yyyy"
-                        showMonthDropdown
-                        showYearDropdown
                      />
                 </div>
                 <div className="relative">

@@ -28,6 +28,8 @@ import LisButton from "@/src/client/components/log/buttons/LisButton";
 import MasterButton from "@/src/client/components/log/buttons/MasterButton";
 import NoDataAnimation from "@/src/client/components/log/NoDataAnimation";
 import AgGridMasterLogReactQuery from "@/src/client/components/log/tables/AgGridMasterLogReactQuery";
+import Datepicker from "@/src/client/components/log/Datepicker";
+
 const Log: React.FC = () => {
 
     const setTable = useStore(state => state.setTable);
@@ -46,6 +48,7 @@ const Log: React.FC = () => {
                     <GetButton />
                     <SelectBackup />
                     <InfoDropDown />
+                    <Datepicker />
                     <SelectRange />
                     <Pagination />
                     <SelectParam />

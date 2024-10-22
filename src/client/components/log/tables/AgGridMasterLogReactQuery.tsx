@@ -28,7 +28,9 @@ const AgGridMasterLogReactQuery = () => {
     const loadingGlobal = useStore(state => state.loadingGlobal);
     const setLoadingGlobal = useStore(state => state.setLoadingGlobal);
     const [logData, setLogData] = useState<RowData[]>([]);
-    const [isDateChanged, setIsDateChanged] = useState(false);
+   // const [isDateChanged, setIsDateChanged] = useState(false);
+    const isDateChanged = useStore(state => state.isDateChanged);
+    const setIsDateChanged = useStore(state => state.setIsDateChanged);
     const [isExtractData, setIsExtractData] = useState(false);
     const [event, setEvent] = useState<any>(null);
     const [isAliveEvent,setIsAliveEvent ] = useState(false);
@@ -36,6 +38,7 @@ const AgGridMasterLogReactQuery = () => {
     const [gridApi, setGridApi] = useState<any>(null);
     const [selectedEventsResult, setSelectedEventsResult] = useState<RowData[]>([]);
     const [loading, setLoading] = useState(false);
+    const datePickerDate = useStore(state => state.datePickerDate);
 
     useEffect(() => {
         if (loadingGlobal) {
@@ -44,6 +47,30 @@ const AgGridMasterLogReactQuery = () => {
             setLoading(false);
         }
     }, [loadingGlobal, loading, setLoading,setLoadingGlobal]);
+
+    useEffect(() => {
+
+        if (!isDateChanged)
+            return;
+
+        if (searchValueDebounced.length !== 0){// DataOraR
+            // const [year, month, day] = dateFilterModel.dateFrom.split(' ')[0].split('-');
+            // const dayWithoutLeadingZero = parseInt(day, 10);
+            // const monthWithoutLeadingZero = parseInt(month, 10);
+            // const dateString = `${dayWithoutLeadingZero}/${monthWithoutLeadingZero}/${year}`;
+            // const filteredData = selectedEventsResult.filter((row) => row.DataOraR.includes(dateString));
+            // gridApi.setGridOption('rowData', filteredData);
+            // setExcelEvents(filteredData);
+            return;
+        }
+        else {
+            //temporaneo
+            setDate(datePickerDate.toISOString());
+            // setDate(date.toISOString());
+            setIsDateChanged(true);
+
+        }
+    }, [datePickerDate, isDateChanged, setIsDateChanged, setDate, searchValueDebounced]);
 
 
     const { isLoading: isLoadingLatestBackup, isError: isErrorLatestBackup, data: latestDataBackup, error: errorLatestBackup } = useQuery({
@@ -243,34 +270,41 @@ const AgGridMasterLogReactQuery = () => {
     }, []);
 
     const onFilterChanged = useCallback((event: FilterChangedEvent) => {
-        const dateFilterModel = event.api.getFilterModel()['DataOraR'];
-        console.log('event', event);
-        console.log('onFilterChanged', dateFilterModel);
 
-
-        if (dateFilterModel && dateFilterModel.dateFrom) {
-            if (searchValueDebounced.length !== 0){// DataOraR
-                const [year, month, day] = dateFilterModel.dateFrom.split(' ')[0].split('-');
-                const dayWithoutLeadingZero = parseInt(day, 10);
-                const monthWithoutLeadingZero = parseInt(month, 10);
-                const dateString = `${dayWithoutLeadingZero}/${monthWithoutLeadingZero}/${year}`;
-                const filteredData = selectedEventsResult.filter((row) => row.DataOraR.includes(dateString));
-                gridApi.setGridOption('rowData', filteredData);
-                setExcelEvents(filteredData);
-                return;
-            }
-            else{
-                const selectedDate = new Date(dateFilterModel.dateFrom);
-                setDate(selectedDate.toISOString());
-                setIsDateChanged(true);
-            }
-        }
-
-        if (dateFilterModel === undefined && searchValueDebounced.length !==0){
-            gridApi.setGridOption('rowData', selectedEventsResult);
-        }
+        // const dateFilterModel = event.api.getFilterModel()['DataOraR'];
+        // const inputDate = event.api.getFilterModel()['DataOraR'].filter;
+        // const [day, month, year] = inputDate.split('/').map(Number);
+        // const date = new Date(year, month - 1, day);
+        // console.log("date", date.toString());
+        //
+        // if (dateFilterModel && dateFilterModel.dateFrom) {
+        //     if (searchValueDebounced.length !== 0){// DataOraR
+        //         const [year, month, day] = dateFilterModel.dateFrom.split(' ')[0].split('-');
+        //         const dayWithoutLeadingZero = parseInt(day, 10);
+        //         const monthWithoutLeadingZero = parseInt(month, 10);
+        //         const dateString = `${dayWithoutLeadingZero}/${monthWithoutLeadingZero}/${year}`;
+        //         const filteredData = selectedEventsResult.filter((row) => row.DataOraR.includes(dateString));
+        //         gridApi.setGridOption('rowData', filteredData);
+        //         setExcelEvents(filteredData);
+        //         return;
+        //     }
+        //     else{
+        //         const selectedDate = new Date(dateFilterModel.dateFrom);
+        //         //temporaneo
+        //         setDate(selectedDate.toISOString());
+        //         // setDate(date.toISOString());
+        //         setIsDateChanged(true);
+        //
+        //     }
+        // }
+        //
+        // if (dateFilterModel === undefined && searchValueDebounced.length !==0){
+        //     gridApi.setGridOption('rowData', selectedEventsResult);
+        // }
 
     }, [searchValueDebounced, selectedEventsResult]);
+
+
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
 
@@ -279,13 +313,17 @@ const AgGridMasterLogReactQuery = () => {
     }, [searchValueDebounced]);
 
     const colDefsBase: ColDef<RowData>[] = useMemo(() => [
-        { headerName: 'Data', field: 'DataOraR', flex: 1, minWidth: 140, cellStyle: { whiteSpace: 'nowrap' }, filter: 'agDateColumnFilter', sortable: false, floatingFilter: true,
-            filterParams: {
-                minValidYear: 2000,
-                maxValidYear: 2035,
-                inRangeFloatingFilterDateFormat: "Do MMM YYYY",
-
-            },
+        // { headerName: 'Data', field: 'DataOraR', flex: 1, minWidth: 140, cellStyle: { whiteSpace: 'nowrap' }, filter: 'agDateColumnFilter', sortable: false, floatingFilter: true,
+        //     filterParams: {
+        //         minValidYear: 2000,
+        //         maxValidYear: 2035,
+        //         inRangeFloatingFilterDateFormat: "Do MMM YYYY",
+        //
+        //     },
+        //     suppressHeaderFilterButton: true,
+        //     suppressFloatingFilterButton: true,
+        // },
+        { headerName: 'Data', field: 'DataOraR', flex: 1, minWidth: 140, cellStyle: { whiteSpace: 'nowrap' }, type:"string", filter: false, sortable: false, floatingFilter: true,
             suppressHeaderFilterButton: true,
             suppressFloatingFilterButton: true,
         },

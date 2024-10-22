@@ -6,11 +6,10 @@ const GetButton = () => {
     const loadingGlobal = useStore(state => state.loadingGlobal);
     const classNameButton = loadingGlobal ? "btn btn-info btn-disabled" : "btn btn-info";
     const serialTemp = useStore(state => state.serialTemp);
-    const serial = useStore(state => state.serial);
     const validateSerialAndNavigate = useResetAndNavigate();
 
     const handleClickLog = () => {
-        validateSerialAndNavigate(serialTemp, serial);
+        validateSerialAndNavigate(serialTemp);
     }
 
     return (

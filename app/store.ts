@@ -25,6 +25,9 @@ interface State {
     searchValueDebounced: string;
     serial: string;
     serialTemp: string;
+    isDateChanged: boolean;
+    table: string;
+    datePickerDate: Date;
     setActiveTab: (value: number) => void;
     setAlertMessage: (value: string) => void;
     setAliveSerial: (value: string) => void;
@@ -52,10 +55,13 @@ interface State {
     setSoftwareType: (value: string) => void;
     setTable: (value: string) => void;
     softwareType: string;
-    table: string;
+    setIsDateChanged: (value: boolean) => void;
+    setDatePickerDate: (value: Date) => void;
 }
 
 const useStore = create<State>((set) => ({
+    datePickerDate: new Date(),
+    isDateChanged: false,
     IDParam: '',
     activeTab: 1,
     alertMessage: '',
@@ -82,6 +88,8 @@ const useStore = create<State>((set) => ({
     serialTemp: '',
     softwareType: '',
     table: 'no_table',
+    setDatePickerDate: (value) => set({datePickerDate: value}),
+    setIsDateChanged: (value) => set({isDateChanged: value}),
     setActiveTab: (value) => set({activeTab: value}),
     setAlertMessage: (value) => set({alertMessage: value}),
     setAliveSerial: (value) => set({aliveSerial: value}),
