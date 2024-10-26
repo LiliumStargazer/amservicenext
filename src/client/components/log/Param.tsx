@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import useStore from "@/app/store";
 import {
     paramCategoryMapping,
@@ -18,13 +18,11 @@ import {
 import {Category} from "@/src/client/utils/paramMapping";
 import {capitalizeFirstLetter} from "@/src/client/utils/utils";
 import {apiGetParams} from "@/src/client/api/api";
+import {useQuery} from "@tanstack/react-query";
 
 interface ParamProps {}
 
 const Param: React.FC<ParamProps> = () => {
-
-
-
     const table = useStore(state => state.table);
     const serial = useStore(state => state.serial);
     const backupSelected = useStore(state => state.backupSelected);
@@ -35,40 +33,45 @@ const Param: React.FC<ParamProps> = () => {
     const [param, setParam] = useState<any>({});
     const [localTable, setLocalTable] = useState<React.ReactNode>(null);
     const [loading, setLoading] = useState(true);
+    const refSerial = useRef<string | null>(null);
     let mappedParams: any[] = [];
     let mappedParam: any = {};
 
+
+    const { isLoading, isError, isSuccess, data, error } = useQuery({
+        queryKey: ['getParamsBackups', serial, backupSelected, IDParam],
+        queryFn: () => apiGetParams(serial, backupSelected, IDParam),
+        enabled: backupSelected.length === 0 && !!serial && table === "param",
+    });
+
     useEffect(() => {
-        console.log('IDParam', IDParam);
-        if (table !== "param" || IDParam === '')
-            return;
-
-        const fetchParamData = async () => {
-            try {
-                console.log('fetching param data');
-                console.log('serial', serial, 'backupSelected', backupSelected, 'IDParam', IDParam);
-                const result = await apiGetParams(serial, backupSelected, IDParam);
-                console.log('result', result);
-                if (!result || result.length === 0) {
-                    setMessage('No param data found');
-                    setTable('master');
-                    setLoading(false);
-                    return;
-                }
-                setParam(result);
-                setLoading(false);
-            }catch (error) {
-                console.error('Error fetching param:', error);
-                setMessage('Error fetching param');
-                setTable('master');
-                setLoading(false);
-            }
+        if (refSerial.current !== serial) {
+            refSerial.current = serial;
+            setParam([]);
         }
-        setLoading(true);
-        fetchParamData().catch((error) => {console.error('Error fetching param:', error)});
-    }, [IDParam]);
+    }, [serial, refSerial, setParam]);
 
 
+    useEffect(() => {
+        if (isLoading) {
+            setLoading(true);
+            return;
+        }
+        if (isError) {
+            console.error('Error fetching param:', error);
+            setMessage('Error fetching param' + error.message);
+            setLoading(false);
+        }
+
+        if (isSuccess && data && data.length !== 0) {
+            setMessage('No param data found');
+            setTable('master');
+            setParam(data);
+            setLoading(false);
+            setLoading(false);
+        }
+
+    }, [isLoading, isError, isSuccess, data, error]);
 
     const processEntries = (entries: [string, any][], mapFunction: (key: string, value: any) => void) => {
         entries.forEach(([key, value]) => mapFunction(key, value));

@@ -56,8 +56,8 @@ export function convertT4(event: string, tag: string): { value: string } {
 }
 
 export const getRowsMap = (backupData: any) => {
-    return backupData.map((value: any, rowIndex: number) => ({
-        IDR: rowIndex,
+    return backupData.map((value: any) => ({
+        ID: value.ID.toString(),
         DataOraR: formatStringDateOrder(value.DataOraR),
         EventString: value.EventString,
         State: convertToState(parseInt(value.State)),

@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import useStore from "@/app/store";
 
-
-
 function usePasswordLevels() {
     const password = useStore(state => state.password);
     const setPassword = useStore(state => state.setPassword);

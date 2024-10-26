@@ -3,6 +3,8 @@ import useStore from "@/app/store";
 import { getSerialValidationMessage, onClickOpenWindow, trimAndFormatSerial } from "@/src/client/utils/utils";
 import useResetAndNavigate from "@/src/client/hooks/useResetAndNavigate";
 
+import useSetNewData from "@/src/client/hooks/useSetNewData";
+
 const Input = ({ isInput, id }: { isInput: boolean, id: string }) => {
     const setSerialTemp = useStore(state => state.setSerialTemp);
     const serialTemp = useStore(state => state.serialTemp);
@@ -11,7 +13,8 @@ const Input = ({ isInput, id }: { isInput: boolean, id: string }) => {
     const setPassword = useStore(state => state.setPassword);
     const setSerial = useStore(state => state.setSerial);
     const setMessage = useStore(state => state.setMessage);
-    const validateSerialAndNavigate = useResetAndNavigate();
+    const setNewData = useSetNewData();
+
 
     const handleKeyDownOnAlive = (event: KeyboardEvent) => {
         if (event.key === "Enter") {
@@ -28,7 +31,7 @@ const Input = ({ isInput, id }: { isInput: boolean, id: string }) => {
 
     const handleKeyDownOnLog = async (event: KeyboardEvent) => {
         if (event.key === "Enter") {
-            validateSerialAndNavigate(serialTemp);
+            await setNewData(serialTemp);
         }
     };
 

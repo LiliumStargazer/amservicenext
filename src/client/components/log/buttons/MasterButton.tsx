@@ -5,9 +5,10 @@ import useStore from "@/app/store";
 
 const MasterButton: React.FC = () => {
     const setTable = useStore(state => state.setTable);
+    const loadingGlobal = useStore(state => state.loadingGlobal);
     return (
-        <div >
-            <button onClick={() => setTable("master")}>
+        <div>
+            <button onClick={() => setTable("master")} disabled={loadingGlobal}>
                 <FontAwesomeIcon icon={faDatabase} size="2xl" className="text-primary"/>
             </button>
         </div>

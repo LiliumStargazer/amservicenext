@@ -1,4 +1,5 @@
 export interface RowData {
+    ID?: string
     IDR: string;
     DataOraR: string;
     EventString: string;

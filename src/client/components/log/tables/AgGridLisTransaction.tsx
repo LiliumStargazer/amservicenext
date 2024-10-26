@@ -140,6 +140,7 @@ const AgGridLisTransaction = () => {
                     columnDefs={colDefBase}
                     loading={loadingGlobal}
                     loadingOverlayComponent={LoadingOverlayAgGrid}
+                    alwaysShowVerticalScroll={true}
                 />
             </div>
         </div>

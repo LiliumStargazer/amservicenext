@@ -41,6 +41,7 @@ export async function GET(req: Request): Promise<NextResponse> {
         if (systemPaths.localBackupUnzippedFile.includes("DbBackup")) {
             query = `SELECT * FROM EventiAll WHERE DataOraR BETWEEN '${startOfDayString}' AND '${endOfDayString}'`;
         }
+
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
         return NextResponse.json(results);
 

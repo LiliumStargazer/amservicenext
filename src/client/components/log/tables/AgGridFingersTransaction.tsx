@@ -85,6 +85,7 @@ const AgGridFingersTransaction = () => {
                     columnDefs={colDefBase}
                     loading={loadingGlobal}
                     loadingOverlayComponent={LoadingOverlayAgGrid}
+                    alwaysShowVerticalScroll={true}
                 />
             </div>
         </div>

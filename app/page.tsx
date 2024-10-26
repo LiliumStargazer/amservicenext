@@ -9,13 +9,11 @@ import taiga from "@/public/images/taiga-2.svg";
 import vte from "@/public/images/vtenext.png";
 import tableau from "@/public/images/tableau-software.svg";
 import amlog from "@/public/images/image2.jpg";
-import amacademy from "@/public/amacademy.png";
+import amacademy from "@/public/images/amacademy.png";
 import json from "@/public/images/json.png";
 import Header from "@/src/client/components/shared/Header";
 import Card from "@/src/client/components/home/Card";
 import Footer from "@/src/client/components/shared/Footer";
-
-
 
 const Login: React.FC = () => {
 
@@ -58,7 +56,6 @@ const Login: React.FC = () => {
                         id={"amwiki"}
                         description="Risosrse e documentazione per il team di lavoro"
                         imageSrc={wikiLogo}
-                        scale={1.5}
                     />
                     <Card
                         title="ChatWoot"
@@ -78,7 +75,6 @@ const Login: React.FC = () => {
                         id={"shop"}
                         description="Dashboard shop clienti"
                         imageSrc={prestaShop}
-                        scale={0.6}
                     />
                     <Card
                         title="AM Academy"
@@ -91,28 +87,24 @@ const Login: React.FC = () => {
                         id={"json"}
                         description="piattaforma di configurazione dei distributori"
                         imageSrc={json}
-                        scale={0.6}
                     />
                     <Card
                         title="Taiga Project"
                         id={"taiga"}
                         description="Piattaforma di gestione dei progetti"
                         imageSrc={taiga}
-                        scale={0.5}
                     />
                     <Card
                         title="VTE"
                         id={"vte"}
                         description="l CRM di AM, contiene il modulo per la gestione dei ticket di assistenza"
                         imageSrc={vte}
-                        scale={0.5}
                     />
                     <Card
                         title="Tableau"
                         id={"tableau"}
                         description="Dashboard per le statistiche"
                         imageSrc={tableau}
-                        scale={0.5}
                     />
                     <Card
                         title="Audio Generator"
@@ -120,7 +112,6 @@ const Login: React.FC = () => {
                         description="File audio utilizzati dai prodotti"
                         icon={faMusic}
                         color={"#B197FC"}
-                        scale={0.5}
                     />
                     <Card
                         title="Statistic"
@@ -128,7 +119,6 @@ const Login: React.FC = () => {
                         description="Statistiche dei ticket"
                         icon={faLineChart}
                         color={"#f8820e"}
-                        scale={0.5}
                     />
                 </div>
             </div>

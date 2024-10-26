@@ -5,9 +5,10 @@ import useStore from "@/app/store";
 
 const FridgeButton: React.FC = () => {
     const setTable = useStore(state => state.setTable);
+    const loadingGlobal = useStore(state => state.loadingGlobal);
     return (
         <div >
-            <button onClick={() => setTable('fridge')}>
+            <button onClick={() => setTable('fridge')} disabled={loadingGlobal}>
                 <FontAwesomeIcon icon={faSnowflake} size="2xl" className="text-info"/>
             </button>
         </div>

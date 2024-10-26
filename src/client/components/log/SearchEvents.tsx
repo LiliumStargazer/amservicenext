@@ -8,10 +8,13 @@ const SearchEvents: React.FC = () => {
     const loadingGlobal = useStore(state => state.loadingGlobal);
     const table = useStore(state => state.table);
     const [searchValue, setSearchValue] = useState(searchValueDebounced);
+    const setSearchingLogEvent = useStore(state => state.setSearchingLogEvent);
 
     const debouncedSetSearchValue = useRef(
         debounce((value: string) => {
             setSearchValueDebounced(value);
+            if (value.length !==0)
+                setSearchingLogEvent(true);
         }, 1000)
     ).current;
 
@@ -29,6 +32,8 @@ const SearchEvents: React.FC = () => {
         const value = event.target.value;
         setSearchValue(value);
         debouncedSetSearchValue(value);
+        console.log('handlingChange searchevents');
+
     };
 
     if (table !== "master") return null;

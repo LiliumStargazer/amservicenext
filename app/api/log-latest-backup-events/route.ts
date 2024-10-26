@@ -31,7 +31,6 @@ export async function GET(req: Request): Promise<NextResponse> {
 
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
 
-
         return NextResponse.json(results);
     } catch (error) {
         return logErrorAndRespond(error);

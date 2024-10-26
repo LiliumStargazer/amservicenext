@@ -5,12 +5,12 @@ import useStore from "@/app/store";
 
 const ParamButton: React.FC = () => {
     const setTable = useStore(state => state.setTable);
-    const loadingGbloal = useStore(state => state.loadingGlobal);
+    const loadingGlobal = useStore(state => state.loadingGlobal);
     return (
         <div >
             <button
                 onClick={() => setTable("param")}
-                disabled={loadingGbloal}
+                disabled={loadingGlobal}
             >
                 <FontAwesomeIcon icon={faGear} size="2xl" className="text-error"/>
             </button>

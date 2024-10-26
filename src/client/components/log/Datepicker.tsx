@@ -17,11 +17,17 @@ const Datepicker: React.FC = () => {
 
     return (
         <DatePicker
+            placeholderText="Select a date"
             className="btn btn-info"
             disabled={loadingGlobal}
             selected={date}
             onChange={handleChange}
             dateFormat="dd/MM/yyyy"
+            useShortMonthInDropdown
+            minDate={new Date("2000-01-01")}
+            maxDate={new Date("2100-12-31")}
+            showMonthDropdown
+            showYearDropdown
         />
     );
 }

@@ -6,19 +6,6 @@
     --ag-font-size: 12px;
 }
 
-/*.ag-theme-quartz-dark.compact .ag-row {*/
-/*    height: var(--ag-list-item-height) !important;*/
-/*    font-size: var(--ag-font-size) !important;*/
-/*}*/
-
-/*.ag-theme-quartz-dark.compact .ag-header-cell-text {*/
-/*    font-size: 15px !important;*/
-/*}*/
-
-/*.ag-theme-quartz-dark.compact .ag-header-group-cell{*/
-/*    font-size: 20px !important;*/
-/*}*/
-
 .row-ev-coin-in {
     background-color: #57c284;
     font-weight: bold;
@@ -59,9 +46,192 @@
     font-weight: bold;
 }
 
-/* Aggiungi altre classi per tutti gli eventi definiti in eventsColors.ts */
+.row-ev-accensione {
+    background-color: #17a2b8;
+    font-weight: bold;
+}
+
+.row-ev-product-pressed {
+    background-color: #17a2b8;
+    font-weight: bold;
+}
+
+.row-ev-wdogfired {
+    background-color: #17a2b8;
+    font-weight: bold;
+}
+
+.row-ev-prod-venduto {
+    background-color: #ffc107;
+    font-weight: bold;
+}
+
+.row-ev-vendsession-end {
+    background-color: #ffc107;
+    font-weight: bold;
+}
+
+.row-ev-bnk-escrow {
+    background-color: #ffc107;
+    font-weight: bold;
+}
+
+.row-ev-v2-samebnk {
+    background-color: #ffc107;
+    font-weight: bold;
+}
+
+.row-ev-usbl-noise {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-usbl-nocom {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-usbl-nocomlong {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-usbdev-detach {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-adimac-alarm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
 
 .row-ev-prod-non-venduto {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-acc-restart {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-card-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-bnk-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-bnk-jammed {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-cac-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-finger-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-c5-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-mot-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-hop-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-locker-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-gv-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-prn-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-frigo-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-sanden-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-ifsanden-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-adimac-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-sileaff-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-pwm-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-serled-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-prel-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-cs-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-az-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-qrb-nocomm {
+    background-color: #dc3545;
+    font-weight: bold;
+}
+
+.row-ev-ing-nocomm {
     background-color: #dc3545;
     font-weight: bold;
 }

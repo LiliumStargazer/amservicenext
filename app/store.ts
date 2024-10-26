@@ -27,6 +27,7 @@ interface State {
     serialTemp: string;
     isDateChanged: boolean;
     table: string;
+    isSearchingLogEvent: boolean;
     datePickerDate: Date;
     setActiveTab: (value: number) => void;
     setAlertMessage: (value: string) => void;
@@ -57,9 +58,11 @@ interface State {
     softwareType: string;
     setIsDateChanged: (value: boolean) => void;
     setDatePickerDate: (value: Date) => void;
+    setSearchingLogEvent: (value: boolean) => void;
 }
 
 const useStore = create<State>((set) => ({
+    isSearchingLogEvent: false,
     datePickerDate: new Date(),
     isDateChanged: false,
     IDParam: '',
@@ -88,6 +91,7 @@ const useStore = create<State>((set) => ({
     serialTemp: '',
     softwareType: '',
     table: 'no_table',
+    setSearchingLogEvent: (value) => set({isSearchingLogEvent: value}),
     setDatePickerDate: (value) => set({datePickerDate: value}),
     setIsDateChanged: (value) => set({isDateChanged: value}),
     setActiveTab: (value) => set({activeTab: value}),

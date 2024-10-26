@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import useStore from "@/app/store";
 import { isGreaterThanOne, stringToDate } from "@/src/client/utils/utils";
-import {useQuery} from "@tanstack/react-query";
-import {apiGetBackupList} from "@/src/client/api/apiBackend";
+import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {apiGetBackupList} from "@/src/client/api/api";
 
 interface SelectBackupProps {}
 
@@ -12,17 +12,26 @@ const SelectBackup: React.FC<SelectBackupProps> = () => {
     const serial = useStore(state => state.serial);
     const setMessage = useStore(state => state.setMessage);
     const setBackupList = useStore(state => state.setBackupList);
+    const backupList = useStore(state => state.backupList);
     const table = useStore(state => state.table);
     const setTable = useStore(state => state.setTable);
     const loadingGlobal = useStore(state => state.loadingGlobal);
     const setLoadingGlobal = useStore(state => state.setLoadingGlobal);
     const [backupOptions, setBackupOptions] = useState<React.ReactNode[]>([]);
+    const queryClient = useQueryClient();
+    const [isSerialChanged, setIsSerialChanged] = useState(false);
 
     const { isLoading, isError, data, error } = useQuery({
-        queryKey: ['getBackuplist', serial],
+        queryKey: ['getBackuplist', serial, backupList, isSerialChanged],
         queryFn: () => apiGetBackupList(serial),
-        enabled: !!serial && serial.length > 0,
+        enabled: backupList.length === 0 && isSerialChanged && !!serial,
     });
+
+    useEffect(() => {
+        setBackupSelected('');
+        setBackupList([]);
+        setIsSerialChanged(true);
+    }, [serial, setBackupList, setBackupSelected, setIsSerialChanged]);
 
     const getLatestBackup = useCallback((backupList: any[]) => {
         let latestDate: Date | null = null;
@@ -79,10 +88,9 @@ const SelectBackup: React.FC<SelectBackupProps> = () => {
             }
             setBackupList(data);
             setBackupSelected(latestBackup);
-            setLoadingGlobal(false);
-            return;
+            setIsSerialChanged(false);
         }
-    }, [isError, data, error]);
+    }, [isError, data, error, queryClient, isLoading, serial, backupList, setBackupList, setBackupSelected, setMessage, setTable, setLoadingGlobal, getLatestBackup]);
 
     if (table !== 'master')
         return;

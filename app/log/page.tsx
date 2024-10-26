@@ -41,7 +41,7 @@ const Log: React.FC = () => {
     }, []);
 
     return (
-        <div className="h-screen">
+        <div className="h-screen overflow-hidden">
             <div className="navbar bg-base-100">
                 <div className="navbar-start space-x-2 ">
                     <Input />
@@ -76,7 +76,6 @@ const Log: React.FC = () => {
                 <div className="h-full">
                     <Dialog/>
                     <NoDataAnimation/>
-                    {/*<AgGridMasterLog/>*/}
                     <AgGridMasterLogReactQuery/>
                     <Chart/>
                     <AgGridFridge/>

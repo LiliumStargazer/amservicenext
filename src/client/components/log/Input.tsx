@@ -1,16 +1,17 @@
 import React, { ChangeEvent, KeyboardEvent } from "react";
 import useStore from "@/app/store";
 import useResetAndNavigate from "@/src/client/hooks/useResetAndNavigate";
+import useSetNewData from "@/src/client/hooks/useSetNewData";
 
 const Input = () => {
     const setSerialTemp = useStore(state => state.setSerialTemp);
     const serialTemp = useStore(state => state.serialTemp);
     const loadingGlobal = useStore(state => state.loadingGlobal);
-    const validateSerialAndNavigate = useResetAndNavigate();
+    const setNewData = useSetNewData();
 
     const handleKeyDownOnLog = (event: KeyboardEvent) => {
         if (event.key === "Enter") {
-            validateSerialAndNavigate(serialTemp);
+            setNewData(serialTemp).catch(console.error);
         }
     };
 

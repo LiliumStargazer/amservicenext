@@ -132,6 +132,7 @@ const AgGridFridge = () => {
                     rowData={frigoData[frigoSelected]}
                     columnDefs={colDefsBase}
                     loadingOverlayComponent={LoadingOverlayAgGrid}
+                    alwaysShowVerticalScroll={true}
                 />
             </div>
         </div>
