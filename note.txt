@@ -1,4 +1,4 @@
-docker buildx build -t lalghisi/amservice:1.0 --platform linux/amd64,linux/arm64 --push . -f DockerfileNext
+docker buildx build -t lalghisi/amservice:1.0 --platform linux/amd64 --push . -f DockerfileNext
 docker buildx build -t lalghisi/nginx:1.0 --platform linux/amd64,linux/arm64 --push . -f DockerfileNginx
 
 docker build -t nextjs-docker .

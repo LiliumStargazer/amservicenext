@@ -6,10 +6,16 @@ const GetButton = () => {
     const loadingGlobal = useStore(state => state.loadingGlobal);
     const classNameButton = loadingGlobal ? "btn btn-info btn-disabled" : "btn btn-info";
     const serialTemp = useStore(state => state.serialTemp);
+    const setIsLatestBackupQueryActive = useStore(state => state.setIsLatestBackupQueryActive);
+    const serial = useStore(state => state.serial);
     const setNewData = useSetNewData();
 
-    const handleClickLog = () => {
-        setNewData(serialTemp).catch(console.error);
+    const handleClickLog = async () => {
+        if (serialTemp === serial) {
+            setIsLatestBackupQueryActive(true);
+        } else {
+            await setNewData(serialTemp).catch(console.error);
+        }
     }
 
     return (
