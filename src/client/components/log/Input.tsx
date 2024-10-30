@@ -1,6 +1,5 @@
 import React, { ChangeEvent, KeyboardEvent } from "react";
 import useStore from "@/app/store";
-import useResetAndNavigate from "@/src/client/hooks/useResetAndNavigate";
 import useSetNewData from "@/src/client/hooks/useSetNewData";
 
 const Input = () => {
@@ -8,10 +7,16 @@ const Input = () => {
     const serialTemp = useStore(state => state.serialTemp);
     const loadingGlobal = useStore(state => state.loadingGlobal);
     const setNewData = useSetNewData();
+    const serial = useStore(state => state.serial);
+    const setIsLatestBackupQueryActive = useStore(state => state.setIsLatestBackupQueryActive);
 
-    const handleKeyDownOnLog = (event: KeyboardEvent) => {
+    const handleKeyDownOnLog = async (event: KeyboardEvent) => {
         if (event.key === "Enter") {
-            setNewData(serialTemp).catch(console.error);
+            if (serialTemp === serial) {
+                setIsLatestBackupQueryActive(true);
+            } else {
+                await setNewData(serialTemp).catch(console.error);
+            }
         }
     };
 

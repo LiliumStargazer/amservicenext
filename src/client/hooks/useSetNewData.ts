@@ -11,6 +11,7 @@ const useSetNewData = () => {
     const setTable = useStore((state) => state.setTable);
     const setMessage = useStore((state) => state.setMessage);
     const table = useStore((state) => state.table);
+    const setIsLatestBackupQueryActive = useStore((state) => state.setIsLatestBackupQueryActive);
     const queryClient = useQueryClient();
     const router = useRouter();
     const pathname = usePathname();
@@ -52,9 +53,10 @@ const useSetNewData = () => {
             noDataAndStopLoading(message);
         } else {
             resetStoreData();
+            await resetQueries();
             setSerial(formattedSerial);
             setLoadingGlobal(true);
-            await resetQueries();
+            setIsLatestBackupQueryActive(true);
             navigateToLog();
 
         }

@@ -1,7 +1,6 @@
 import React, { ChangeEvent, KeyboardEvent } from "react";
 import useStore from "@/app/store";
 import { getSerialValidationMessage, onClickOpenWindow, trimAndFormatSerial } from "@/src/client/utils/utils";
-import useResetAndNavigate from "@/src/client/hooks/useResetAndNavigate";
 
 import useSetNewData from "@/src/client/hooks/useSetNewData";
 

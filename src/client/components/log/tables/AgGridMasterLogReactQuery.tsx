@@ -10,88 +10,55 @@ import {RowData} from "@/src/client/types/types";
 import {rowClassRules} from "@/src/client/utils/rowClassRules";
 import {getRowsMap} from "@/src/client/utils/getRowMap";
 import LoadingOverlayAgGrid from "@/src/client/components/log/tables/LoadingOverlayAgGrid";
-import {useQuery, useQueryClient} from '@tanstack/react-query';
-import {apiGetEventsByDate, apiGetEventsFromLatestBackup, apiGetAliveEventsCorsHandling, apiGetSelectedEvents} from "@/src/client/api/api";
+import {useQueryClient} from '@tanstack/react-query';
+import useLatestBackupEvents from "@/src/client/hooks/useLatestBackupEvents";
+import useEventsFromDataByDate from "@/src/client/hooks/useEventsFromDataByDate";
+import useEventFromAlive from "@/src/client/hooks/useEventFromAlive";
+import useSelectedEvents from "@/src/client/hooks/useSelectedEvents";
 
 const AgGridMasterLogReactQuery = () => {
-    const {
-        searchValueDebounced,
-        serial,
-        backupSelected,
-        setExcelEvents,
-        setMessage,
-        setIsDialogOpen,
-        setDialogContent,
-        setGridApiStore,
-        table,
-        setTable,
-        loadingGlobal,
-        setLoadingGlobal,
-        datePickerDate,
-        setSearchValueDebounced,
-        setSearchingLogEvent,
-        isSearchingLogEvent,
-        setSerial
-    } = useStore(state => ({
-        searchValueDebounced: state.searchValueDebounced,
-        serial: state.serial,
-        backupSelected: state.backupSelected,
-        setExcelEvents: state.setExcelEvents,
-        setMessage: state.setMessage,
-        setIsDialogOpen: state.setIsDialogOpen,
-        setDialogContent: state.setDialogContent,
-        setGridApiStore: state.setGridApiStore,
-        table: state.table,
-        setTable: state.setTable,
-        loadingGlobal: state.loadingGlobal,
-        setLoadingGlobal: state.setLoadingGlobal,
-        datePickerDate: state.datePickerDate,
-        setSearchValueDebounced: state.setSearchValueDebounced,
-        setSearchingLogEvent: state.setSearchingLogEvent,
-        isSearchingLogEvent: state.isSearchingLogEvent,
-        setSerial: state.setSerial
-    }));
-
+    const searchValueDebounced = useStore(state => state.searchValueDebounced);
+    const serial = useStore(state => state.serial);
+    const backupSelected = useStore(state => state.backupSelected);
+    const setExcelEvents = useStore(state => state.setExcelEvents);
+    const setMessage = useStore(state => state.setMessage);
+    const setIsDialogOpen = useStore(state => state.setIsDialogOpen);
+    const setDialogContent = useStore(state => state.setDialogContent);
+    const setGridApiStore = useStore(state => state.setGridApiStore);
+    const table = useStore(state => state.table);
+    const setTable = useStore(state => state.setTable);
+    const loadingGlobal = useStore(state => state.loadingGlobal);
+    const setLoadingGlobal = useStore(state => state.setLoadingGlobal);
+    const datePickerDate = useStore(state => state.datePickerDate);
+    const setSearchValueDebounced = useStore(state => state.setSearchValueDebounced);
+    const setSearchingLogEvent = useStore(state => state.setSearchingLogEvent);
+    const isSearchingLogEvent = useStore(state => state.isSearchingLogEvent);
+    const setSerial = useStore(state => state.setSerial);
+    const setIsLatestBackupQueryActive = useStore(state => state.setIsLatestBackupQueryActive);
     const [logData, setLogData] = useState<RowData[]>([]);
     const [isDateChanged, setIsDateChanged] = useState(false);
     const [eventGridAlive, setEventGridAlive] = useState<any>(null);
     const [isAliveEvent, setIsAliveEvent] = useState(false);
     const [date, setDate] = useState<any>(null);
     const [gridApi, setGridApi] = useState<any>(null);
-    const [loading, setLoading] = useState(false);
     const queryClient = useQueryClient();
 
-    const { isLoading: isLoadingLatestBackup, isError: isErrorLatestBackup, data: latestDataBackup, error: errorLatestBackup } = useQuery({
-        queryKey: ['eventsFromLatestBackup', serial, backupSelected, logData, table],
-        queryFn: () => apiGetEventsFromLatestBackup(serial, backupSelected),
-        enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && logData.length === 0 && table === 'master',
-    });
+    const { isLoading: isLoadingLatestBackup, isPending: isPendingLatestBackup, isError: isErrorLatestBackup, data: latestDataBackup, error: errorLatestBackup , isSuccess: isSuccessLatestBackup } = useLatestBackupEvents();
+    const { isLoading: isLoadingDataByDate, isError: isErrorDataByDate, data: dataByDate, error: errorDataByDate, isSuccess: isSuccessDataByDate } = useEventsFromDataByDate(date, isDateChanged);
+    const { isLoading: isLoadingAliveEvent, isError: isErrorAliveEvent, data: aliveEvent, error: errorAliveEvent } = useEventFromAlive(isAliveEvent);
+    const { isLoading: isLoadingSelectedEvents, isError: isErrorSelectedEvents, data: selectedEvents, error: errorSelectedEvents } = useSelectedEvents();
 
-    const {isLoading: isLoadingDataByDate, isError: isErrorDataByDate, data: dataByDate, error: errorDataByDate, isSuccess: isSuccessDataByDate} = useQuery({
-        queryKey: ['eventsFromDataByDate',serial, backupSelected, table, date, isDateChanged ],
-        queryFn: () => apiGetEventsByDate(serial, backupSelected, date),
-        enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && table === 'master' &&  isDateChanged ,
-    });
+    // const {isLoading: isLoadingAliveEvent, isError: isErrorAliveEvent, data: aliveEvent, error: errorAliveEvent} = useQuery({
+    //     queryKey: ['eventFromAlive'],
+    //     queryFn: () => apiGetAliveEventsCorsHandling(),
+    //     enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && isAliveEvent && table === 'master' ,
+    // });
 
-    const {isLoading: isLoadingAliveEvent, isError: isErrorAliveEvent, data: aliveEvent, error: errorAliveEvent} = useQuery({
-        queryKey: ['eventFromAlive',serial, backupSelected, isAliveEvent, table],
-        queryFn: () => apiGetAliveEventsCorsHandling(),
-        enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && isAliveEvent && table === 'master' ,
-    });
-
-    const {isLoading: isLoadingSelectedEvents, isError: isErrorSelectedEvents, data: selectedEvents, error: errorSelectedEvents} = useQuery({
-        queryKey: ['eventsFromSelectedEvents',serial, backupSelected, searchValueDebounced, table, isSearchingLogEvent],
-        queryFn: () => apiGetSelectedEvents(serial, backupSelected, searchValueDebounced),
-        enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && isSearchingLogEvent && table === 'master' && searchValueDebounced.length !== 0,
-    });
-
-    useEffect(() => {
-        if (loadingGlobal) {
-            setLoading(true);
-        }else {
-            setLoading(false);
-        }
-    }, [loadingGlobal, loading, setLoading,setLoadingGlobal]);
+    // const {isLoading: isLoadingSelectedEvents, isError: isErrorSelectedEvents, data: selectedEvents, error: errorSelectedEvents} = useQuery({
+    //     queryKey: ['eventsFromSelectedEvents'],
+    //     queryFn: () => apiGetSelectedEvents(serial, backupSelected, searchValueDebounced),
+    //     enabled: !!serial && !!backupSelected && !backupSelected.includes('No such file') && isSearchingLogEvent && table === 'master' && searchValueDebounced.length !== 0,
+    // });
 
     useEffect(() => {
         if (date === null)
@@ -103,7 +70,6 @@ const AgGridMasterLogReactQuery = () => {
     }, [datePickerDate]);
 
     useEffect(() => {
-        console.log('serial', serial);
         if (serial && serial.length > 0){
             setLogData([]);
         }
@@ -111,12 +77,16 @@ const AgGridMasterLogReactQuery = () => {
 
     useEffect(() => {
 
-        if (isLoadingLatestBackup) {
-            setLoadingGlobal(true);
+        if ( isLoadingLatestBackup ){
+            if (!loadingGlobal)
+                setLoadingGlobal(true);
             return;
         }
 
-        if (isErrorLatestBackup) {
+        if (isPendingLatestBackup )
+            return;
+
+        if (isErrorLatestBackup && errorLatestBackup) {
             setLoadingGlobal(false);
             if (errorLatestBackup.message.includes('No such file')) {
                 setMessage("Serial invalid.");
@@ -127,26 +97,43 @@ const AgGridMasterLogReactQuery = () => {
             return;
         }
 
-        if (latestDataBackup) {
+        if (isSuccessLatestBackup) {
             if (latestDataBackup.length === 0) {
                 setMessage("The database is empty.");
                 setLoadingGlobal(false);
                 setTable("no_table");
+                setIsLatestBackupQueryActive(false);
                 return;
             }
-            const rows = getRowsMap(latestDataBackup);
-            setLogData(rows);
+            if (latestDataBackup.error ) {
+                setMessage("error: " + latestDataBackup.error);
+                setLoadingGlobal(false);
+                setTable("no_table");
+                setIsLatestBackupQueryActive(false);
+                return;
+            }
+
+            if (logData.length != latestDataBackup.length) {
+                const rows = getRowsMap(latestDataBackup);
+                setMessage('data updated');
+                gridApi.setGridOption('rowData', rows);
+            } else if (logData.length === latestDataBackup.length) {
+                setMessage('No new data found.');
+            } else {
+                const rows = getRowsMap(latestDataBackup);
+                setLogData(rows);
+            }
+
             setMessage('');
             setLoadingGlobal(false);
-            queryClient.removeQueries({
-                    queryKey: ['eventsFromLatestBackup', serial, backupSelected, logData, table],
-                    exact: true, // Ensure it matches the exact query key
-                }
-            );
-            const state = queryClient.getQueryState(['eventsFromLatestBackup', serial, backupSelected, logData, table]);
-            console.log('state', state);
+            setIsLatestBackupQueryActive(false);
+            queryClient.resetQueries({
+                queryKey: ['eventsFromLatestBackup'],
+                exact: true, // Ensure it matches the exact query key
+            }).catch((error) => {console.log(error)});
+
         }
-    }, [latestDataBackup, isLoadingLatestBackup, isErrorLatestBackup, errorLatestBackup]);
+    }, [latestDataBackup, isPendingLatestBackup, isErrorLatestBackup, isLoadingLatestBackup, errorLatestBackup, logData, gridApi, queryClient, isSuccessLatestBackup]);
 
     useEffect(() => {
 
@@ -155,7 +142,7 @@ const AgGridMasterLogReactQuery = () => {
             return;
         }
 
-        if (isErrorDataByDate) {
+        if (isErrorDataByDate && errorDataByDate) {
             setLoadingGlobal(false);
             setMessage("Error: " + errorDataByDate.message);
             return;
@@ -170,7 +157,7 @@ const AgGridMasterLogReactQuery = () => {
                 setLoadingGlobal(false);
                 setIsDateChanged(false);
                 queryClient.resetQueries({
-                        queryKey: ['eventsFromDataByDate', serial, backupSelected, table, date, isDateChanged],
+                        queryKey: ['eventsFromDataByDate'],
                         exact: true, // Ensure it matches the exact query key
                     }
                 ).catch((error) => {console.log(error)});
@@ -182,14 +169,14 @@ const AgGridMasterLogReactQuery = () => {
             }
         }
 
-    }, [isLoadingDataByDate, isErrorDataByDate, dataByDate, errorDataByDate]);
+    }, [isLoadingDataByDate, isErrorDataByDate, dataByDate, errorDataByDate, serial, backupSelected, table, date, isDateChanged, gridApi, setSearchValueDebounced, setMessage, setLoadingGlobal, queryClient, setIsDateChanged]);
 
     useEffect(() => {
         if (isLoadingAliveEvent) {
             setLoadingGlobal(true);
             return;
         }
-        if (isErrorAliveEvent) {
+        if (isErrorAliveEvent && errorAliveEvent) {
             setLoadingGlobal(false);
             setMessage("Error: " + errorAliveEvent.message);
             return;
@@ -207,7 +194,7 @@ const AgGridMasterLogReactQuery = () => {
             setIsAliveEvent(false);
         }
 
-    }, [isLoadingAliveEvent, isErrorAliveEvent, aliveEvent, errorAliveEvent]);
+    }, [isLoadingAliveEvent, isErrorAliveEvent, aliveEvent, errorAliveEvent, eventGridAlive, isAliveEvent, setDialogContent, setIsDialogOpen, setMessage, setLoadingGlobal]);
 
     useEffect(() => {
 
@@ -219,7 +206,7 @@ const AgGridMasterLogReactQuery = () => {
             return;
         }
 
-        if (isErrorSelectedEvents) {
+        if (isErrorSelectedEvents && errorSelectedEvents) {
             setLoadingGlobal(false);
             setMessage("Error: " + errorSelectedEvents.message);
             return;
@@ -231,7 +218,7 @@ const AgGridMasterLogReactQuery = () => {
             setMessage('');
 
             queryClient.removeQueries({
-                queryKey: ['eventsFromSelectedEvents',serial, backupSelected, searchValueDebounced, table, isSearchingLogEvent],
+                queryKey: ['eventsFromSelectedEvents'],
                 exact: true, // Ensure it matches the exact query key
             });
         } else {
@@ -239,7 +226,7 @@ const AgGridMasterLogReactQuery = () => {
         }
         setLoadingGlobal(false);
         setSearchingLogEvent(false);
-    }, [isLoadingSelectedEvents, isErrorSelectedEvents, selectedEvents, errorSelectedEvents ]);
+    }, [isLoadingSelectedEvents, isErrorSelectedEvents, selectedEvents, errorSelectedEvents, serial, backupSelected, searchValueDebounced, table, isSearchingLogEvent, gridApi, setExcelEvents, setMessage, setLoadingGlobal, queryClient, setSearchingLogEvent]);
 
 
     const onCellDoubleClicked = useCallback((event: CellDoubleClickedEvent) => {
@@ -305,10 +292,10 @@ const AgGridMasterLogReactQuery = () => {
         return;
 
     return (
-        <div className="w-full h-full ">
+        <div className="w-full h-full pb-2">
             <div className="ag-theme-quartz-dark compact w-full h-full overflow-hidden" >
                 <AgGridReact<RowData>
-                    loading={loading}
+                    loading={loadingGlobal}
                     rowData={logData}
                     columnDefs={colDefsBase}
                     onCellDoubleClicked={onCellDoubleClicked}

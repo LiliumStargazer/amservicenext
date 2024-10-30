@@ -2,12 +2,7 @@ import React from "react";
 import useStore from "@/app/store";
 
 import {getSerialValidationMessage, onClickOpenWindow, trimAndFormatSerial} from "@/src/client/utils/utils";
-import {usePathname, useRouter} from "next/navigation";
-import useResetAndNavigate from "@/src/client/hooks/useResetAndNavigate";
-import useNoDataAndStopLoading from "@/src/client/hooks/useNoDataAndStopLoading";
-import useReset from "@/src/client/hooks/useReset";
-import useNavigateToLog from "@/src/client/hooks/useNavigateToLog";
-import useResetQueries from "@/src/client/hooks/useResetQueries";
+import {useRouter} from "next/navigation";
 import useSetNewData from "@/src/client/hooks/useSetNewData";
 
 const Button  = ({ isButtonEnabled, id }: { isButtonEnabled: boolean, id:string }) => {
@@ -16,18 +11,8 @@ const Button  = ({ isButtonEnabled, id }: { isButtonEnabled: boolean, id:string 
     const aliveSerial = useStore(state => state.aliveSerial);
     const setMessage = useStore(state => state.setMessage);
     const serialTemp = useStore(state => state.serialTemp);
-    const table = useStore(state => state.table);
-    const setTable = useStore(state => state.setTable);
-    const setLoadingGlobal = useStore(state => state.setLoadingGlobal);
     const classNameButton = loading ? "btn btn-sm btn-info btn-disabled" : "btn btn-sm btn-info";
     const router = useRouter();
-    const pathname = usePathname();
-    const validateSerialAndNavigate = useResetAndNavigate();
-    const navigateToLog = useNavigateToLog();
-    const reset = useReset();
-    const noDataAndStopLoading = useNoDataAndStopLoading();
-    const resetQueries = useResetQueries();
-    const setSerial = useStore(state => state.setSerial);
     const useNewData = useSetNewData();
 
 
@@ -42,17 +27,6 @@ const Button  = ({ isButtonEnabled, id }: { isButtonEnabled: boolean, id:string 
     }
 
     const handleClickLog = () => {
-        // const formattedSerial = trimAndFormatSerial(serialTemp);
-        // const message = getSerialValidationMessage(formattedSerial);
-        // if (message !== "valid") {
-        //     noDataAndStopLoading(message);
-        // } else {
-        //     reset();
-        //     setSerial(formattedSerial);
-        //     setLoadingGlobal(true);
-        //     resetQueries().catch(console.error);
-        //     navigateToLog();
-        // }
         useNewData(serialTemp).catch(console.error);
     }
 

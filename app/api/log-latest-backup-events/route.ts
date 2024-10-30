@@ -31,6 +31,9 @@ export async function GET(req: Request): Promise<NextResponse> {
 
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
 
+        const len = results.length;
+        console.log('lunghezza dato', len);
+
         return NextResponse.json(results);
     } catch (error) {
         return logErrorAndRespond(error);

@@ -27,6 +27,7 @@ interface State {
     serialTemp: string;
     isDateChanged: boolean;
     table: string;
+    isLatestBackupQueryActive: boolean;
     isSearchingLogEvent: boolean;
     datePickerDate: Date;
     setActiveTab: (value: number) => void;
@@ -59,9 +60,11 @@ interface State {
     setIsDateChanged: (value: boolean) => void;
     setDatePickerDate: (value: Date) => void;
     setSearchingLogEvent: (value: boolean) => void;
+    setIsLatestBackupQueryActive: (value: boolean) => void;
 }
 
 const useStore = create<State>((set) => ({
+    isLatestBackupQueryActive: false,
     isSearchingLogEvent: false,
     datePickerDate: new Date(),
     isDateChanged: false,
@@ -91,6 +94,7 @@ const useStore = create<State>((set) => ({
     serialTemp: '',
     softwareType: '',
     table: 'no_table',
+    setIsLatestBackupQueryActive: (value) => set({isLatestBackupQueryActive: value}),
     setSearchingLogEvent: (value) => set({isSearchingLogEvent: value}),
     setDatePickerDate: (value) => set({datePickerDate: value}),
     setIsDateChanged: (value) => set({isDateChanged: value}),
