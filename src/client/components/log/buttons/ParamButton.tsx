@@ -6,6 +6,11 @@ import useStore from "@/app/store";
 const ParamButton: React.FC = () => {
     const setTable = useStore(state => state.setTable);
     const loadingGlobal = useStore(state => state.loadingGlobal);
+    const table = useStore(state => state.table);
+
+    if (table === 'no_table')
+        return null;
+
     return (
         <div >
             <button

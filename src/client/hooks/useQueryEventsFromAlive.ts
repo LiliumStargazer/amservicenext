@@ -4,7 +4,7 @@ import { apiGetAliveEventsCorsHandling } from "@/src/client/api/api"; // Ensure 
 
 type AliveEvent = any; // Replace with the correct type for your data
 
-const useEventFromAlive = (isAliveEvent: boolean) => {
+const useQueryEventsFromAlive = (isAliveEvent: boolean) => {
     const serial = useStore(state => state.serial);
     const backupSelected = useStore(state => state.backupSelected);
     const table = useStore(state => state.table);
@@ -18,4 +18,4 @@ const useEventFromAlive = (isAliveEvent: boolean) => {
     return { isLoading, isError, data, error };
 };
 
-export default useEventFromAlive;
+export default useQueryEventsFromAlive;

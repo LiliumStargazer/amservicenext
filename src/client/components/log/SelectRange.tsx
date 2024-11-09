@@ -14,8 +14,14 @@ const SelectRange: React.FC = () => {
     if (table !== "fridge") return null;
 
     return (
-        <select className="select select-bordered  max-w-xs" onChange={handleSelect}>
-            <option disabled selected>Points per time ( default: All )  </option>
+        <select
+            className="select select-bordered max-w-xs"
+            onChange={handleSelect}
+            defaultValue="All"
+        >
+            <option disabled value="">
+                Points per time (default: All)
+            </option>
             <option value="0">All</option>
             <option value="15">every 15 min</option>
             <option value="30">every 30 min</option>

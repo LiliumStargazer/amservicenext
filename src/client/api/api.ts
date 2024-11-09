@@ -52,8 +52,8 @@ export const apiGetEventsFromLatestBackup = (serial: string, backupSelected: str
 export const apiGetEventsByDate = (serial: string, backupSelected: string, currentDate: string): Promise<any> =>
     apiRequest(`/api/log-events-by-date`, { serial, backup: backupSelected, date: currentDate });
 
-export const apiGetSelectedEvents = (serial: string, backupSelected: string, event: string): Promise<any> =>
-    apiRequest(`/api/log-events-selector`, { serial, backup: backupSelected, event });
+export const apiGetSelectedEvents = (serial: string, backupSelected: string, event: string, softwareType: string): Promise<any> =>
+    apiRequest(`/api/log-events-selector`, { serial, backup: backupSelected, event , softwareType});
 
 export const apiGetSoftwareType = (serial: string, backupSelected: string): Promise<any> =>
     apiRequest(`/api/software-type`, { serial, backup: backupSelected });

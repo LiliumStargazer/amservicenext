@@ -7,6 +7,7 @@ const Datepicker: React.FC = () => {
     const [date, setDate] = useState<Date | null>(new Date());
     const setDatePickerDate = useStore(state => state.setDatePickerDate);
     const loadingGlobal = useStore(state => state.loadingGlobal);
+    const table = useStore(state => state.table);
 
     const handleChange = (date: Date | null) => {
         if (date) {
@@ -15,10 +16,13 @@ const Datepicker: React.FC = () => {
         }
     }
 
+    if ( table !== 'master' )
+        return null;
+
     return (
         <DatePicker
             placeholderText="Select a date"
-            className="btn btn-info"
+            className="btn btn-info w-36 "
             disabled={loadingGlobal}
             selected={date}
             onChange={handleChange}

@@ -10,7 +10,7 @@ interface State {
     dataFrigoCharts: any[];
     dialogContent: object | any[];
     eventsTranslatedByAlive: Record<string, any>;
-    excelEvents: any[];
+    excelData: any[];
     frigoData: any[];
     frigoNumber: number;
     frigoSelected: number;
@@ -38,7 +38,7 @@ interface State {
     setDataFrigoCharts: (value: any[]) => void;
     setDialogContent: (value: object | any[]) => void;
     setEventsTranslatedByAlive: (value: Record<string, any>) => void;
-    setExcelEvents: (value: any[]) => void;
+    setExcelData: (value: any[]) => void;
     setFrigoData: (value: any[]) => void;
     setFrigoNumber: (value: number) => void;
     setFrigoSelected: (value: number) => void;
@@ -77,7 +77,7 @@ const useStore = create<State>((set) => ({
     dataFrigoCharts: [],
     dialogContent: [],
     eventsTranslatedByAlive: {},
-    excelEvents: [],
+    excelData: [],
     frigoData: [],
     frigoNumber: 0,
     frigoSelected: 0,
@@ -106,7 +106,7 @@ const useStore = create<State>((set) => ({
     setDataFrigoCharts: (value) => set({dataFrigoCharts: value}),
     setDialogContent: (value) => set({dialogContent: value}),
     setEventsTranslatedByAlive: (value) => set({eventsTranslatedByAlive: value}),
-    setExcelEvents: (value) => set({excelEvents: value}),
+    setExcelData: (value) => set({excelData: value}),
     setFrigoData: (value) => set({frigoData: value}),
     setFrigoNumber: (value) => set({frigoNumber: value}),
     setFrigoSelected: (value) => set({frigoSelected: value}),

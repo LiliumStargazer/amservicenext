@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import useStore from "@/app/store";
 import { isGreaterThanOne, stringToDate } from "@/src/client/utils/utils";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
@@ -92,7 +92,10 @@ const SelectBackup: React.FC<SelectBackupProps> = () => {
         }
     }, [isError, data, error, queryClient, isLoading, serial, backupList, setBackupList, setBackupSelected, setMessage, setTable, setLoadingGlobal, getLatestBackup]);
 
-    if (table !== 'master')
+    if ( table !== 'master' && table !== 'no_table')
+        return;
+
+    if (backupOptions.length === 0)
         return;
 
     return (

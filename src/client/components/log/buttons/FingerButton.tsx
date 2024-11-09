@@ -15,6 +15,8 @@ const FingerButton: React.FC = () => {
         setTable("fingersTransaction");
     }
 
+    if (table === 'no_table')
+        return null;
 
     return (
         <div >

@@ -1,7 +1,7 @@
 import React from "react";
 import useStore from "@/app/store";
 
-const Pagination = () => {
+const SelectFridge = () => {
 
     const setFrigoSelected = useStore(state => state.setFrigoSelected);
     const frigoNumber = useStore(state => state.frigoNumber);
@@ -28,7 +28,7 @@ const Pagination = () => {
     const input = createInput(frigoNumber);
 
     if (frigoNumber <= 1) return null;
-    if (table !== "fridge") return null;
+    if (table !== "fridgeChart" && table !== "fridgeTable") return null;
 
     return (
         <div className="join">
@@ -37,4 +37,4 @@ const Pagination = () => {
     );
 }
 
-export default Pagination;
+export default SelectFridge;

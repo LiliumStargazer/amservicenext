@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, } from "react";
+import React, {useCallback, useEffect, useMemo,} from "react";
 import useStore from "@/app/store";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -6,7 +6,7 @@ import {formatStringDateOrder, getTimeString} from "@/src/client/utils/utils";
 import {translateFrigoState} from "@/src/client/utils/eventMapping";
 import {apiFridgeEvents} from "@/src/client/api/api";
 import {AgGridReact} from "ag-grid-react";
-import { ColDef } from "ag-grid-community";
+import { ColDef , GridReadyEvent} from "ag-grid-community";
 import {FridgesRowData} from "@/src/client/types/types";
 import {useQuery} from "@tanstack/react-query";
 import LoadingOverlayAgGrid from "@/src/client/components/log/tables/LoadingOverlayAgGrid";
@@ -23,12 +23,20 @@ const AgGridFridge = () => {
     const table = useStore(state => state.table);
     const loadingGlobal = useStore(state => state.loadingGlobal);
     const setLoadingGlobal = useStore(state => state.setLoadingGlobal);
+    const setGridApiStore = useStore(state => state.setGridApiStore);
 
     const { isLoading, isError, data, error } = useQuery({
         queryKey: ['fridgeData', serial, backupSelected],
         queryFn: () => apiFridgeEvents(serial, backupSelected),
-        enabled: !!serial && !!backupSelected && table === "fridge",
+        enabled: !!serial && !!backupSelected && table === "fridgeTable",
     });
+
+    useEffect(() => {
+        if (serial && serial.length > 0){
+            setFrigoData([]);
+            setFrigoSelected(0);
+        }
+    }, [serial]);
 
 
     useEffect(() => {
@@ -94,16 +102,13 @@ const AgGridFridge = () => {
                 });
                 arrayTables = updatedTables;
             }
-
             setFrigoData(arrayTables);
             setFrigoNumber(Object.keys(arrayTables).length);
             setFrigoSelected(0);
             setLoadingGlobal(false);
         }
 
-        setLoadingGlobal(false);
-
-    }, [isLoading, isError, data, error, setFrigoData, setFrigoSelected, setMessage, serial, setLoadingGlobal]);
+    }, [isLoading, isError, data, error, serial]);
 
     const colDefsBase: ColDef<FridgesRowData>[]  = useMemo(() => [
         { headerName: 'ID', field: 'ID', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true, floatingFilter: true, suppressHeaderFilterButton: true , suppressFloatingFilterButton: true},
@@ -121,17 +126,23 @@ const AgGridFridge = () => {
         { headerName: 'Allarme', field: 'Allarme', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true, floatingFilter: true, suppressHeaderFilterButton: true, suppressFloatingFilterButton: true },
     ], []);
 
-    if (table !== 'fridge')
+    const onGridReady = useCallback((params: GridReadyEvent) => {
+        setGridApiStore(params.api);
+    }, []);
+
+    if (table !== 'fridgeTable')
         return null;
 
     return (
-        <div className="w-full h-full flex-col">
+        <div className="w-full h-full flex-grow" >
             <div className="ag-theme-quartz-dark compact w-full h-full">
                 <AgGridReact<FridgesRowData>
                     loading={loadingGlobal}
+                    onGridReady={onGridReady}
                     rowData={frigoData[frigoSelected]}
                     columnDefs={colDefsBase}
                     loadingOverlayComponent={LoadingOverlayAgGrid}
+                    loadingOverlayComponentParams={{ loadingMessage: "Loading, one moment please..." }}
                     alwaysShowVerticalScroll={true}
                 />
             </div>

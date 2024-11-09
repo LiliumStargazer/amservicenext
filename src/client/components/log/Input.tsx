@@ -1,6 +1,7 @@
 import React, { ChangeEvent, KeyboardEvent } from "react";
 import useStore from "@/app/store";
 import useSetNewData from "@/src/client/hooks/useSetNewData";
+import {useQueryClient} from "@tanstack/react-query";
 
 const Input = () => {
     const setSerialTemp = useStore(state => state.setSerialTemp);
@@ -9,10 +10,15 @@ const Input = () => {
     const setNewData = useSetNewData();
     const serial = useStore(state => state.serial);
     const setIsLatestBackupQueryActive = useStore(state => state.setIsLatestBackupQueryActive);
+    const queryClient = useQueryClient();
 
     const handleKeyDownOnLog = async (event: KeyboardEvent) => {
         if (event.key === "Enter") {
             if (serialTemp === serial) {
+                await queryClient.resetQueries({
+                    queryKey: ['eventsFromLatestBackup'],
+                    exact: true, // Ensure it matches the exact query key
+                }).catch((error) => {console.log(error)});
                 setIsLatestBackupQueryActive(true);
             } else {
                 await setNewData(serialTemp).catch(console.error);

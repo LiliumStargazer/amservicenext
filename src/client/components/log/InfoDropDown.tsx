@@ -46,7 +46,7 @@ const InfoDropDown: React.FC = () => {
         }
     }, [backupList]);
 
-    if (table !== "master") return null;
+    if (table !== "master" && table!=='no_table' && backupList.length == 0) return null;
 
     return (
         <div className="dropdown" >

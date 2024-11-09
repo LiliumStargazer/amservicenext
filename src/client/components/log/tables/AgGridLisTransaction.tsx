@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import useStore from "@/app/store";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
@@ -7,7 +7,7 @@ import { apiGetLisTransaction} from "@/src/client/api/api";
 import { formatStringDateOrder, getTimeFromData, } from "@/src/client/utils/utils";
 import {AgGridReact} from "ag-grid-react";
 import {LisRowData} from "@/src/client/types/types";
-import { ColDef } from "ag-grid-community";
+import { ColDef, GridReadyEvent } from "ag-grid-community";
 import {useQuery} from "@tanstack/react-query";
 import LoadingOverlayAgGrid from "@/src/client/components/log/tables/LoadingOverlayAgGrid";
 
@@ -43,6 +43,7 @@ const AgGridLisTransaction = () => {
     const [lisTransactions, setLisTransactions] = useState<any[]>([]);
     const loadingGlobal = useStore(state => state.loadingGlobal);
     const setLoadingGlobal = useStore(state => state.setLoadingGlobal);
+    const setGridApiStore = useStore(state => state.setGridApiStore);
 
     const LisErrorCodeDescriptions = useMemo(() => ({
         [LisErrorCode.LisNotResponding]: "Lis not responding",
@@ -130,6 +131,10 @@ const AgGridLisTransaction = () => {
         { headerName: 'TransactionId', field: 'TransactionId', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: true, floatingFilter: true, suppressHeaderFilterButton: true, suppressFloatingFilterButton: true },
     ], []);
 
+    const onGridReady = useCallback((params: GridReadyEvent) => {
+        setGridApiStore(params.api);
+    }, []);
+
     if (table !== "lisTransaction") return null;
 
     return (
@@ -137,9 +142,11 @@ const AgGridLisTransaction = () => {
             <div className="ag-theme-quartz-dark compact w-full h-full">
                 <AgGridReact<LisRowData>
                     rowData={lisTransactions}
+                    onGridReady={onGridReady}
                     columnDefs={colDefBase}
                     loading={loadingGlobal}
                     loadingOverlayComponent={LoadingOverlayAgGrid}
+                    loadingOverlayComponentParams={{ loadingMessage: "Loading, one moment please..." }}
                     alwaysShowVerticalScroll={true}
                 />
             </div>

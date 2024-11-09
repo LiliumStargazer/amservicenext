@@ -8,6 +8,11 @@ import useStore from "@/app/store";
 
 const LisButton: React.FC = () => {
     const setTable = useStore(state => state.setTable);
+    const table = useStore(state => state.table);
+
+    if (table === 'no_table')
+        return null;
+
     return (
         <div >
             <button onClick={() => setTable("lisTransaction")}>

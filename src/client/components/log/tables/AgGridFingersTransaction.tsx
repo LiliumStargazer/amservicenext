@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import useStore from "@/app/store";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
@@ -7,7 +7,7 @@ import {apiGetFingersTransactions} from "@/src/client/api/api";
 import { formatStringDateOrder, getTimeFromData, } from "@/src/client/utils/utils";
 import {AgGridReact} from "ag-grid-react";
 import {FingerRowData} from "@/src/client/types/types";
-import { ColDef } from "ag-grid-community";
+import { GridReadyEvent, ColDef } from "ag-grid-community";
 import {useQuery} from "@tanstack/react-query";
 import LoadingOverlayAgGrid from "@/src/client/components/log/tables/LoadingOverlayAgGrid";
 
@@ -19,13 +19,19 @@ const AgGridFingersTransaction = () => {
     const loadingGlobal = useStore(state => state.loadingGlobal);
     const setLoadingGlobal = useStore(state => state.setLoadingGlobal);
     const [fingerTransaction, setFingerTransaction] = useState<any[]>([]);
-
+    const setGridApiStore = useStore(state => state.setGridApiStore);
 
     const { isLoading, isError, data, error } = useQuery({
         queryKey: ['fingersTransaction', serial, backupSelected],
         queryFn: () => apiGetFingersTransactions(serial, backupSelected),
         enabled: !!serial && !!backupSelected && table === "fingersTransaction",
     });
+
+    useEffect(() => {
+        if (serial && serial.length > 0){
+            setFingerTransaction([]);
+        }
+    }, [serial]);
 
 
     useEffect(() => {
@@ -75,6 +81,10 @@ const AgGridFingersTransaction = () => {
         { headerName: 'ActualValue', field: 'ActualValue', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: true, floatingFilter: true, suppressHeaderFilterButton: true, suppressFloatingFilterButton: true },
     ], []);
 
+    const onGridReady = useCallback((params: GridReadyEvent) => {
+        setGridApiStore(params.api);
+    }, []);
+
     if (table !== "fingersTransaction") return null;
 
     return (
@@ -82,9 +92,11 @@ const AgGridFingersTransaction = () => {
             <div className="ag-theme-quartz-dark compact w-full h-full">
                 <AgGridReact<FingerRowData>
                     rowData={fingerTransaction}
+                    onGridReady={onGridReady}
                     columnDefs={colDefBase}
                     loading={loadingGlobal}
                     loadingOverlayComponent={LoadingOverlayAgGrid}
+                    loadingOverlayComponentParams={{ loadingMessage: "Loading, one moment please..." }}
                     alwaysShowVerticalScroll={true}
                 />
             </div>

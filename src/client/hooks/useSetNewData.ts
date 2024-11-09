@@ -24,10 +24,10 @@ const useSetNewData = () => {
     };
 
     const resetStoreData = () => {
-        const { setMessage, setExcelEvents, setFrigoData, setSearchValueDebounced, setSerial } = useStore.getState();
+        const { setMessage, setExcelData, setFrigoData, setSearchValueDebounced, setSerial } = useStore.getState();
         setSearchValueDebounced('');
         setMessage('');
-        setExcelEvents([]);
+        setExcelData([]);
         setFrigoData([]);
         setSerial('');
     };

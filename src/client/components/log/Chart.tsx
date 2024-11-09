@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,11 +12,10 @@ const Chart: React.FC = () => {
     const setMessage = useStore(state => state.setMessage);
     const table = useStore(state => state.table);
     const intervalMinutes = useStore(state => state.intervalMinutes);
-    const [startDate, setStartDate] = useState<Date | null>(null);
-    const [endDate, setEndDate] = useState<Date | null>(null);
+    const [startDate, setStartDate] = useState(new Date(Date.now() - 86400000));
+    const [endDate, setEndDate] = useState(new Date());
     const [data, setData] = useState<any[]>([]);
-    const [dataFiltered, setDataFiltered] = useState<any[]>([]);
-
+    const [loading, setLoading] = useState(true);
 
     function formatDate(dateString: string): Date {
         try {
@@ -40,12 +39,10 @@ const Chart: React.FC = () => {
         }
     }
 
-    function reduceDataPoints(data: any[], minutes : number): any[] {
+    function reduceDataPoints(data: any[], minutes: number): any[] {
+        if (minutes <= 0) return data; // no reduction
 
-        if ( minutes <= 0 )
-            return data; // no reduction
-
-        const milliseconds= minutes * 60 * 1000;
+        const milliseconds = minutes * 60 * 1000;
         const result = [];
         let lastDate = null;
 
@@ -54,7 +51,7 @@ const Chart: React.FC = () => {
             const [hours, minutes] = entry.Time.split(":");
             const currentDate = new Date(year, month - 1, day, hours, minutes);
 
-            if (!lastDate || (currentDate.getTime() - lastDate.getTime()) >= milliseconds) { // 30 minutes in milliseconds
+            if (!lastDate || (currentDate.getTime() - lastDate.getTime()) >= milliseconds) {
                 result.push(entry);
                 lastDate = currentDate;
             }
@@ -64,6 +61,8 @@ const Chart: React.FC = () => {
     }
 
     useEffect(() => {
+        if (!loading)
+            setLoading(true);
         try {
             if (frigoData[frigoSelected]) {
                 const dataReduced = reduceDataPoints(frigoData[frigoSelected], intervalMinutes);
@@ -74,7 +73,7 @@ const Chart: React.FC = () => {
                     Time: entry.Time
                 }));
 
-                if ( startDate === null || endDate === null ){
+                if (startDate === null || endDate === null || startDate.getTime() === endDate.getTime()) {
                     const maxDate = findMaxDate(newData);
                     setStartDate(maxDate);
                     setEndDate(maxDate);
@@ -84,51 +83,107 @@ const Chart: React.FC = () => {
         } catch (error) {
             Sentry.captureException(error);
             setMessage((error as Error).message);
+        }finally {
+            setLoading(false);
         }
-    }, [frigoSelected, frigoData, intervalMinutes]);
+    }, [frigoSelected, frigoData, intervalMinutes, loading]);
 
     useEffect(() => {
-        try {
-            if (startDate && endDate) {
-                let newData = [...data];
-                setDataFiltered(newData.filter(entry => entry.date >= startDate && entry.date <= endDate));
-            }
-        } catch (error) {
-            Sentry.captureException(error);
+        setLoading(true); // Start loading when dates change
+        const timer = setTimeout(() => setLoading(false), 500); // Add a small delay to simulate loading
+        return () => clearTimeout(timer); // Cleanup the timeout
+    }, [startDate, endDate]);
+
+    const dataFiltered = useMemo(() => {
+        if (startDate && endDate) {
+            return data.filter(entry => entry.date >= startDate && entry.date <= endDate);
         }
+        return [];
     }, [startDate, endDate, data]);
 
-    if (table !== "fridge" || frigoData.length === 0) return null;
+    const handleStartDateChange = (date: Date) => {
+        if (!startDate) return;
+
+        if ( date > endDate) {
+            setMessage("The selected date cannot be later the end date.");
+            return;
+        }
+
+        const differenceInTime = endDate.getTime() - date.getTime() + 1;
+        const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+        if ( differenceInDays >= 7) {
+            setMessage("Please select a range of 7 days or less due to performance reasons.");
+        }
+        else{
+            setLoading(true);
+            setStartDate(date);
+        }
+    }
+
+    const handleEndDateChange = (date: Date) => {
+        if (!startDate) return;
+        if (endDate < startDate) {
+            setMessage("The selected date cannot be beyond the end date.");
+            return;
+        }
+        const differenceInTime = ( date.getTime() +1 ) - startDate.getTime();
+        const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+        if ( differenceInDays >= 7) {
+            setMessage("Please select a range of 7 days or less due to performance reasons.");
+        }
+        else{
+            setLoading(true);
+            setEndDate(date);
+        }
+    }
+
+    if ( table === 'fridgeChart' && frigoData.length === 0) {
+        setMessage("No data found");
+        return null;
+    }
+
+    if (table !== "fridgeChart") return null;
 
     return (
-        <div className="w-full h-full">
-            <div className="mb-4 space-x-3 flex justify-center">
-                <div className="relative">
-                    <DatePicker
-                        className="btn btn-info"
-                        selected={startDate}
-                        onChange={date => setStartDate(date)}
-                        dateFormat="dd/MM/yyyy"
-                     />
-                </div>
-                <div className="relative">
-                    <DatePicker
-                        className="btn btn-info"
-                        selected={endDate}
-                        onChange={date => setEndDate(date)}
-                        dateFormat="dd/MM/yyyy"
-                    />
-                </div>
+        <div className="w-full h-auto">
+            <div className="flex flex-row gap-4 justify-center">
+                <DatePicker
+                    className="btn btn-info"
+                    selected={startDate}
+                    startDate={startDate}
+                    onChange={(date) =>handleStartDateChange(date || new Date())}
+                    useShortMonthInDropdown
+                    minDate={new Date("2000-01-01")}
+                    maxDate={new Date("2100-12-31")}
+                    dateFormat="dd/MM/yyyy"
+                    dropdownMode={"select"}
+                    placeholderText="Select a date or range"
+                />
+                <DatePicker
+                    className="btn btn-info"
+                    selected={endDate}
+                    startDate={endDate}
+                    endDate={endDate ? endDate : undefined}
+                    onChange={(date) => handleEndDateChange(date || new Date())}
+                    useShortMonthInDropdown
+                    minDate={new Date("2000-01-01")}
+                    maxDate={new Date("2100-12-31")}
+                    dateFormat="dd/MM/yyyy"
+                    dropdownMode={"select"}
+                    placeholderText="Select a date or range"
+                />
             </div>
-            <div className="w-full h-full">
-                <LineChart
-                    width={window.innerWidth}
+            <div className="w-full h-full flex justify-center items-center">
+                { loading ? <span className="loading loading-spinner loading-lg "></span> :
+                    <LineChart
+                        width={window.innerWidth}
                     height={window.innerHeight - 150}
                     data={dataFiltered}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tickCount={10} />
+                    <XAxis dataKey="date" tickCount={10} display={"none"}/>
                     <YAxis />
                     <Tooltip content={({ active, payload }) => {
                         if (active && payload && payload.length) {
@@ -149,6 +204,7 @@ const Chart: React.FC = () => {
                     <Line type="monotone" dataKey="Temp1" stroke="#8884d8" />
                     <Line type="step" dataKey="Power" stroke="#82ca9d" />
                 </LineChart>
+                }
             </div>
         </div>
     );

@@ -10,11 +10,13 @@ export async function GET(req: Request): Promise<NextResponse> {
     const serial = searchParams.get('serial');
     const backup = searchParams.get('backup');
     const event = searchParams.get('event');
+    const softwareType = searchParams.get('softwareType');
 
     if (!serial || !backup || !event) {
         return NextResponse.json({ error: 'Missing serial or backup parameter' });
     }
 
+    console.log('softwareType', softwareType);
 
 
     try {
@@ -22,14 +24,20 @@ export async function GET(req: Request): Promise<NextResponse> {
         systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
 
         let tableName = "EventiView";
-        const columns = [
+        let columns = [
             "DataOraR", "EventString", "ID", "Code", "State",
             "DevProducer", "DevIndex", "SubIndex", "DevClass",
             "Tag1", "Tag2", "Tag3", "Tag4", "Fase", "TagData"
         ];
 
-        if (systemPaths.localBackupUnzippedFile.includes("DbBackup"))
+        if (softwareType && softwareType.includes('windows')) {
             tableName = "EventiAll";
+            columns = [
+                "DataOraR", "EventString", "ID", "Code", "State",
+                "DevId", "RelIndex", "SubIndex", "DevClass",
+                "Tag1", "Tag2", "Tag3", "Tag4", "Fase", "TagData"
+            ];
+        }
 
         let query = `SELECT * FROM ${tableName}`;
 

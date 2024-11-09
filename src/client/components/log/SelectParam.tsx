@@ -1,81 +1,89 @@
 import React, { useEffect, useState } from 'react';
 import useStore from "@/app/store";
-import { apiGetParamsIds} from "@/src/client/api/api";
 import {convertTimestampToDate} from "@/src/client/utils/utils";
+import useQueryGetParamsID from "@/src/client/hooks/useQueryGetParamsID";
+import {useQueryClient} from "@tanstack/react-query";
+
+type Param = {
+    ID: string;
+    DataOra: string;
+};
 
 const SelectParam = () => {
     const serial = useStore(state => state.serial) ?? '';
-    const backupSelected = useStore(state => state.backupSelected);
     const table = useStore(state => state.table);
     const IDParam = useStore(state => state.IDParam);
     const setIDParam = useStore(state => state.setIDParam);
     const setMessage = useStore(state => state.setMessage);
-    const setTable = useStore(state => state.setTable);
-    const [paramArray, setParamArray] = useState<string[]>([]);
-    const [storedParams, setStoredParams] = useState<React.ReactNode[]>([]);
+    const [paramIdList, setParamIdList] = useState<React.ReactNode[]>([]);
     const [loading, setLoading] = useState(false);
+    const { isLoading, isError, isSuccess, data, error } = useQueryGetParamsID();
+    const queryClient = useQueryClient();
+
 
     useEffect(() => {
+        if (serial && serial.length > 0){
+            setIDParam('');
+        }
+    }, [serial]);
 
-        if (table !== "param")
+    useEffect(() => {
+        if (isLoading) {
+            setLoading(true);
             return;
+        }
 
-        const fetchParamList = async () => {
+        if (isError && error) {
+            setMessage('Error fetching param: ' + error);
+            setLoading(false);
+            return;
+        }
+
+
+        if (isSuccess && data) {
             try {
-                const data = await apiGetParamsIds(serial, backupSelected);
-
-                if (!data || data.length === 0) {
-                    setLoading(false);
-                    setMessage('No param IDs found');
-                    setTable('master');
+                const valuesArray: Param[] = Object.values(data);
+                if (valuesArray.length === 0) {
+                    setMessage('No param id found');
                     setLoading(false);
                     return;
                 }
+                const maxIdElement = valuesArray.reduce((max, element) => ( element as any ).ID > (max as any).ID ? element : max, valuesArray[0]);
+
+                const paramArrayTemp = data.map((element: any, index: number) => (
+                    <option key={index} value={element.ID}>Id: {element.ID} Data: {convertTimestampToDate(element.DataOra)}</option>
+                ));
+
+                setParamIdList(paramArrayTemp);
+                setIDParam(maxIdElement.ID);
                 setLoading(false);
-                setParamArray(data);
             } catch (error) {
-                console.error('Error fetching param IDs:', error);
-                setLoading(false);
-                setMessage('Error fetching param IDs');
-                setTable('master');
-                setLoading(false);
+                setMessage('Error processing param data: ' + error);
             }
         }
-        setLoading(true);
-        fetchParamList().catch(error => console.error('Error fetching param IDs:', error));
+    }, [isLoading, isError, isSuccess, data, error]);
 
-    }, [table, serial, backupSelected]);
-
-    useEffect(() => {
-
-        if (paramArray.length === 0)
-            return;
-
-        const maxIdElement = paramArray.reduce((max, element) => (element as any).ID > (max as any).ID ? element : max, paramArray[0]);
-        const paramArrayTemp = paramArray.map((element: any, index) => (
-            <option key={index} value={element.ID}>Id: {element.ID} Data: {convertTimestampToDate( element.DataOra) }</option>
-        ));
-        setStoredParams(paramArrayTemp);
-        setIDParam(( maxIdElement as any).ID);
-
-    }, [paramArray]);
+    const handleOnChange  = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        await queryClient.resetQueries({
+                queryKey: ['getParamsBackups'],
+                exact: true, // Ensure it matches the exact query key
+            }
+        ).catch((error) => {console.log(error)});
+        setIDParam(e.target.value);
+        console.log('SelectParam handleOnChange', e.target.value);
+    }
 
     if (table !== "param")
         return null;
 
-    if (loading) {
-        return (
-            <div className="skeleton h-12 w-64"></div>
-        );
-    }
-
     return (
+        loading ? <div className="skeleton h-12 w-64"></div> :
         <select
             className="select select-md select-ghost max-w-min min-w-44 join-item flex flex-auto"
             value={IDParam}
-            onChange={(e) => setIDParam(e.target.value) }
+            onChange={(e) => handleOnChange(e) }
         >
-            {storedParams}
+            {paramIdList}
         </select>
     );
 };

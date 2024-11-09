@@ -33,17 +33,16 @@ const SearchEvents: React.FC = () => {
         setSearchValue(value);
         debouncedSetSearchValue(value);
         console.log('handlingChange searchevents');
-
     };
 
     if (table !== "master") return null;
 
     return (
-        <label className="input input-bordered input-info flex items-center gap-2 w-80">
+        <label className="input input-bordered input-info flex items-center gap-2 w-96">
             <input
                 type="search"
-                className="grow text-sm "
-                placeholder="SearchEvents in the whole database..."
+                className="grow text-sm"
+                placeholder="Search events in the whole database..."
                 aria-label="SearchEvents"
                 aria-describedby="button-addon2"
                 value={searchValue}

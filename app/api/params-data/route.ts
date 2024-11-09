@@ -20,7 +20,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     if (!serial || !backup)
         return NextResponse.json({ error: 'Missing serial or backup parameter' });
 
-
+    console.log('GET /api/params-data', serial, backup, id);
     try {
         const systemPaths = createSystemPaths(serial, backup);
         systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
@@ -34,8 +34,10 @@ export async function GET(req: Request): Promise<NextResponse> {
 
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
         const param = await getParams(results, softwareType);
+
         return NextResponse.json(param);
     } catch (error) {
+        console.log('Error in GET /api/params-data', error);
         Sentry.captureException(error);
         return logErrorAndRespond(error);
     }

@@ -4,7 +4,7 @@ import { apiGetEventsByDate } from "@/src/client/api/api"; // Ensure the import 
 
 type LatestDataBackup = any; // Replace with the correct type for your data
 
-const useEventsFromDataByDate = (date: string, isDateChanged: boolean) => {
+const useQueryEventsByDate = (date: string, isDateChanged: boolean) => {
     const serial = useStore(state => state.serial);
     const backupSelected = useStore(state => state.backupSelected);
     const table = useStore(state => state.table);
@@ -18,4 +18,4 @@ const useEventsFromDataByDate = (date: string, isDateChanged: boolean) => {
     return { isLoading, isError, data, error, isSuccess };
 };
 
-export default useEventsFromDataByDate;
+export default useQueryEventsByDate;

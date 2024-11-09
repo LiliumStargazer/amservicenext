@@ -12,10 +12,9 @@ import Alert from "@/src/client/components/log/Alert";
 import AgGridFridge from "@/src/client/components/log/tables/AgGridFridge";
 import Dialog from "@/src/client/components/log/Dialog";
 import Chart from "@/src/client/components/log/Chart";
-import Param from "@/src/client/components/log/Param";
 import GetButton from "@/src/client/components/log/buttons/GetButton";
 import Input from "@/src/client/components/log/Input";
-import Pagination from "@/src/client/components/log/Pagination";
+import SelectFridge from "@/src/client/components/log/buttons/SelectFridge";
 import SelectRange from "@/src/client/components/log/SelectRange";
 import SelectParam from "@/src/client/components/log/SelectParam";
 import AgGridLisTransaction from "@/src/client/components/log/tables/AgGridLisTransaction";
@@ -29,6 +28,8 @@ import MasterButton from "@/src/client/components/log/buttons/MasterButton";
 import NoDataAnimation from "@/src/client/components/log/NoDataAnimation";
 import AgGridMasterLogReactQuery from "@/src/client/components/log/tables/AgGridMasterLogReactQuery";
 import Datepicker from "@/src/client/components/log/Datepicker";
+import SwapChartTable from "@/src/client/components/log/buttons/SwapChartTable";
+import ParamsAccordition from "@/src/client/components/log/ParamsAccordition";
 
 const Log: React.FC = () => {
 
@@ -41,17 +42,18 @@ const Log: React.FC = () => {
     }, []);
 
     return (
-        <div className="h-screen overflow-hidden">
+        <div className={`h-screen ${ table != "param" ? "overflow-hidden" : ""}`}>
             <div className="navbar bg-base-100">
                 <div className="navbar-start space-x-2 ">
-                    <Input />
-                    <GetButton />
-                    <SelectBackup />
-                    <InfoDropDown />
-                    <Datepicker />
-                    <SelectRange />
-                    <Pagination />
-                    <SelectParam />
+                    <Input/>
+                    <GetButton/>
+                    <SelectBackup/>
+                    <InfoDropDown/>
+                    <Datepicker/>
+                    <SelectRange/>
+                    <SelectFridge/>
+                    <SwapChartTable/>
+                    <SelectParam/>
                 </div>
                 <div className="navbar-center space-x-4">
                     <SearchEvents/>
@@ -60,29 +62,27 @@ const Log: React.FC = () => {
                 <div>
                 </div>
                 <div className="navbar-end space-x-4 ">
-                    <IconSoftware />
-                    <Badge />
+                    <IconSoftware/>
+                    <Badge/>
                     <MasterButton/>
                     <ParamButton/>
                     <FridgeButton/>
                     <FingerButton/>
                     <LisButton/>
                     <ExcelButton/>
-                    <ButtonNav />
+                    <ButtonNav/>
                 </div>
             </div>
-            <Alert />
-            <div className="h-full">
-                <div className="h-full">
-                    <Dialog/>
-                    <NoDataAnimation/>
-                    <AgGridMasterLogReactQuery/>
-                    <Chart/>
-                    <AgGridFridge/>
-                    <AgGridLisTransaction/>
-                    <AgGridFingersTransaction/>
-                    <Param/>
-                </div>
+            <Alert/>
+            <div className="h-full flex flex-col space-y-4">
+                <Dialog/>
+                <NoDataAnimation/>
+                <AgGridMasterLogReactQuery/>
+                <Chart/>
+                <AgGridFridge/>
+                <AgGridLisTransaction/>
+                <AgGridFingersTransaction/>
+                <ParamsAccordition/>
             </div>
         </div>
     );

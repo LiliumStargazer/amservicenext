@@ -9,6 +9,7 @@ const IconSoftware: React.FC = () => {
     const backupList = useStore(state => state.backupList);
     const serial = useStore(state => state.serial);
     const [softwareIcon, setSoftwareIcon] = useState<React.ReactNode | null>(null);
+    const setSoftwareType = useStore(state => state.setSoftwareType);
 
     const extractSoftwareType = (latestBackup: string, backupList: any[]) => {
         if (latestBackup.includes('AndBk')) return 'android';
@@ -24,18 +25,23 @@ const IconSoftware: React.FC = () => {
         const softwareType = extractSoftwareType(backupSelected, backupList);
         switch (softwareType) {
             case 'android':
+                setSoftwareType('android');
                 setSoftwareIcon(<FontAwesomeIcon icon={faAndroid} size="2xl" style={{ color: "#63E6BE" }} />);
                 break;
             case 'windows':
+                setSoftwareType('windows');
                 setSoftwareIcon(<FontAwesomeIcon icon={faWindows} size="2xl" style={{ color: "#74C0FC" }} />);
                 break;
             case 'unknown': {
-                if (serial.length === 0 || backupSelected.length === 0) return;
+                if (serial.length === 0 || backupSelected.length === 0)
+                    return;
 
                 apiGetSoftwareType(serial, backupSelected).then((result) => {
                     if (result.includes('android')) {
+                        setSoftwareType('android');
                         setSoftwareIcon(<FontAwesomeIcon icon={faAndroid} size="2xl" style={{ color: "#63E6BE" }} />);
                     } else if (result.includes('windows')) {
+                        setSoftwareType('windows');
                         setSoftwareIcon(<FontAwesomeIcon icon={faWindows} size="2xl" style={{ color: "#74C0FC" }} />);
                     }
                 }).catch(err => {

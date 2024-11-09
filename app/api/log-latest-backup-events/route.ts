@@ -28,12 +28,7 @@ export async function GET(req: Request): Promise<NextResponse> {
         if (systemPaths.localBackupUnzippedFile.includes("DbBackup")) {
             query = ' SELECT * FROM EventiAll WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiAll)';
         }
-
         const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
-
-        const len = results.length;
-        console.log('lunghezza dato', len);
-
         return NextResponse.json(results);
     } catch (error) {
         return logErrorAndRespond(error);

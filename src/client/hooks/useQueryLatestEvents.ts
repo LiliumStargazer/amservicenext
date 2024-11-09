@@ -5,7 +5,7 @@ import {apiGetEventsFromLatestBackup} from "@/src/client/api/api"; // Assicurati
 
 type LatestDataBackup = any; // Sostituisci con il tipo corretto per i dati
 
-const useLatestBackupEvents = () => {
+const useQueryLatestEvents = () => {
     const serial = useStore(state => state.serial);
     const backupSelected = useStore(state => state.backupSelected);
     const isLatestBackupQueryActive = useStore(state => state.isLatestBackupQueryActive);
@@ -20,4 +20,4 @@ const useLatestBackupEvents = () => {
     return { isLoading, isPending, isError, data, error, isSuccess};
 };
 
-export default useLatestBackupEvents;
+export default useQueryLatestEvents;
