@@ -6,7 +6,7 @@ import os from 'os';
 import * as Sentry from '@sentry/nextjs';
 import {SystemPaths} from "@/app/types/types";
 
- function createSystemPaths(matricola: string, backupName: string = ""): SystemPaths {
+function createSystemPaths(matricola: string, backupName: string = ""): SystemPaths {
     const CONFIG_DIRECTORY = "config";
     const remoteDirectory = path.join(matricola, CONFIG_DIRECTORY).toString();
     const remoteBackupFile = path.join(matricola, CONFIG_DIRECTORY, backupName).toString();
@@ -39,23 +39,17 @@ function findBackupFile(files: string[], localBackupDirectory: string): string |
 
 function setLocalBackupUnzippedFile(localBackupDirectory: string, localBackupUnzippedFile: string | null): string {
     if (!fs.existsSync(localBackupDirectory) || !fs.lstatSync(localBackupDirectory).isDirectory()) {
-        const error = new Error("Il percorso specificato non è una directory.");
-        Sentry.captureException(error);
-        throw error;
+        throw new Error("Il percorso specificato non è una directory.");
     }
 
     const files = fs.readdirSync(localBackupDirectory);
     if (!files || files.length === 0) {
-        const error = new Error("La directory è vuota.");
-        Sentry.captureException(error);
-        throw error;
+        throw new Error("La directory è vuota.");
     }
 
     const foundBackupFile = findBackupFile(files, localBackupDirectory);
     if (!foundBackupFile) {
-        const error = new Error("No backup file found.");
-        Sentry.captureException(error);
-        throw error;
+        throw new Error("No backup file found.");
     }
     localBackupUnzippedFile = foundBackupFile;
 
@@ -73,7 +67,6 @@ async function unzipFile(systemPaths: SystemPaths): Promise<void> {
             throw new Error(`File not found: ${localFile}`);
         }
     } catch (error) {
-        Sentry.captureException(error);
         throw error;
     }
 }
@@ -85,7 +78,6 @@ async function executeQueryDbAll<T>(sqliteDbPath: string, query: string): Promis
         db.close();
         return result;
     } catch (error) {
-        Sentry.captureException(error);
         throw error;
     }
 }
@@ -100,7 +92,6 @@ async function createDirectory(localBackupDirectory: string): Promise<void> {
             }
         });
     } catch (error) {
-        Sentry.captureException(error);
         throw error;
     }
 }
