@@ -1,4 +1,4 @@
-DockerfileNext
+Dockerfile
 old/lib/nginx/DockerfileNginx
 old/lib/nginx
 .dockerignore
