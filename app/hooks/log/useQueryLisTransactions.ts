@@ -1,0 +1,13 @@
+import { useQuery } from '@tanstack/react-query';
+import {apiGetLisTransaction} from "@/app/lib/api";
+
+export const useQueryLisTransactions = (serial:string, backup:string, section:string, isBackupReady: boolean) => {
+
+    const { isLoading, isError, data, error, isSuccess} = useQuery({
+        queryKey: ['lisTransaction'],
+        queryFn: () => apiGetLisTransaction(serial, backup),
+        enabled: !!serial && !!backup && section === "lisTransaction" && isBackupReady,
+    });
+
+    return { isLoading, isError, data, error, isSuccess};
+};

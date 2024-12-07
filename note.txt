@@ -1,5 +1,9 @@
-docker buildx build -t lalghisi/amservice:1.0 --platform linux/amd64 --push . -f DockerfileNext
+docker buildx build -t lalghisi/amservice:1.0 --platform linux/amd64 --push . -f DockerfileNext // Build the image for the amservice
 docker buildx build -t lalghisi/nginx:1.0 --platform linux/amd64,linux/arm64 --push . -f DockerfileNginx
+
+
+docker build -t lalghisi/amservice:1.0 . -f DockerfileNext // Build local image for test for arm
+docker run -d -p 80:3000 --env-file ./.env.local lalghisi/amservice:1.0
 
 docker build -t nextjs-docker .
 docker pull lalghisi/amservice:1.0
