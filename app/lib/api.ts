@@ -24,12 +24,6 @@ const apiRequest = async <GenericResponseType>(endpoint: string, payload: Record
     }
 };
 
-export const apiValidateSerialOFromServer = (serial: string): Promise<unknown> =>
-    apiRequest(`/serial-validator`, { serial });
-
-export const apiGetLogEventsFromServer = (serial: string, backupSelected: string): Promise<unknown> =>
-    apiRequest(`/events-all`, { serial, backup: backupSelected });
-
 export const apiGetBackupList = (serial: string): Promise<unknown> =>
     apiRequest(`/backups-list`, { serial });
 
@@ -50,9 +44,6 @@ export const apiGetLisTransaction = (serial: string, backupSelected: string): Pr
 
 export const apiGetFingersTransactions = (serial: string, backupSelected: string): Promise<unknown> =>
     apiRequest(`/fingers-transactions`, { serial, backup: backupSelected });
-
-export const apiGetLatestDayEvents = (serial: string, backupSelected: string): Promise<unknown> =>
-    apiRequest(`/events-latest-day`, { serial, backup: backupSelected });
 
 export const apiGetEventsByDate = (serial: string, backupSelected: string, currentDate: string | null): Promise<unknown> =>
     apiRequest(`/events-by-date`, { serial, backup: backupSelected, date: currentDate });

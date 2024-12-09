@@ -8,7 +8,7 @@ import {translateFrigoState} from "@/app/utils/eventMapping";
 import {AgGridReact} from "ag-grid-react";
 import { ColDef , GridReadyEvent, GridApi} from "ag-grid-community";
 import {FridgesRowData, RawFridgeData} from "@/app/types/types";
-import LoadingOverlayAgGrid from "@/app/components/log/tables/LoadingOverlayAgGrid";
+import LoadingOverlayAgGrid from "@/app/components/body/tables/LoadingOverlayAgGrid";
 
 interface AgGridFridgeProps {
     fridgeRawData: RawFridgeData[];

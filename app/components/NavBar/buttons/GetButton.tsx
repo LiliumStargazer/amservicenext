@@ -4,14 +4,14 @@ import React from "react";
 
 interface GetButtonProps {
     loading: boolean;
-    reset: () => Promise<void>;
+    setIsFetchRequest: (isFetchRequest: boolean) => void;
 }
 
-const GetButton: React.FC<GetButtonProps> = ({loading, reset}) => {
+const GetButton: React.FC<GetButtonProps> = ({loading, setIsFetchRequest}) => {
     const classNameButton = loading ? "btn btn-info btn-disabled" : "btn btn-info";
 
     const handleClickLog = async () => {
-       await reset();
+        setIsFetchRequest(true);
     }
 
     return (

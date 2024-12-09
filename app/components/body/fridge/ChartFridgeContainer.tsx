@@ -9,7 +9,7 @@ import {ChartData, RawFridgeData} from "@/app/types/types";
 import {formatStringDateOrder, getTimeString} from "@/app/utils/utils";
 import {translateFrigoState} from "@/app/utils/eventMapping";
 import AlertLoading from "@/app/components/shared/AlertLoading";
-import SelectRange from "@/app/components/log/fridge/SelectRange";
+import SelectRange from "@/app/components/body/fridge/SelectRange";
 
 interface ChartProps {
     fridgeRawData: RawFridgeData[];

@@ -1,221 +1,302 @@
 'use client'
-import React, {KeyboardEvent} from "react";
-import { faCloud, faList, faMusic, faLineChart } from '@fortawesome/free-solid-svg-icons';
-import amclublogo from "@/public/images/amClubLogo.png";
-import wikiLogo from "@/public/images/logos-wikijs.png";
-import chatwoot from "@/public/images/chatwoot.png";
-import prestaShop from "@/public/images/Prestashop.png";
-import taiga from "@/public/images/taiga-2.svg";
-import vte from "@/public/images/vtenext.png";
-import tableau from "@/public/images/tableau-software.svg";
-import amlog from "@/public/images/image2.jpg";
-import amacademy from "@/public/images/amacademy.png";
-import json from "@/public/images/json.png";
-import Card from "@/app/components/home/Card";
-import Footer from "@/app/components/shared/Footer";
-import ButtonNav from "@/app/components/shared/ButtonNav";
+
+import React, {useCallback, useEffect, useState} from "react";
+import {AliveEvent, ErrorResponse, RawFridgeData, RawLogEventData} from "@/app/types/types";
+import { GridApi } from "ag-grid-community";
+import SelectBackup from "@/app/components/NavBar/SelectBackup";
+import InfoDropDown from "@/app/components/NavBar/InfoDropDown";
+import IconSoftware from "@/app/components/NavBar/IconSoftware";
+import Badge from "@/app/components/NavBar/Badge";
+import SearchEvents from "@/app/components/NavBar/SearchEvents";
 import Alert from "@/app/components/shared/Alert";
-import {
-    getSerialValidationMessage,
-    handleSerialValidation,
-    onClickOpenWindow,
-    trimAndFormatSerial
-} from "@/app/utils/utils";
-import useStore from "@/app/store";
-import {usePathname, useRouter} from "next/navigation";
-import usePasswordLevels from "@/app/hooks/home/usePasswordLevels";
+import AgGridFridge from "@/app/components/body/fridge/AgGridFridge";
+import Dialog from "@/app/components/body/Dialog";
+import ChartFridgeContainer from "@/app/components/body/fridge/ChartFridgeContainer";
+import GetButton from "@/app/components/NavBar/buttons/GetButton";
+import Input from "@/app/components/NavBar/Input";
+import SelectFridge from "@/app/components/body/fridge/SelectFridge";
+import AgGridFingersTransaction from "@/app/components/body/tables/AgGridFingersTransaction";
+import FingerButton from "@/app/components/NavBar/buttons/FingerButton";
+import ParamButton from "@/app/components/NavBar/buttons/ParamButton";
+import FridgeButton from "@/app/components/NavBar/buttons/FridgeButton";
+import ExcelButton from "@/app/components/NavBar/buttons/ExcelButton";
+import LisButton from "@/app/components/NavBar/buttons/LisButton";
+import MasterButton from "@/app/components/NavBar/buttons/MasterButton";
+import AgGridMaster from "@/app/components/body/tables/AgGridMaster";
+import DatePicker from "@/app/components/NavBar/DatePicker";
+import SwapChartTable from "@/app/components/body/fridge/SwapChartTable";
+import useQueryEventsByDate from "@/app/hooks/log/useQueryEventsByDate";
+import useQueryEventsFromAlive from "@/app/hooks/log/useQueryEventsFromAlive";
+import useQuerySelectedEvents from "@/app/hooks/log/useQuerySelectedEvents";
+import useResetQueries from "@/app/hooks/shared/useResetQueries";
+import {useQueryGetBackupList} from "@/app/hooks/log/useQueryGetBackupList";
+import {useQueryDownloadBackup} from "@/app/hooks/log/useQueryDownloadBackup";
+import {useQueryFridgeData} from "@/app/hooks/log/useQueryFridgeData";
+import useAliveEvent from "@/app/hooks/log/useAliveEvent";
+import useErrorHandling from "@/app/hooks/log/useErrorHandling";
+import useLoadingStatus from "@/app/hooks/log/useLoadingStatus";
+import useReset from "@/app/hooks/log/useReset";
+import useCellDoubleClick from "@/app/hooks/log/useCellDoubleClick";
+import useBackupStatus from "@/app/hooks/log/useBackupStatus";
+import useBackupList from "@/app/hooks/log/useBackupList";
+import useSearch from "@/app/hooks/log/useSearch";
+import ParamContainer from "@/app/components/body/param/ParamContainer";
+import TopNavBar from "@/app/components/NavBarTop/TopNavBar";
+import {getSerialValidationMessage, trimAndFormatSerial} from "@/app/utils/utils";
 
-const Login: React.FC = () => {
-    const setSerial = useStore(state => state.setSerial);
-    const serialTemp = useStore(state => state.serialTemp);
-    const setSerialTemp = useStore(state => state.setSerialTemp);
-    const [message, setMessage] = React.useState<string>('');
-    const [aliveSerial, setAliveSerial] = React.useState<string>('');
-    const [loading, setLoading] = React.useState<boolean>(false);
-    const [password, setPassword] = React.useState<string>('');
-    const { passwords } = usePasswordLevels(password);
-    const router = useRouter();
-    const pathname = usePathname();
+const Log: React.FC = () => {
+    const [serial, setSerial] = useState<string>('');
+    const [serialTemp, setSerialTemp] = useState<string>('');
+    const [isFetchRequest, setIsFetchRequest] = useState<boolean>(false);
+    const [storedGridAPi, setStoredGridApi] = useState<GridApi | null>(null);
+    const [message, setMessage] = useState<string>('');
+    const [eventString, seteventString] = useState<string | null>(null);
+    const [isAliveEvent, setIsAliveEvent] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [dialogContent, setDialogContent] = useState<string | AliveEvent | null>(null);
+    const [backup, setBackup] = useState<string>('');
+    const [isBackupReady, setIsBackupReady] = useState(false);
+    const [datePickerDate, setDatePickerDate] = useState<Date | null>(new Date());
+    const [dateIsoString, setDateIsoString] = useState<string | null>(null);
+    const [searchValue, setSearchValue] = useState<string>('');
+    const [loading, setLoading] = React.useState(false);
+    const [isResettingSearchingEvent, setIsResettingSearchingEvent] = useState(false);
+    const [fridgeSelected, setFridgeSelected] = useState<number>(0);
+    const [section, setSection] = useState<string>('master');
+    const resetQueries = useResetQueries();
+    const reset = useReset(
+        setBackup,
+        setIsBackupReady,
+        setSearchValue,
+        setDatePickerDate,
+        setDateIsoString,
+        resetQueries
+    );
 
-    const handleKeyDownOnAlive = (event: KeyboardEvent) => {
-        if (event.key === "Enter") {
+    useEffect(() => {
+        if (isFetchRequest) {
             setLoading(true);
-            const formattedSerial = trimAndFormatSerial(aliveSerial);
-            setSerial(formattedSerial);
+            const formattedSerial = trimAndFormatSerial(serialTemp);
             const message = getSerialValidationMessage(formattedSerial);
-            if (message !== "valid") {
+            if (message !== "valid" ){
                 setMessage(message);
-            } else {
-                onClickOpenWindow("https://alive2.amdistributori.it:8443/dettaglio-distributore/?serialnumber={input}", aliveSerial);
+                setLoading(false);
+            }
+            else{
+                reset().catch((error) => setMessage(error.message));
+                setSerial(formattedSerial);
+                setIsFetchRequest(false);
             }
         }
-        setLoading(false);
-    };
+    }, [serialTemp, isFetchRequest, reset]);
 
-    const onClickWithAliveValue = () => {
-        setLoading(true);
-        const formattedSerial = trimAndFormatSerial(aliveSerial);
-        const message = getSerialValidationMessage(formattedSerial);
-        if (message !== "valid" )
-            setMessage(message);
-        else
-            onClickOpenWindow("https://alive2.amdistributori.it:8443/dettaglio-distributore/?serialnumber={input}", aliveSerial);
-        setLoading(false);
-    }
+    const {
+        isLoading: isLoadingBackupList,
+        data: backupList,
+        isSuccess: isSuccessBackupList
+    } = useQueryGetBackupList(serial);
 
-    const handleKeyDownOnLog = async (event: KeyboardEvent) => {
-        setLoading(true);
-        if (event.key === "Enter") {
-            handleSerialValidation(serialTemp, setSerial, setMessage, router, pathname);
-        }
-        setLoading(false);
-    };
+    const {
+        isLoading: isDownloading,
+        data: dataDownloaded ,
+        isSuccess: isDownloaded
+    } = useQueryDownloadBackup(serial, backup);
+    const {
+        isLoading: isLoadingEventsByDate,
+        data: eventsByDate,
+        isSuccess: isSuccessEventsByDate
+    } = useQueryEventsByDate(serial, backup, isBackupReady, dateIsoString );
+    const {
+        isLoading: isLoadingSelectedEvents,
+        data: selectedEvents,
+        isSuccess: isSuccessSelectedEvent} = useQuerySelectedEvents(serial, backup, searchValue, isBackupReady);
+    const {
+        data: aliveEvent,
+        isSuccess: isSuccessAliveEvent } = useQueryEventsFromAlive(serial, backup, isAliveEvent);
+    const {
+        isLoading: isLoadingFridge,
+        data: fridgeRawData,
+        isSuccess: isSuccessFridge
+    } = useQueryFridgeData(serial, backup, isBackupReady, section);
+    useAliveEvent(
+        isSuccessAliveEvent,
+        aliveEvent as AliveEvent[],
+        eventString,
+        setDialogContent,
+        setIsDialogOpen,
+        setIsAliveEvent
+    );
+    useErrorHandling({
+        eventsByDate: eventsByDate as ErrorResponse,
+        selectedEvents: selectedEvents as ErrorResponse,
+        aliveEvent: aliveEvent as ErrorResponse,
+        backupList: backupList as ErrorResponse,
+        fridgeRawData: fridgeRawData as ErrorResponse,
+        section,
+        setMessage,
+        setSection,
+        setLoading
+    });
+    useBackupList(isSuccessBackupList, backupList as string[], setBackup);
+    useBackupStatus(isDownloading, isDownloaded, dataDownloaded as boolean, setIsBackupReady);
+    useLoadingStatus(isLoadingEventsByDate, isLoadingSelectedEvents, isLoadingBackupList, isDownloading, setLoading);
+    const handleSearchValueChange = useSearch(setSearchValue, setIsResettingSearchingEvent);
+    const onCellDoubleClicked = useCellDoubleClick(
+        searchValue,
+        seteventString,
+        setIsAliveEvent,
+        setDialogContent,
+        setIsDialogOpen,
+        setMessage,
+        serial,
+        backup
+    );
 
-    const handleClickLog = () => {
-        setLoading(true);
-        handleSerialValidation(serialTemp, setSerial, setMessage, router, pathname);
-        setLoading(false);
-    }
+    const onSelectBackup = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+        setBackup(event.target.value);
+        setIsBackupReady(false);
+    }, [setBackup, setIsBackupReady]);
+
+    const handleDatePickerChange = useCallback((date: Date | null) => {
+        setDatePickerDate(date);
+        setDateIsoString(date?.toISOString() || null);
+    }, [setDatePickerDate, setDateIsoString]);
 
     return (
-        <div>
-            <div id="header" className="navbar bg-neutral text-neutral-content h-16">
-                <ButtonNav setMessage={setMessage}/>
-                <div className="ml-10">
-                    <Alert message={message} setMessage={setMessage}/>
+        <div className={`h-screen ${ section != "param" ? "overflow-hidden" : ""}`}>
+            <TopNavBar
+                serialTemp={serialTemp}
+                setMessage={setMessage}
+            />
+            <div className="navbar bg-base-100">
+                <div className="navbar-start space-x-2 ">
+                    {section === 'master' && (
+                        <>
+                            <Input loading={loading} setSerialTemp={setSerialTemp} setIsFetchRequest={setIsFetchRequest}/>
+                            <GetButton loading={loading} setIsFetchRequest={setIsFetchRequest}/>
+                            <SelectBackup
+                                backup={backup}
+                                loading={loading}
+                                onSelectBackup={onSelectBackup}
+                                isSuccessBackupList={isSuccessBackupList}
+                                backupList={backupList as string[]}
+                            />
+                            <InfoDropDown
+                                loading={loading}
+                                backupList={backupList as string[]}
+                                isLoadingBackupList={isLoadingBackupList}
+                            />
+                            {isBackupReady &&(
+                                <DatePicker
+                                    loading={loading}
+                                    datePickerDate={datePickerDate}
+                                    handleDatePickerChange={handleDatePickerChange}
+                                />
+                            )}
+                        </>
+                    )}
+                    {isBackupReady && (
+                        <>
+                            {(section === 'chart' || section ==='fridge') &&
+                                <SwapChartTable section={section} setSection={setSection}
+                                />
+                            }
+                            { (section === 'fridge' || section ==='chart') &&
+                                <SelectFridge
+                                    fridgeRawData={fridgeRawData as RawFridgeData[]}
+                                    isLoadingFridge={isLoadingFridge}
+                                    isSuccessFridge={isSuccessFridge}
+                                    setFridgeSelected={setFridgeSelected}
+                                />
+                            }
+                        </>
+                    )}
+                </div>
+                {isBackupReady && section === 'master' && (
+                    <div className="navbar-center space-x-4">
+                        <SearchEvents loading={loading} handleSearchValueChange={handleSearchValueChange}/>
+                    </div>
+                )}
+                <div className="navbar-end space-x-4 ">
+                    {isBackupReady && (
+                        <>
+                            <IconSoftware serial={serial} backup={backup} isBackupReady={isBackupReady}/>
+                            <Badge/>
+                            <MasterButton loading={loading} setSection={setSection}/>
+                            <ParamButton loading={loading} setSection={setSection}/>
+                            <FridgeButton loading={loading} setSection={setSection}/>
+                            <FingerButton loading={loading} setSection={setSection}/>
+                            <LisButton loading={loading}/>
+                            <ExcelButton
+                                loading={loading}
+                                setMessage={setMessage}
+                                section={section}
+                                storedGridAPi={storedGridAPi}
+                            />
+                        </>
+                    )}
                 </div>
             </div>
-            <div className="flex flex-col items-center ">
-                <div
-                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-5 mb-28">
-                    <Card
-                        title="Am Log"
-                        id={"amlog"}
-                        description="Controllo log dei distributori"
-                        imageSrc={amlog}
-                        isInput={true}
-                        handleKeyDownOnLog={handleKeyDownOnLog}
-                        setSerialTemp={setSerialTemp}
-                        handleClickLog={handleClickLog}
-                        loading={loading}
+            <Alert
+                message={message}
+                setMessage={setMessage}
+            />
+            <div className="h-full flex flex-col space-y-4">
+                <AgGridMaster
+                    loading={loading}
+                    isSuccessEventsByDate={isSuccessEventsByDate}
+                    eventsByDate={eventsByDate as RawLogEventData[]}
+                    selectedEvents={selectedEvents as RawLogEventData[]}
+                    isSuccessSelectedEvent={isSuccessSelectedEvent}
+                    onCellDoubleClicked={onCellDoubleClicked}
+                    isResettingSearchingEvent={isResettingSearchingEvent}
+                    setIsResettingSearchingEvent={setIsResettingSearchingEvent}
+                    section={section}
+                    setMessage={setMessage}
+                    searchValue={searchValue}
+                    setStoredGridApi={setStoredGridApi}
+                />
+                {section === 'chart' &&
+                    <ChartFridgeContainer
+                        fridgeRawData={fridgeRawData as RawFridgeData[]}
+                        isLoadingFridge={isLoadingFridge}
+                        isSuccessFridge={isSuccessFridge}
+                        fridgeSelected={fridgeSelected}
+                        setMessage={setMessage}
                     />
-                    <Card
-                        title={"Password"}
-                        description="Password per i servizi tecnici"
-                        color={"#63E6BE"}
-                        id={"ampassword"}
-                        isButtonEnabled={false}
-                        isInput={true}
-                        setPassword={setPassword}
-                        passwords={passwords}
-                        loading={loading}
+                }
+                {section === 'fridge' &&
+                    <AgGridFridge
+                        fridgeRawData={fridgeRawData as RawFridgeData[]}
+                        isLoadingFridge={isLoadingFridge}
+                        isSuccessFridge={isSuccessFridge}
+                        fridgeSelected={fridgeSelected}
+                        setMessage={setMessage}
+                        setStoredGridApi={setStoredGridApi}
                     />
-                    <Card
-                        id={"alive"}
-                        title="Alive"
-                        description="Servizi MQTT dei distributori"
-                        icon={faCloud}
-                        color={"#e32400"}
-                        isInput={true}
-                        handleKeyDownOnAlive={handleKeyDownOnAlive}
-                        setAliveSerial={setAliveSerial}
-                        onClickWithAliveValue={onClickWithAliveValue}
-                        loading={loading}
+                }
+                {section === 'fingersTransaction' &&
+                    <AgGridFingersTransaction
+                        serial={serial}
+                        backup={backup}
+                        isBackupReady={isBackupReady}
+                        setMessage={setMessage}
+                        setStoredGridApi={setStoredGridApi}
                     />
-                    <Card
-                        title="Am Club"
-                        id={"amclub"}
-                        description="Dashboard Consolle di gestione dei distributori per i clienti"
-                        imageSrc={amclublogo}
-                        loading={loading}
+                }
+                {section === 'param' && (
+                    <ParamContainer
+                        serial={serial}
+                        backup={backup}
+                        isBackupReady={isBackupReady}
+                        setMessage={setMessage}
                     />
-                    <Card
-                        title="Am Wiki"
-                        id={"amwiki"}
-                        description="Risosrse e documentazione per il team di lavoro"
-                        imageSrc={wikiLogo}
-                        loading={loading}
-                    />
-                    <Card
-                        title="ChatWoot"
-                        id={"chatwoot"}
-                        description="Piattaforma omnichannel per il servizio clienti"
-                        imageSrc={chatwoot}
-                        loading={loading}
-                    />
-                    <Card
-                        title="Lis e Prodotti"
-                        id={"lis"}
-                        description="Dashboard dei servizi LIS e delle immagini dei prodotti"
-                        icon={faList}
-                        color={"#74C0FC"}
-                        loading={loading}
-                    />
-                    <Card
-                        title="AM Shop"
-                        id={"shop"}
-                        description="Dashboard shop clienti"
-                        imageSrc={prestaShop}
-                        loading={loading}
-                    />
-                    <Card
-                        title="AM Academy"
-                        id={"academy"}
-                        description="Corsi di aggiornamento"
-                        imageSrc={amacademy}
-                        loading={loading}
-                    />
-                    <Card
-                        title="JSON Server"
-                        id={"json"}
-                        description="piattaforma di configurazione dei distributori"
-                        imageSrc={json}
-                        loading={loading}
-                    />
-                    <Card
-                        title="Taiga Project"
-                        id={"taiga"}
-                        description="Piattaforma di gestione dei progetti"
-                        imageSrc={taiga}
-                        loading={loading}
-                    />
-                    <Card
-                        title="VTE"
-                        id={"vte"}
-                        description="l CRM di AM, contiene il modulo per la gestione dei ticket di assistenza"
-                        imageSrc={vte}
-                        loading={loading}
-                    />
-                    <Card
-                        title="Tableau"
-                        id={"tableau"}
-                        description="Dashboard per le statistiche"
-                        imageSrc={tableau}
-                        loading={loading}
-                    />
-                    <Card
-                        title="Audio Generator"
-                        id={"audio"}
-                        description="File audio utilizzati dai prodotti"
-                        icon={faMusic}
-                        color={"#B197FC"}
-                        loading={loading}
-                    />
-                    <Card
-                        title="Statistic"
-                        id={"statistics"}
-                        description="Statistiche dei ticket"
-                        icon={faLineChart}
-                        color={"#f8820e"}
-                        loading={loading}
-                    />
-                </div>
+                )}
             </div>
-            <div>
-                <Footer/>
-            </div>
+            <Dialog isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} dialogContent={dialogContent}/>
         </div>
+
     );
 }
 
-export default Login;
+export default Log;

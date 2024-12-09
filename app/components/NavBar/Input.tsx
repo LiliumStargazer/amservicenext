@@ -1,18 +1,19 @@
 'use client'
 
 import React, { ChangeEvent, KeyboardEvent } from "react";
-import useStore from "@/app/store";
 
 interface InputProps {
     loading: boolean;
-    reset: () => Promise<void>;
+
+    setSerialTemp: (serial: string) => void;
+    setIsFetchRequest: (isFetchRequest: boolean) => void;
 }
 
-const Input: React.FC<InputProps> = ({loading, reset}) => {
-    const setSerialTemp = useStore(state => state.setSerialTemp);
+const Input: React.FC<InputProps> = ({loading, setSerialTemp, setIsFetchRequest}) => {
+
     const handleKeyDownOnLog = async (event: KeyboardEvent) => {
         if (event.key === "Enter") {
-            await reset();
+            setIsFetchRequest(true);
         }
     };
 
@@ -24,7 +25,6 @@ const Input: React.FC<InputProps> = ({loading, reset}) => {
             disabled={loading}
             onKeyDown={handleKeyDownOnLog}
             placeholder="Type Serial"
-            // disabled={loadingGlobal}
         />
     );
 };

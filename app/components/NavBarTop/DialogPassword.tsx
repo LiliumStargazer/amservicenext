@@ -2,7 +2,7 @@
 
 import React, {ChangeEvent, useEffect} from "react";
 import {v4 as uuidv4} from 'uuid';
-import usePasswordLevels from "@/app/hooks/home/usePasswordLevels";
+import usePasswordLevels from "@/app/hooks/log/usePasswordLevels";
 
 
 interface DialogPasswordProps {

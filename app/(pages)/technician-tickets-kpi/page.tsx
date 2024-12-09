@@ -13,7 +13,7 @@ import {useQueryExternalTicketHistory} from "@/app/hooks/technician-tickets/useQ
 import {useQueryExternalLatestTicket} from "@/app/hooks/technician-tickets/useQueryExternalLatestTicket";
 import AlertLoading from "@/app/components/shared/AlertLoading";
 import {AgGridReact} from "ag-grid-react";
-import LoadingOverlayAgGrid from "@/app/components/log/tables/LoadingOverlayAgGrid";
+import LoadingOverlayAgGrid from "@/app/components/body/tables/LoadingOverlayAgGrid";
 import parseCSV from "@/app/utils/parseCSV";
 import { TechnicianStatistics, Ticket} from "@/app/types/types";
 import {ColDef} from "ag-grid-community";

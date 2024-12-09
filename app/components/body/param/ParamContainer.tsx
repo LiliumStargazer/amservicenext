@@ -6,8 +6,8 @@ import {convertTimeStampToDate} from "@/app/utils/utils";
 import useQueryGetParamsID from "@/app/hooks/log/param/useQueryGetParamsID";
 import {useQueryClient} from "@tanstack/react-query";
 import {ErrorResponse, Param, ParamList} from "@/app/types/types";
-import SelectParam from "@/app/components/log/param/SelectParam";
-import ParamListAccordition from "@/app/components/log/param/ParamListAccordition";
+import SelectParam from "@/app/components/body/param/SelectParam";
+import ParamListAccordition from "@/app/components/body/param/ParamListAccordition";
 import useQueryGetParam from "@/app/hooks/log/param/useQueryGetParam";
 
 interface SelectParamProps {
