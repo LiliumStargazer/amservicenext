@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faAndroid, faWindows} from '@fortawesome/free-brands-svg-icons';
 import {useQueryGetSoftwareType} from "@/app/hooks/log/useQueryGetSoftwareType";
+import {ErrorResponse} from "@/app/types/types";
 
 interface IconSoftwareProps {
     serial: string;
@@ -19,7 +20,12 @@ const IconSoftware: React.FC <IconSoftwareProps>= ({serial, backup, isBackupRead
     useEffect(() => {
         if (isLoading)
             return;
+
         if ( isSuccess && data ){
+            if ( (data as ErrorResponse).error && ((data as ErrorResponse).error).includes('No backup') ){
+                return;
+            }
+
             const result = data as string;
             if (result.includes('android')) {
                 setSoftwareIcon(<FontAwesomeIcon icon={faAndroid} size="2xl" style={{ color: "#63E6BE" }} />);
