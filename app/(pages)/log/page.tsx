@@ -43,9 +43,12 @@ import useBackupStatus from "@/app/hooks/log/useBackupStatus";
 import useBackupList from "@/app/hooks/log/useBackupList";
 import useSearch from "@/app/hooks/log/useSearch";
 import ParamContainer from "@/app/components/log/param/ParamContainer";
+import TopNavBar from "@/app/components/log/TopNavBar";
+
 
 const Log: React.FC = () => {
     const serial = useStore(state => state.serial);
+    const serialTemp = useStore(state => state.serialTemp);
     const setSerial = useStore(state => state.setSerial);
     const [storedGridAPi, setStoredGridApi] = useState<GridApi | null>(null);
     const [message, setMessage] = useState<string>('');
@@ -61,7 +64,6 @@ const Log: React.FC = () => {
     const [loading, setLoading] = React.useState(false);
     const [isResettingSearchingEvent, setIsResettingSearchingEvent] = useState(false);
     const [fridgeSelected, setFridgeSelected] = useState<number>(0);
-    const serialTemp = useStore(state => state.serialTemp);
     const [section, setSection] = useState<string>('master');
     const resetQueries = useResetQueries();
     const reset = useReset(
@@ -149,6 +151,10 @@ const Log: React.FC = () => {
 
     return (
         <div className={`h-screen ${ section != "param" ? "overflow-hidden" : ""}`}>
+            <TopNavBar
+                serialTemp={serialTemp}
+                setMessage={setMessage}
+            />
             <div className="navbar bg-base-100">
                 <div className="navbar-start space-x-2 ">
                     {section === 'master' && (

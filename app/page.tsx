@@ -77,9 +77,6 @@ const Login: React.FC = () => {
         setLoading(false);
     }
 
-
-
-
     return (
         <div>
             <div id="header" className="navbar bg-neutral text-neutral-content h-16">

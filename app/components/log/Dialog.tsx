@@ -49,7 +49,9 @@ const Dialog: React.FC <DialogProps>= ({isDialogOpen, setIsDialogOpen, dialogCon
         <dialog id={dialogId} className="modal" open={isDialogOpen}>
             <div className="modal-box">
                 <h3 className="font-bold text-lg">Event Detail</h3>
-                <div className="py-4 whitespace-normal break-words">{box}</div>
+                <div className="py-4 whitespace-normal break-words">
+                    {box}
+                </div>
                 <div className="modal-action">
                     <form method="dialog">
                         <button className="btn" onClick={onClickClose}>Close</button>

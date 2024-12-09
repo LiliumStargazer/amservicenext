@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Livello_1" data-name="Livello 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39.95 39.95">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #a496af;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8 {
+        isolation: isolate;
+        opacity: .8;
+      }
+
+      .cls-2 {
+        fill: #80a687;
+      }
+
+      .cls-3, .cls-9 {
+        fill: #3e3747;
+      }
+
+      .cls-4 {
+        fill: #847293;
+      }
+
+      .cls-5 {
+        fill: #686076;
+      }
+
+      .cls-6 {
+        fill: #91c892;
+      }
+
+      .cls-7 {
+        fill: #60716e;
+      }
+
+      .cls-8 {
+        fill: #abd3a2;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M35.06,6.79l-1.87,13.19-13.19-1.87,1.87-13.19,13.19,1.87h0Z"/>
+  <path class="cls-7" d="M4.92,33.17l1.87-13.19,13.19,1.87-1.87,13.19-13.19-1.87h0Z"/>
+  <path class="cls-6" d="M6.8,4.94l13.19,1.87-1.87,13.19-13.19-1.87,1.87-13.19h0Z"/>
+  <path class="cls-5" d="M33.17,35.04l-13.19-1.87,1.87-13.19,13.19,1.87-1.87,13.19Z"/>
+  <path class="cls-3" d="M18.67,39.95l-8-10.65,10.65-8,8,10.65-10.65,8h0Z"/>
+  <path class="cls-4" d="M39.95,21.28l-10.65,8-8-10.65,10.65-8,8,10.65h0Z"/>
+  <path class="cls-8" d="M21.3,0l8,10.65-10.65,8-8-10.65L21.3,0h0Z"/>
+  <path class="cls-2" d="M0,18.66l10.65-8,8,10.65-10.65,8L0,18.66Z"/>
+  <path class="cls-9" d="M19.97,14.91l5.06,5.06-5.06,5.06-5.06-5.06,5.06-5.06Z"/>
+</svg>
