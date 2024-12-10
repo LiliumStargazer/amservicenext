@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faAndroid, faWindows} from '@fortawesome/free-brands-svg-icons';
-import {useQueryGetSoftwareType} from "@/app/hooks/log/useQueryGetSoftwareType";
+import {useQueryGetSoftwareType} from "@/app/hooks/query/useQueryGetSoftwareType";
 import {ErrorResponse} from "@/app/types/types";
 
 interface IconSoftwareProps {

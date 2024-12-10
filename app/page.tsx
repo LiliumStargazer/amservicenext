@@ -15,31 +15,30 @@ import ChartFridgeContainer from "@/app/components/body/fridge/ChartFridgeContai
 import GetButton from "@/app/components/NavBar/buttons/GetButton";
 import Input from "@/app/components/NavBar/Input";
 import SelectFridge from "@/app/components/body/fridge/SelectFridge";
-import AgGridFingersTransaction from "@/app/components/body/tables/AgGridFingersTransaction";
+import AgGridFingersTransaction from "@/app/components/body/AgGridFingersTransaction";
 import FingerButton from "@/app/components/NavBar/buttons/FingerButton";
 import ParamButton from "@/app/components/NavBar/buttons/ParamButton";
 import FridgeButton from "@/app/components/NavBar/buttons/FridgeButton";
 import ExcelButton from "@/app/components/NavBar/buttons/ExcelButton";
-import LisButton from "@/app/components/NavBar/buttons/LisButton";
 import MasterButton from "@/app/components/NavBar/buttons/MasterButton";
-import AgGridMaster from "@/app/components/body/tables/AgGridMaster";
+import AgGridMaster from "@/app/components/body/AgGridMaster";
 import DatePicker from "@/app/components/NavBar/DatePicker";
 import SwapChartTable from "@/app/components/body/fridge/SwapChartTable";
-import useQueryEventsByDate from "@/app/hooks/log/useQueryEventsByDate";
-import useQueryEventsFromAlive from "@/app/hooks/log/useQueryEventsFromAlive";
-import useQuerySelectedEvents from "@/app/hooks/log/useQuerySelectedEvents";
-import useResetQueries from "@/app/hooks/shared/useResetQueries";
-import {useQueryGetBackupList} from "@/app/hooks/log/useQueryGetBackupList";
-import {useQueryDownloadBackup} from "@/app/hooks/log/useQueryDownloadBackup";
-import {useQueryFridgeData} from "@/app/hooks/log/useQueryFridgeData";
-import useAliveEvent from "@/app/hooks/log/useAliveEvent";
-import useErrorHandling from "@/app/hooks/log/useErrorHandling";
-import useLoadingStatus from "@/app/hooks/log/useLoadingStatus";
-import useReset from "@/app/hooks/log/useReset";
-import useCellDoubleClick from "@/app/hooks/log/useCellDoubleClick";
-import useBackupStatus from "@/app/hooks/log/useBackupStatus";
-import useBackupList from "@/app/hooks/log/useBackupList";
-import useSearch from "@/app/hooks/log/useSearch";
+import useQueryEventsByDate from "@/app/hooks/query/useQueryEventsByDate";
+import useQueryEventsFromAlive from "@/app/hooks/query/useQueryEventsFromAlive";
+import useQuerySelectedEvents from "@/app/hooks/query/useQuerySelectedEvents";
+import useResetQueries from "@/app/hooks/query/useResetQueries";
+import {useQueryGetBackupList} from "@/app/hooks/query/useQueryGetBackupList";
+import {useQueryDownloadBackup} from "@/app/hooks/query/useQueryDownloadBackup";
+import {useQueryFridgeData} from "@/app/hooks/query/useQueryFridgeData";
+import useAliveEvent from "@/app/hooks/useAliveEvent";
+import useErrorHandling from "@/app/hooks/useErrorHandling";
+import useLoadingStatus from "@/app/hooks/useLoadingStatus";
+import useReset from "@/app/hooks/useReset";
+import useCellDoubleClick from "@/app/hooks/useCellDoubleClick";
+import useBackupStatus from "@/app/hooks/useBackupStatus";
+import useBackupList from "@/app/hooks/useBackupList";
+import useSearch from "@/app/hooks/useSearch";
 import ParamContainer from "@/app/components/body/param/ParamContainer";
 import TopNavBar from "@/app/components/NavBarTop/TopNavBar";
 import {getSerialValidationMessage, trimAndFormatSerial} from "@/app/utils/utils";
@@ -226,7 +225,6 @@ const Log: React.FC = () => {
                             <ParamButton loading={loading} setSection={setSection}/>
                             <FridgeButton loading={loading} setSection={setSection}/>
                             <FingerButton loading={loading} setSection={setSection}/>
-                            <LisButton loading={loading}/>
                             <ExcelButton
                                 loading={loading}
                                 setMessage={setMessage}

@@ -12,8 +12,8 @@ import {useQuery} from "@tanstack/react-query";
 import {apiGetEventsByDate} from "@/app/lib/api";
 import {getRowsMap} from "@/app/utils/getRowMap";
 import {AliveEvent, ErrorResponse, LogEventData} from "@/app/types/types";
-import useQueryEventsFromAlive from "@/app/hooks/log/useQueryEventsFromAlive";
-import useAliveEvent from "@/app/hooks/log/useAliveEvent";
+import useQueryEventsFromAlive from "@/app/hooks/query/useQueryEventsFromAlive";
+import useAliveEvent from "@/app/hooks/useAliveEvent";
 
 function Extract() {
     const [loading, setLoading] = useState<boolean>(true);
