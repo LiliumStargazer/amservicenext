@@ -7,8 +7,8 @@ import { formatStringDateOrder, getTimeFromData, } from "@/app/utils/utils";
 import {AgGridReact} from "ag-grid-react";
 import {FingerData, FingerRawData} from "@/app/types/types";
 import { GridReadyEvent, ColDef } from "ag-grid-community";
-import LoadingOverlayAgGrid from "@/app/components/body/tables/LoadingOverlayAgGrid";
-import {useQueryFingerTransactions} from "@/app/hooks/log/useQueryFingerTransactions";
+import LoadingOverlayAgGrid from "@/app/components/body/LoadingOverlayAgGrid";
+import {useQueryFingerTransactions} from "@/app/hooks/query/useQueryFingerTransactions";
 import { GridApi } from "ag-grid-community";
 
 interface AgGridFingersTransactionProps {
