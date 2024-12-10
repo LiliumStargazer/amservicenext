@@ -1,6 +1,6 @@
 'use client'
 
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { v4 as uuidv4 } from 'uuid';
 import {
     Erog, Param, Terminal,
@@ -22,9 +22,40 @@ import AlertLoading from "@/app/components/shared/AlertLoading";
 interface ParamsAccorditionProps {
     loading: boolean;
     param: Param;
+    listinoItems: Array<{ code: number, prodName: string }> | null;
 }
 
-const ParamListAccordition: React.FC <ParamsAccorditionProps>= ({loading, param}) => {
+
+const ParamListAccordition: React.FC <ParamsAccorditionProps>= ({loading, param, listinoItems}) => {
+
+    const [erogParams, setErogParams] = useState<TypeErogParams[]>([]);
+
+    useEffect(() => {
+        const mapErogParams = (erogList: Erog[]): TypeErogParams[] => {
+            return erogList.map((erog: Erog) => {
+                const product = listinoItems ? listinoItems.find(item => item.code === Number(erog.ProductCode)) : null;
+                console.log(product);
+                return {
+                    key: erog.Name?.toString() || '',
+                    label: erog.Name?.toString() || '',
+                    type: erog.ErogDevType?.toString() || erog.erogType?.toString() || '',
+                    productCode: erog.ProductCode?.toString() || '',
+                    inout: erog.InOutNumBase0 !== undefined ? (Number(erog.InOutNumBase0) + 1).toString() : "1",
+                    capacity: erog.TErogMotori?.Capacity?.toString() || erog.Capacity?.toString() || '',
+                    name: product ? product.prodName : '',
+                };
+            });
+        };
+
+        const newErogParams: TypeErogParams[] = param.ErogDevLayout
+            ? mapErogParams(param.ErogDevLayout)
+            : param.IntMotLayout
+                ? mapErogParams(param.IntMotLayout)
+                : [];
+
+        setErogParams(newErogParams);
+
+    }, [listinoItems, param]);
 
     const configParams: TypeConfigParams[] = [
         { label: 'Abilita Invio Giorno', value: param.AbilitaInvioGiorno?.toString() },
@@ -290,22 +321,27 @@ const ParamListAccordition: React.FC <ParamsAccorditionProps>= ({loading, param}
         value: age?.toString() || '',
     })) : [];
 
-    const mapErogParams = (erogList: Erog[]): TypeErogParams[] => {
-        return erogList.map((erog: Erog) => ({
-            key: erog.Name?.toString() || '',
-            label: erog.Name?.toString() || '',
-            type: erog.ErogDevType?.toString() || erog.erogType?.toString() || '',
-            productCode: erog.ProductCode?.toString() || '',
-            inout: erog.InOutNumBase0?.toString() || '',
-            capacity: erog.TErogMotori?.Capacity?.toString() || erog.Capacity?.toString() || '',
-        }));
-    };
-
-    const erogParams: TypeErogParams[] = param.ErogDevLayout
-        ? mapErogParams(param.ErogDevLayout)
-        : param.IntMotLayout
-            ? mapErogParams(param.IntMotLayout)
-            : [];
+//    const mapErogParams = (erogList: Erog[]): TypeErogParams[] => {
+//     return erogList.map((erog: Erog) => {
+//         const product = listino ? listino.find(item => item.code === Number(erog.ProductCode)) : null;
+//         console.log(product)
+//         return {
+//             key: erog.Name?.toString() || '',
+//             label: erog.Name?.toString() || '',
+//             type: erog.ErogDevType?.toString() || erog.erogType?.toString() || '',
+//             productCode: erog.ProductCode?.toString() || '',
+//             inout: erog.InOutNumBase0?.toString() || '',
+//             capacity: erog.TErogMotori?.Capacity?.toString() || erog.Capacity?.toString() || '',
+//             name: product ? product.prodName : '',
+//         };
+//     });
+// };
+//
+//     const erogParams: TypeErogParams[] = param.ErogDevLayout
+//         ? mapErogParams(param.ErogDevLayout)
+//         : param.IntMotLayout
+//             ? mapErogParams(param.IntMotLayout)
+//             : [];
 
     const favoritesParams: TypeFavoriteParams[] = param.Favorites ? param.Favorites.map((favorite) => ({
         key: favorite.ItemTitle?.toString() || '',
@@ -498,11 +534,11 @@ const ParamListAccordition: React.FC <ParamsAccorditionProps>= ({loading, param}
                     <input type="checkbox"/>
                     <div className="collapse-title text-xl font-medium">Erogatori</div>
                     <div className="collapse-content">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                             {erogParams.map((param) => (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4"
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
                                      key={uuidv4()}>
-                                    <div className="flex-1 flex flex-col">
+                                    <div className="flex-2 flex flex-col">
                                         {param.label !== undefined && (
                                             <div>
                                                 <span className="font-bold text-info">{param.label}</span>
@@ -521,6 +557,23 @@ const ParamListAccordition: React.FC <ParamsAccorditionProps>= ({loading, param}
                                         {param.productCode !== undefined && (
                                             <div className="whitespace-nowrap">
                                                 Codice Prodotto: {param.productCode}
+                                            </div>
+                                        )}
+                                        {param.name !== undefined && (
+                                            <div>
+                                                <div className="whitespace-nowrap text-md">
+                                                    Nome:
+                                                </div>
+                                                <div className="whitespace-nowrap text-sm">
+                                                    {param.name}
+                                                </div>
+                                            </div>
+                                        )}
+                                        {param.inout !== undefined && (
+                                            <div>
+                                                <div className="whitespace-nowrap text-md">
+                                                    ingresso: {param.inout}
+                                                </div>
                                             </div>
                                         )}
                                     </div>

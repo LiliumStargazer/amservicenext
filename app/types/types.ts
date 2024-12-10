@@ -226,6 +226,7 @@ export type TypeErogParams = {
     productCode: string;
     inout: string;
     capacity: string;
+    name: string;
 };
 
 export type TypeFavoriteParams = {

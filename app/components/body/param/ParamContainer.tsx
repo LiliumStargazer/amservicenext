@@ -3,12 +3,13 @@
 import React, { useEffect, useState } from 'react';
 
 import {convertTimeStampToDate} from "@/app/utils/utils";
-import useQueryGetParamsID from "@/app/hooks/log/param/useQueryGetParamsID";
+import useQueryGetParamsID from "@/app/hooks/param/useQueryGetParamsID";
 import {useQueryClient} from "@tanstack/react-query";
 import {ErrorResponse, Param, ParamList} from "@/app/types/types";
 import SelectParam from "@/app/components/body/param/SelectParam";
 import ParamListAccordition from "@/app/components/body/param/ParamListAccordition";
-import useQueryGetParam from "@/app/hooks/log/param/useQueryGetParam";
+import useQueryGetParam from "@/app/hooks/param/useQueryGetParam";
+import {useQueryGetListinoFull} from "@/app/hooks/query/useQueryGetListinoFull";
 
 interface SelectParamProps {
     serial: string;
@@ -17,11 +18,19 @@ interface SelectParamProps {
     setMessage: (message: string) => void;
 }
 
+interface Listino {
+    prodV: string;
+    items: Array<{ code: number, prodName: string }>;
+}
+
 const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupReady, setMessage}) => {
     const [IDParam, setIDParam] = useState<string>('');
     const [paramIdList, setParamIdList] = useState<React.ReactNode[]>([]);
     const [param, setParam] = useState<Param>({});
     const [loading, setLoading] = useState(false);
+    const [isGetListino, setIsGetListino] = useState(true);
+    const [listinoItems, setListinoItems] = useState<Array<{ code: number, prodName: string }> | null>(null);
+    const queryClient = useQueryClient();
     const {
         isLoading:isLoadingParamIDList,
         isSuccess:IsSuccessIDList,
@@ -32,14 +41,31 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
         isSuccess: isSuccessParams,
         data: rawParams,
     } = useQueryGetParam(serial, backup, isBackupReady, IDParam);
-    const queryClient = useQueryClient();
+    const {
+        isLoading: isLoadingListino,
+        isSuccess: isSuccessListino,
+        data: rawListino,
+        isError: isErrorListino,
+    } = useQueryGetListinoFull(serial, isGetListino );
 
     useEffect(() => {
-        if (isLoadingParamIDList || isLoadingParams) {
+        if (isErrorListino) {
+            setMessage("Error on listino: " + (rawListino as ErrorResponse).error);
+            return;
+        }
+
+        if (isSuccessListino && rawListino && typeof rawListino === 'object'){
+            setListinoItems((rawListino as Listino).items);
+        }
+        setIsGetListino(false);
+    }, [isErrorListino, isSuccessListino, listinoItems, rawListino, setMessage]);
+
+    useEffect(() => {
+        if (isLoadingParamIDList || isLoadingParams || isLoadingListino) {
             setLoading(true);
             return;
         }
-    }, [isLoadingParamIDList, isLoadingParams]);
+    }, [isLoadingParamIDList, isLoadingParams, isLoadingListino]);
 
     useEffect(() => {
         if ((dataIDList as ErrorResponse)?.error) {
@@ -52,6 +78,21 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
         }
 
     }, [dataIDList, rawParams, setMessage]);
+
+
+    useEffect(() => {
+
+        if (isSuccessParams && rawParams && typeof rawParams === 'object' ) {
+
+            if (Object.keys(rawParams).length === 0){
+                setMessage('No param data found');
+                setLoading(false);
+                return;
+            }
+            setParam(rawParams);
+            setLoading(false);
+        }
+    }, [isSuccessParams, rawParams, setMessage]);
 
     useEffect(() => {
 
@@ -87,19 +128,6 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
         setIDParam(e.target.value);
     }
 
-    useEffect(() => {
-
-        if (isSuccessParams && rawParams && typeof rawParams === 'object' ) {
-
-            if (Object.keys(rawParams).length === 0){
-                setMessage('No param data found');
-                setLoading(false);
-                return;
-            }
-            setParam(rawParams);
-            setLoading(false);
-        }
-    }, [isSuccessParams, rawParams, setMessage]);
 
     return (
         <>
@@ -113,7 +141,8 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
             </div>
         <ParamListAccordition
            loading={loading}
-              param={param}
+           param={param}
+           listinoItems={listinoItems}
         />
         </>
     );
