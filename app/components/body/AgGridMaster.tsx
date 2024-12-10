@@ -9,7 +9,7 @@ import { AgGridReact } from 'ag-grid-react';
 import {LogEventData, RawLogEventData} from "@/app/types/types";
 import {rowClassRules} from "@/app/utils/rowClassRules";
 import {getRowsMap} from "@/app/utils/getRowMap";
-import LoadingOverlayAgGrid from "@/app/components/body/tables/LoadingOverlayAgGrid";
+import LoadingOverlayAgGrid from "@/app/components/body/LoadingOverlayAgGrid";
 
 interface AgGridMasterLogReactQueryProps {
     loading: boolean;
