@@ -14,16 +14,6 @@ services:
       - com.centurylinklabs.watchtower.enable=true
     restart: always
 
-  nginx:
-    image: lalghisi/nginx:1.0
-    ports:
-      - 80:80
-      - 443:443
-    container_name: nginx
-    labels:
-      - com.centurylinklabs.watchtower.enable=true
-    restart: always
-
   watchtower:
     image: containrrr/watchtower
     volumes:
