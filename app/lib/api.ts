@@ -24,6 +24,9 @@ const apiRequest = async <GenericResponseType>(endpoint: string, payload: Record
     }
 };
 
+export const apiRecoverDb = (serial: string, backup:string , port: string): Promise<unknown> =>
+    apiRequest(`/recover-db`, { serial, backup, port });
+
 export const apiGetListinoFull = (serial: string): Promise<unknown> =>
     apiRequest(`/get-listino-full`, { serial });
 
