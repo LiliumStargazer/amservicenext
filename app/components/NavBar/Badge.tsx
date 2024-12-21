@@ -1,17 +1,14 @@
 'use client'
 
 import React from "react";
-import useStore from "@/app/store";
 
-const Badge: React.FC = () => {
-    const storedSerial = useStore(state => state.serial);
+interface BadgeProps {
+    serial: string;
+}
 
-    if (!storedSerial) {
-        return null;
-    }
-
+const Badge: React.FC<BadgeProps> = ({serial}) => {
     return (
-        <span className="badge badge-lg badge-info">{storedSerial}</span>
+        serial ? <span className="badge badge-lg badge-info">{serial}</span> : null
     );
 }
 
