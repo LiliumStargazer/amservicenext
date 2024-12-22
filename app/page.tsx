@@ -42,6 +42,7 @@ import useSearch from "@/app/hooks/useSearch";
 import ParamContainer from "@/app/components/body/param/ParamContainer";
 import TopNavBar from "@/app/components/NavBarTop/TopNavBar";
 import {getSerialValidationMessage, trimAndFormatSerial} from "@/app/utils/utils";
+// import RecoverdBContainer from "@/app/components/NavBar/buttons/RecoverdBContainer";
 
 const Log: React.FC = () => {
     const [serial, setSerial] = useState<string>('');
@@ -72,27 +73,11 @@ const Log: React.FC = () => {
         resetQueries
     );
 
-    useEffect(() => {
-        if (isFetchRequest) {
-            setLoading(true);
-            const formattedSerial = trimAndFormatSerial(serialTemp);
-            const message = getSerialValidationMessage(formattedSerial);
-            if (message !== "valid" ){
-                setMessage(message);
-                setLoading(false);
-            }
-            else{
-                reset().catch((error) => setMessage(error.message));
-                setSerial(formattedSerial);
-                setIsFetchRequest(false);
-            }
-        }
-    }, [serialTemp, isFetchRequest, reset]);
-
     const {
         isLoading: isLoadingBackupList,
         data: backupList,
-        isSuccess: isSuccessBackupList
+        isSuccess: isSuccessBackupList,
+        isFetched: isFetchedBackupList
     } = useQueryGetBackupList(serial);
 
     const {
@@ -136,7 +121,7 @@ const Log: React.FC = () => {
         setSection,
         setLoading
     });
-    useBackupList(isSuccessBackupList, backupList as string[], setBackup);
+    useBackupList(isSuccessBackupList, backupList as string[], setBackup );
     useBackupStatus(isDownloading, isDownloaded, dataDownloaded as boolean, setIsBackupReady);
     useLoadingStatus(isLoadingEventsByDate, isLoadingSelectedEvents, isLoadingBackupList, isDownloading, setLoading);
     const handleSearchValueChange = useSearch(setSearchValue, setIsResettingSearchingEvent);
@@ -160,6 +145,29 @@ const Log: React.FC = () => {
         setDatePickerDate(date);
         setDateIsoString(date?.toISOString() || null);
     }, [setDatePickerDate, setDateIsoString]);
+
+    useEffect(() => {
+        if (isFetchRequest) {
+            setLoading(true);
+            const formattedSerial = trimAndFormatSerial(serialTemp);
+            const message = getSerialValidationMessage(formattedSerial);
+            if (message !== "valid" ){
+                setMessage(message);
+                setLoading(false);
+            }
+            else{
+                reset().catch((error) => setMessage(error.message));
+                setSerial(formattedSerial);
+                setIsFetchRequest(false);
+            }
+        }
+    }, [serialTemp, isFetchRequest, reset]);
+
+    useEffect(() => {
+        if (isFetchedBackupList) {
+            setIsFetchRequest(false);
+        }
+    }, [isFetchedBackupList]);
 
     return (
         <div className={`h-screen ${ section != "param" ? "overflow-hidden" : ""}`}>
@@ -192,6 +200,12 @@ const Log: React.FC = () => {
                                     handleDatePickerChange={handleDatePickerChange}
                                 />
                             )}
+                            {/*<RecoverdBContainer*/}
+                            {/*    serial={serial}*/}
+                            {/*    backup={backup}*/}
+                            {/*    loading={loading}*/}
+                            {/*    setMessage={setMessage}*/}
+                            {/*/>*/}
                         </>
                     )}
                     {isBackupReady && (
@@ -220,7 +234,7 @@ const Log: React.FC = () => {
                     {isBackupReady && (
                         <>
                             <IconSoftware serial={serial} backup={backup} isBackupReady={isBackupReady}/>
-                            <Badge/>
+                            <Badge serial={serial}/>
                             <MasterButton loading={loading} setSection={setSection}/>
                             <ParamButton loading={loading} setSection={setSection}/>
                             <FridgeButton loading={loading} setSection={setSection}/>
