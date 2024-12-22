@@ -1,55 +1,47 @@
 import path from 'path';
 import protobuf from 'protobufjs';
 import * as Sentry from '@sentry/nextjs';
-import {RawParams} from "@/app/types/types";
+import { RawParams } from "@/app/types/types";
+import fs from 'fs';
 
 let TCoreParam: protobuf.Type;
 let TCoreParamCE: protobuf.Type;
 
-
-const loadProtoAndroid = new Promise<void>((resolve, reject) => {
-    const protoPath = path.resolve('./app/lib/params/TCoreParam.proto');
-    protobuf.load(protoPath, (err, root) => {
-        if (err) {
-            Sentry.captureException(err);
-            reject(err);
-        } else {
-            if (!root) {
-                const error = new Error('Root è undefined per TCoreParam.proto');
+const loadProtoFile = (protoPath: string): Promise<protobuf.Root> => {
+    return new Promise((resolve, reject) => {
+        if (!fs.existsSync(protoPath) || fs.lstatSync(protoPath).isDirectory()) {
+            const error = new Error(`Invalid path: ${protoPath}`);
+            Sentry.captureException(error);
+            reject(error);
+            return;
+        }
+        protobuf.load(protoPath, (err, root) => {
+            if (err) {
+                Sentry.captureException(err);
+                reject(err);
+            } else if (!root) {
+                const error = new Error(`Root is undefined for ${protoPath}`);
                 Sentry.captureException(error);
                 reject(error);
             } else {
-                TCoreParam = root.lookupType("TCoreParam");
-                resolve();
+                resolve(root);
             }
-        }
+        });
     });
-});
+};
 
-const loadProtoCE = new Promise<void>((resolve, reject) => {
-    const protoPath = path.resolve('./app/lib/params/param.proto');
-    protobuf.load(protoPath, (err, root) => {
-        if (err) {
-            Sentry.captureException(err);
-            reject(err);
-        } else if (!root) {
-            const error = new Error('Root è undefined per params.proto');
-            Sentry.captureException(error);
-            reject(error);
-        } else {
-            TCoreParamCE = root.lookupType("TCoreParam");
-            resolve();
-        }
-    });
-});
+const loadProtoAndroid = loadProtoFile(path.resolve(process.env.PROTO_PATH_ANDROID || ''));
+const loadProtoCE = loadProtoFile(path.resolve(process.env.PROTO_PATH_CE || ''));
 
 export async function getParams(data: RawParams[], softwareType: 'android' | 'windows'): Promise<protobuf.Message<Record<string, unknown>>> {
     try {
         if (softwareType === 'android') {
-            await loadProtoAndroid;
+            const root = await loadProtoAndroid;
+            TCoreParam = root.lookupType("TCoreParam");
             return TCoreParam.decode(data[0].Data);
         } else {
-            await loadProtoCE;
+            const root = await loadProtoCE;
+            TCoreParamCE = root.lookupType("TCoreParam");
             return TCoreParamCE.decode(data[0].Data);
         }
     } catch (e) {
