@@ -23,7 +23,7 @@ import Alert from "@/app/components/shared/Alert";
 const colDefs: ColDef<TechnicianStatistics>[] = [
     { headerName: 'Technician', field: 'Manutentore' as keyof TechnicianStatistics, flex: 2, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: true },
     { headerName: 'Total Tickets', field: 'totalTickets' as keyof TechnicianStatistics, flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: true },
-    { headerName: 'MTTR days', field: 'MTTR' as keyof TechnicianStatistics, flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: true, aggFunc: 'avg' },
+    { headerName: 'MTTR days', field: 'MTTR' as keyof TechnicianStatistics, flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: true },
     { headerName: '% Tickets with TTR 0-3 days', field: 'percentageOfTicketsWithTimeToRestoreLessOrEqualThree' as keyof TechnicianStatistics, flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: true },
     { headerName: '% Tickets with TTR 4-5 days', field: 'percentageOfTicketsWithTimeToRestoreBetweenFourAndFive' as keyof TechnicianStatistics, flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: true },
     { headerName: '% Tickets with TTR over 5 days', field: 'percentageOfTicketsWithTimeToRestoreGreaterThanFive' as keyof TechnicianStatistics, flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: true },
