@@ -17,7 +17,7 @@ const SelectParam: React.FC<SelectParamProps>= ({loading, IDParam, handleOnChang
             <select
                 className="select select-bordered select-md max-w-min min-w-44 z-auto"
                 value={IDParam}
-                onChange={(e) => handleOnChange(e) }
+                onChange={handleOnChange}
             >
                 {paramIdList}
             </select>
