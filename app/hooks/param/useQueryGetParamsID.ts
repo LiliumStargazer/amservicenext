@@ -7,6 +7,7 @@ const useQueryGetParamsID = (serial: string, backup:string, isBackupReady: boole
         queryKey: ['getParamsIDS', serial, backup],
         queryFn: () => apiGetParamsIds(serial, backup),
         enabled: !!serial && !!backup && isBackupReady ,
+        refetchOnWindowFocus: false
     });
 
     return { isLoading, isError, isSuccess, data, error };
