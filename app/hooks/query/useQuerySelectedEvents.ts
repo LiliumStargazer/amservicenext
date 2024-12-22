@@ -9,6 +9,7 @@ const useQuerySelectedEvents = (serial: string, backup: string, searchValue: str
         queryKey: ['eventsFromSelectedEvents', searchValue],
         queryFn: () => apiGetSelectedEvents(serial, backup, searchValue),
         enabled: !!serial && !!backup && !backup.includes('No such file') && searchValue.length > 0 && isBackupReady,
+        refetchOnWindowFocus: false
     });
     return { isLoading, isError, isPending, data, error, isSuccess };
 };
