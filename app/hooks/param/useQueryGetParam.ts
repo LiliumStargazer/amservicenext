@@ -7,6 +7,7 @@ const useQueryGetParam = (serial: string, backup: string, isBackupReady: boolean
         queryKey: ['getParamsBackups'],
         queryFn: () => apiGetParams(serial, backup, IDParam),
         enabled: !!serial && !!backup && IDParam.length > 0 && isBackupReady ,
+        refetchOnWindowFocus: false
     });
 
     return { isLoading, isError, isSuccess, data, error };
