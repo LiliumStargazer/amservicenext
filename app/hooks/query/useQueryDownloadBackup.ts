@@ -8,6 +8,7 @@ export const useQueryDownloadBackup = ( serial: string, backup: string) => {
         queryKey: ['downloadBackup', backup],
         queryFn: () => apiDownloadBackup(serial, backup),
         enabled: !!serial && !!backup,
+        refetchOnWindowFocus: false
     });
 
     return { isLoading, isError, data, error, isSuccess};
