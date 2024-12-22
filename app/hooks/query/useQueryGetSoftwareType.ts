@@ -7,6 +7,7 @@ export const useQueryGetSoftwareType = (serial: string, backup: string , isBacku
         queryKey: ['softwareType'],
         queryFn: () => apiGetSoftwareType(serial, backup),
         enabled: !!serial && !!backup && isBackupReady,
+        refetchOnWindowFocus: false
     });
 
     return { isLoading, isError, data, error, isSuccess};
