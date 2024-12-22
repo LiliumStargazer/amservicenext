@@ -7,6 +7,7 @@ const useQueryEventsByDate = (serial: string, backup: string, isBackupReady: boo
         queryKey: ['eventsFromDataByDate',date, backup ],
         queryFn: () => { return apiGetEventsByDate(serial, backup, date) } ,
         enabled: !!serial && !!backup && !backup.includes('No such file') && isBackupReady,
+        refetchOnWindowFocus: false
     });
 
     return { isLoading, isError, isPending, data, error, isSuccess };
