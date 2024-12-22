@@ -7,6 +7,7 @@ const useQueryEventsFromAlive = (serial: string | null, backup: string | null, i
         queryKey: ['eventFromAlive'],
         queryFn: () => apiGetAliveEventsCorsHandling(),
         enabled: !!serial && !!backup && !serial.includes('No such file') && isAliveEvent,
+        refetchOnWindowFocus: false
     });
 
     return { isLoading, isError, data, error, isSuccess };
