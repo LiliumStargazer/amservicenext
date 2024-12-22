@@ -72,7 +72,7 @@ function Extract() {
 
         if (isSuccess && Array.isArray(data)) {
             const rows = getRowsMap(data);
-            const findID = id !== null ? rows.findIndex((row: LogEventData) => row.IDR === id.toString()) : -1;
+            const findID = id !== null ? rows.findIndex((row: LogEventData) => Number(row.ID) === id) : -1;
             setMatchedID(Number(findID));
             setLogData(rows);
             setLoading(false);
