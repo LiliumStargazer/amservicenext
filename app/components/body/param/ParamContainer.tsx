@@ -106,8 +106,10 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
                 }
                 const maxIdElement = valuesArray.reduce((max, element) =>  element.ID > max.ID ? element : max, valuesArray[0]);
 
-                const paramArrayTemp = dataIDList.map((element: ParamList, index: number) => (
-                    <option key={index} value={element.ID}>Id: {element.ID} Data: {convertTimeStampToDate(parseInt(element.DataOra))}</option>
+                const paramArrayTemp = dataIDList.map((element: ParamList) => (
+                    <option key={element.ID} value={element.ID}>
+                        Id: {element.ID} Data: {convertTimeStampToDate(parseInt(element.DataOra))}
+                    </option>
                 ));
 
                 setParamIdList(paramArrayTemp);
@@ -120,14 +122,13 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
     }, [dataIDList, IsSuccessIDList,setMessage, setIDParam]);
 
     const handleOnChange  = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setIDParam(e.target.value);
         await queryClient.resetQueries({
                 queryKey: ['getParamsBackups'],
                 exact: true, // Ensure it matches the exact query key
             }
         ).catch((error) => {console.log(error)});
-        setIDParam(e.target.value);
     }
-
 
     return (
         <>
