@@ -7,6 +7,7 @@ export const useQueryFingerTransactions = (serial: string, backup:string, isBack
         queryKey: ['fingersTransaction'],
         queryFn: () => apiGetFingersTransactions(serial, backup),
         enabled: !!serial && !!backup && isBackupReady,
+        refetchOnWindowFocus: false
     });
 
     return { isLoading, isError, isSuccess, data, error };
