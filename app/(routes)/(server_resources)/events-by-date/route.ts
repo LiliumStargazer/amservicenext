@@ -23,10 +23,10 @@ export async function GET(req: Request): Promise<NextResponse> {
         if (date === 'null') {
             let maxDateQuery = `SELECT * FROM EventiView WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiView )`;
             if (systemPaths.localBackupUnzippedFile.includes("DbBackup")) {
-                maxDateQuery = `SELECT * FROM EventiView WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiAll )`;
+                maxDateQuery = `SELECT * FROM EventiALl WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiAll )`;
             }
-            const maxDate = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, maxDateQuery);
-            return NextResponse.json(maxDate);
+            const queryWithMaxDate = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, maxDateQuery);
+            return NextResponse.json(queryWithMaxDate);
         }
 
         const datePart = date.split('T')[0];
