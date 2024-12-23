@@ -112,7 +112,7 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
         return;
 
     return (
-        <div className="w-full h-full pb-2">
+        <div className="w-full h-full pb-2 flex-grow">
             <div className="ag-theme-quartz-dark compact w-full h-full overflow-hidden" >
                 <AgGridReact<LogEventData>
                     loading={loading}

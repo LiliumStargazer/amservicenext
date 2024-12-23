@@ -170,7 +170,7 @@ const Log: React.FC = () => {
     }, [isFetchedBackupList]);
 
     return (
-        <div className={`h-screen ${ section != "param" ? "overflow-hidden" : ""}`}>
+        <div className="h-screen flex flex-col">
             <TopNavBar
                 serialTemp={serialTemp}
                 setMessage={setMessage}
@@ -253,7 +253,7 @@ const Log: React.FC = () => {
                 message={message}
                 setMessage={setMessage}
             />
-            <div className="h-full flex flex-col space-y-4">
+            <div className="flex-grow flex-col space-y-4 ">
                 <AgGridMaster
                     loading={loading}
                     isSuccessEventsByDate={isSuccessEventsByDate}
@@ -307,7 +307,6 @@ const Log: React.FC = () => {
             </div>
             <Dialog isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} dialogContent={dialogContent}/>
         </div>
-
     );
 }
 

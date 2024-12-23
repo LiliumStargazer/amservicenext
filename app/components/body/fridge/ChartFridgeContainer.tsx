@@ -183,9 +183,8 @@ const ChartFridgeContainer: React.FC <ChartProps> = ({fridgeRawData, isLoadingFr
     }
 
     return (
-        <div className="w-full h-auto">
-
-            <div className="flex flex-row gap-4 justify-center">
+        <div className="">
+            <div className="flex flex-grow gap-4 justify-center mb-4">
                 <DatePicker
                     className="btn btn-info"
                     selected={startDate}
@@ -213,14 +212,16 @@ const ChartFridgeContainer: React.FC <ChartProps> = ({fridgeRawData, isLoadingFr
                 />
                 <SelectRange setIntervalMinutes={setIntervalMinutes}/>
             </div>
-            <div className="w-full h-full flex justify-center items-center">
-                { loading ? <span className="loading loading-spinner loading-lg "></span> :
+            <div className="flex flex-grow justify-center">
+                { loading ?
+                    <span className="loading loading-spinner loading-lg "></span>
+                    :
                     <LineChart
-                        width={window.innerWidth}
-                    height={window.innerHeight - 150}
+                    width={window.innerWidth*0.9}
+                    height={window.innerHeight*0.8}
                     data={dataFiltered}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
+                    >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="date" tickCount={10} display={"none"}/>
                     <YAxis />
