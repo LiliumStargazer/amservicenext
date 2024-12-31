@@ -6,23 +6,36 @@ interface SelectAndDownloadBackupProps {
     backup: string;
     loading: boolean;
     onSelectBackup: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-    isSuccessBackupList: boolean;
+    // isSuccessBackupList: boolean;
     backupList: string[];
 }
 
-const SelectBackup: React.FC<SelectAndDownloadBackupProps> = ({onSelectBackup, loading, backup, isSuccessBackupList, backupList }) => {
+const SelectBackup: React.FC<SelectAndDownloadBackupProps> = ({onSelectBackup, loading, backup, backupList }) => {
     const [backupOptions, setBackupOptions] = useState<React.ReactNode[]>([]);
-    useEffect(() => {
-        if (isSuccessBackupList && Array.isArray(backupList)) {
-            const filteredAndSortedBackups = backupList
-                .filter(element => !element[1].includes("0 bytes"))
-                .map(element => element[0]);
+    // useEffect(() => {
+    //     if (isSuccessBackupList && Array.isArray(backupList)) {
+    //         const filteredAndSortedBackups = backupList
+    //             .filter(element => !element[1].includes("0 bytes"))
+    //             .map(element => element[0]);
+    //
+    //         filteredAndSortedBackups.sort().reverse();
+    //         const backupOptions: React.ReactNode[] = [] = filteredAndSortedBackups.map(element => <option key={element}>{element}</option>);
+    //         setBackupOptions(backupOptions);
+    //     }
+    // }, [isSuccessBackupList, backupList]);
 
-            filteredAndSortedBackups.sort().reverse();
-            const backupOptions: React.ReactNode[] = [] = filteredAndSortedBackups.map(element => <option key={element}>{element}</option>);
-            setBackupOptions(backupOptions);
-        }
-    }, [isSuccessBackupList, backupList]);
+    useEffect(() => {
+        // if (backupList === undefined)
+        //     return;
+
+        const filteredAndSortedBackups = backupList
+            .filter(element => !element[1].includes("0 bytes"))
+            .map(element => element[0]);
+
+        filteredAndSortedBackups.sort().reverse();
+        const backupOptions: React.ReactNode[] = [] = filteredAndSortedBackups.map(element => <option key={element}>{element}</option>);
+        setBackupOptions(backupOptions);
+    }, [backupList]);
 
     if (backupOptions.length === 0)
         return;

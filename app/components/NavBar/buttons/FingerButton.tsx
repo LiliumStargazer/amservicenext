@@ -7,12 +7,14 @@ import {faFingerprint} from "@fortawesome/free-solid-svg-icons/faFingerprint";
 interface FingerButtonProps {
     loading: boolean;
     setSection: React.Dispatch<React.SetStateAction<string>>;
+    setIsGetFingerTransactionEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FingerButton: React.FC <FingerButtonProps>= ({loading, setSection}) => {
+const FingerButton: React.FC <FingerButtonProps>= ({loading, setSection,setIsGetFingerTransactionEnabled}) => {
 
     const handleFingerClick = () => {
         setSection("fingersTransaction");
+        setIsGetFingerTransactionEnabled(true);
     }
 
     return (

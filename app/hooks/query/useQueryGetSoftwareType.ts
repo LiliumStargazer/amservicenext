@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import {apiGetSoftwareType} from "@/app/lib/api";
 
-export const useQueryGetSoftwareType = (serial: string, backup: string , isBackupReady: boolean) => {
+export const useQueryGetSoftwareType = (serial: string, backup: string , isGetSoftwareEnabled: boolean) => {
 
-    const { isLoading, isError, data, error, isSuccess} = useQuery({
+    const { isLoading, isError, data, error, isSuccess, isFetched} = useQuery({
         queryKey: ['softwareType'],
         queryFn: () => apiGetSoftwareType(serial, backup),
-        enabled: !!serial && !!backup && isBackupReady,
-        refetchOnWindowFocus: false
+        enabled: isGetSoftwareEnabled,
+        refetchOnWindowFocus: false,
     });
 
-    return { isLoading, isError, data, error, isSuccess};
+    return { isLoading, isError, data, error, isSuccess,isFetched};
 };

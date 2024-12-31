@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import { debounce } from "lodash";
+import {useCallback} from "react";
+import {debounce} from "lodash";
 
 const useSearch = (
     setSearchValue: (value: string) => void,
@@ -10,12 +10,10 @@ const useSearch = (
         if (value.length === 0) setIsResettingSearchingEvent(true);
     }, 1000);
 
-    const handleSearchValueChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    return useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         debouncedSetSearchValue(value);
     }, [debouncedSetSearchValue]);
-
-    return handleSearchValueChange;
 };
 
 export default useSearch;

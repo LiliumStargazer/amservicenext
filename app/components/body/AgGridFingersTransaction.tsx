@@ -8,68 +8,34 @@ import {AgGridReact} from "ag-grid-react";
 import {FingerData, FingerRawData} from "@/app/types/types";
 import { GridReadyEvent, ColDef } from "ag-grid-community";
 import LoadingOverlayAgGrid from "@/app/components/body/LoadingOverlayAgGrid";
-import {useQueryFingerTransactions} from "@/app/hooks/query/useQueryFingerTransactions";
 import { GridApi } from "ag-grid-community";
 
 interface AgGridFingersTransactionProps {
-    serial: string;
-    backup: string;
-    isBackupReady: boolean;
-    setMessage: (message: string) => void;
+    isLoadingFingerTransaction: boolean;
+    rawFingerTransactions: FingerRawData[];
     setStoredGridApi: (api: GridApi) => void;
 }
 
-const AgGridFingersTransaction: React.FC<AgGridFingersTransactionProps> = ({serial, backup, isBackupReady, setMessage, setStoredGridApi }) => {
-    const [loading, setLoading] = useState<boolean>(true);
+const AgGridFingersTransaction: React.FC<AgGridFingersTransactionProps> = ({isLoadingFingerTransaction, rawFingerTransactions, setStoredGridApi }) => {
+
     const [fingerTransaction, setFingerTransaction] = useState<FingerData[]>([]);
-    const { isLoading, isError, data, error , isSuccess} = useQueryFingerTransactions(serial, backup, isBackupReady);
 
     useEffect(() => {
-        if (serial && serial.length > 0){
-            setFingerTransaction([]);
-        }
-    }, [serial]);
+        const fingerTransaction = rawFingerTransactions.map((transaction: FingerRawData) : FingerData => {
+            return {
+                Date: formatStringDateOrder(transaction.DataOraR),
+                Time: getTimeFromData(transaction.DataOraR),
+                FingerID: transaction.FingerID || transaction.FingerId || '',
+                PeopleID: transaction.PeopleID || transaction.PeopleId || '',
+                OperationId: transaction.ID || '',
+                Money: transaction.Money,
+                Motivo: transaction.Motivo,
+                ActualValue: transaction.ActualValue,
+            };
+        });
+        setFingerTransaction(fingerTransaction);
 
-
-    useEffect(() => {
-        if (isLoading){
-            setLoading(true);
-            return;
-        }
-
-        if (isError){
-            setLoading(false);
-            setFingerTransaction([]);
-            setMessage("An error occurred while fetching the finger transactions: " + error);
-            return ;
-        }
-
-        if (isSuccess && Array.isArray(data) ) {
-            if (data.length === 0) {
-                setFingerTransaction([]);
-                setMessage('No finger transactions data found');
-                setLoading(false);
-                return;
-            }
-
-            const fingerTransaction = data.map((transaction: FingerRawData) : FingerData => {
-                return {
-                    Date: formatStringDateOrder(transaction.DataOraR),
-                    Time: getTimeFromData(transaction.DataOraR),
-                    FingerID: transaction.FingerID || transaction.FingerId || '',
-                    PeopleID: transaction.PeopleID || transaction.PeopleId || '',
-                    OperationId: transaction.ID || '',
-                    Money: transaction.Money,
-                    Motivo: transaction.Motivo,
-                    ActualValue: transaction.ActualValue,
-                };
-            });
-
-            setLoading(false);
-            setFingerTransaction(fingerTransaction);
-        }
-
-    }, [isLoading, isError, data, error, isSuccess, setLoading, setMessage, setFingerTransaction]);
+    }, [rawFingerTransactions]);
 
     const colDefBase: ColDef<FingerData>[]   = useMemo(() => [
         { headerName: 'Date', field: 'Date', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: true, floatingFilter: true, suppressHeaderFilterButton: true, suppressFloatingFilterButton: true},
@@ -93,7 +59,7 @@ const AgGridFingersTransaction: React.FC<AgGridFingersTransactionProps> = ({seri
                     rowData={fingerTransaction}
                     onGridReady={onGridReady}
                     columnDefs={colDefBase}
-                    loading={loading}
+                    loading={isLoadingFingerTransaction}
                     loadingOverlayComponent={LoadingOverlayAgGrid}
                     loadingOverlayComponentParams={{ loadingMessage: "Loading, one moment please..." }}
                     alwaysShowVerticalScroll={true}

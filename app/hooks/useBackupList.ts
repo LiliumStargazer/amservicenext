@@ -2,17 +2,24 @@ import { useEffect } from "react";
 import { getLatestBackup } from "@/app/utils/utils";
 
 const useBackupList = (
-    isSuccessBackupList: boolean,
-    backupList: string[],
-    setBackup: (backup: string) => void
-
+    rawBackupList: string[],
+    setBackup: (backup: string) => void,
+    isFetchedBackupList: boolean,
+    setIsGetBackupListEnabled: (value: boolean) => void,
+    setIsDownloadBackupEnabled: (value: boolean) => void,
+    setBackupList: (backupList: string[]) => void
 ) => {
     useEffect(() => {
-        if (isSuccessBackupList && Array.isArray(backupList)) {
-            const latestDataBackup = getLatestBackup(backupList);
-            setBackup(latestDataBackup);
+        if (isFetchedBackupList) {
+            if (Array.isArray(rawBackupList)){
+                const latestDataBackup = getLatestBackup(rawBackupList);
+                setBackup(latestDataBackup);
+                setBackupList(rawBackupList);
+                setIsDownloadBackupEnabled(true);
+            }
+            setIsGetBackupListEnabled(false);
         }
-    }, [isSuccessBackupList, backupList, setBackup]);
+    }, [isFetchedBackupList, rawBackupList, setBackup, setBackupList, setIsDownloadBackupEnabled, setIsGetBackupListEnabled]);
 };
 
 export default useBackupList;

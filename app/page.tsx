@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useCallback, useEffect, useState} from "react";
-import {AliveEvent, ErrorResponse, RawFridgeData, RawLogEventData} from "@/app/types/types";
+import {AliveEvent, ErrorResponse, FingerRawData, RawFridgeData, RawLogEventData} from "@/app/types/types";
 import { GridApi } from "ag-grid-community";
 import SelectBackup from "@/app/components/NavBar/SelectBackup";
 import InfoDropDown from "@/app/components/NavBar/InfoDropDown";
@@ -42,6 +42,8 @@ import useSearch from "@/app/hooks/useSearch";
 import ParamContainer from "@/app/components/body/param/ParamContainer";
 import TopNavBar from "@/app/components/NavBarTop/TopNavBar";
 import {getSerialValidationMessage, trimAndFormatSerial} from "@/app/utils/utils";
+import {useQueryGetSoftwareType} from "@/app/hooks/query/useQueryGetSoftwareType";
+import {useQueryFingerTransactions} from "@/app/hooks/query/useQueryFingerTransactions";
 // import RecoverdBContainer from "@/app/components/NavBar/buttons/RecoverdBContainer";
 
 const Log: React.FC = () => {
@@ -64,44 +66,64 @@ const Log: React.FC = () => {
     const [fridgeSelected, setFridgeSelected] = useState<number>(0);
     const [section, setSection] = useState<string>('master');
     const resetQueries = useResetQueries();
+    const [isGetBackupListEnabled, setIsGetBackupListEnabled] = useState<boolean>(false);
+    const [isDownloadBackupEnabled, setIsDownloadBackupEnabled] = useState<boolean>(false);
+    const [isGetEventsByDateEnabled, setIsGetEventsByDateEnabled] = useState<boolean>(false);
+    const [isGetSelectedEventsEnabled, setIsGetSelectedEventsEnabled] = useState<boolean>(false);
+    const [isGetSoftwareEnabled, setIsGetSoftwareEnabled] = useState<boolean>(false);
+    const [isGetFingerTransactionEnabled, setIsGetFingerTransactionEnabled] = useState<boolean>(false);
+    const [rawLogEvents, setRawLogEvents] = useState<RawLogEventData[]>([]);
+    const [selectedEvents, setSelectedEvents] = useState<RawLogEventData[]>([]);
+    const [backupList, setBackupList] = useState<string[]>([]);
+    const [softwareType, setsoftwareType] = useState<string>('');
+    const [rawFingerTransactions, setRawFingerTransactions] = useState<FingerRawData[]>([]);
     const reset = useReset(
         setBackup,
         setIsBackupReady,
         setSearchValue,
         setDatePickerDate,
         setDateIsoString,
+        setIsGetBackupListEnabled,
         resetQueries
     );
-
     const {
         isLoading: isLoadingBackupList,
-        data: backupList,
-        isSuccess: isSuccessBackupList,
+        data: rawBackupList,
         isFetched: isFetchedBackupList
-    } = useQueryGetBackupList(serial);
-
+    } = useQueryGetBackupList(serial, isGetBackupListEnabled);
     const {
         isLoading: isDownloading,
-        data: dataDownloaded ,
-        isSuccess: isDownloaded
-    } = useQueryDownloadBackup(serial, backup);
+        isSuccess: isSuccessDownloadBackup,
+        isFetched: isFetchedDownloadBackup
+    } = useQueryDownloadBackup(serial, backup, isDownloadBackupEnabled);
     const {
         isLoading: isLoadingEventsByDate,
-        data: eventsByDate,
-        isSuccess: isSuccessEventsByDate
-    } = useQueryEventsByDate(serial, backup, isBackupReady, dateIsoString );
+        data: rawEventsByDate,
+        isFetched: isFetchedEventsByDate
+    } = useQueryEventsByDate(serial, backup, dateIsoString , isGetEventsByDateEnabled);
     const {
         isLoading: isLoadingSelectedEvents,
-        data: selectedEvents,
-        isSuccess: isSuccessSelectedEvent} = useQuerySelectedEvents(serial, backup, searchValue, isBackupReady);
+        data: rawSelectedEvents,
+        isFetched: isFetchedSelectedEvent
+    } = useQuerySelectedEvents(serial, backup, searchValue, isGetSelectedEventsEnabled);
     const {
         data: aliveEvent,
-        isSuccess: isSuccessAliveEvent } = useQueryEventsFromAlive(serial, backup, isAliveEvent);
+        isSuccess: isSuccessAliveEvent
+    } = useQueryEventsFromAlive(serial, backup, isAliveEvent);
     const {
         isLoading: isLoadingFridge,
         data: fridgeRawData,
         isSuccess: isSuccessFridge
     } = useQueryFridgeData(serial, backup, isBackupReady, section);
+    const {
+        data: rawSoftwareType,
+        isFetched: isFetchedSoftwareType
+    } = useQueryGetSoftwareType(serial, backup, isGetSoftwareEnabled);
+    const {
+        isLoading: isLoadingFingerTransaction,
+        data: dataFingerTransaction,
+        isFetched: isFetchedFingerTransaction
+    } = useQueryFingerTransactions(serial, backup, isBackupReady, isGetFingerTransactionEnabled);
     useAliveEvent(
         isSuccessAliveEvent,
         aliveEvent as AliveEvent[],
@@ -111,20 +133,42 @@ const Log: React.FC = () => {
         setIsAliveEvent
     );
     useErrorHandling({
-        eventsByDate: eventsByDate as ErrorResponse,
-        selectedEvents: selectedEvents as ErrorResponse,
+        eventsByDate: rawEventsByDate as ErrorResponse,
+        selectedEvents: rawSelectedEvents as ErrorResponse,
         aliveEvent: aliveEvent as ErrorResponse,
-        backupList: backupList as ErrorResponse,
+        rawBackupList: rawBackupList as ErrorResponse,
         fridgeRawData: fridgeRawData as ErrorResponse,
+        dataFingerTransaction: dataFingerTransaction as ErrorResponse,
         section,
         setMessage,
         setSection,
-        setLoading
+        setLoading,
+        setIsBackupReady,
+        setIsGetSelectedEventsEnabled
     });
-    useBackupList(isSuccessBackupList, backupList as string[], setBackup );
-    useBackupStatus(isDownloading, isDownloaded, dataDownloaded as boolean, setIsBackupReady);
-    useLoadingStatus(isLoadingEventsByDate, isLoadingSelectedEvents, isLoadingBackupList, isDownloading, setLoading);
-    const handleSearchValueChange = useSearch(setSearchValue, setIsResettingSearchingEvent);
+    useBackupList(
+        rawBackupList as string[],
+        setBackup, isFetchedBackupList,
+        setIsGetBackupListEnabled,
+        setIsDownloadBackupEnabled,
+        setBackupList);
+    useBackupStatus(
+        isFetchedDownloadBackup,
+        isSuccessDownloadBackup,
+        setIsDownloadBackupEnabled,
+        setIsBackupReady,
+        setIsGetEventsByDateEnabled,
+        setIsGetSoftwareEnabled);
+    useLoadingStatus(
+        isLoadingEventsByDate,
+        isLoadingSelectedEvents,
+        isLoadingBackupList,
+        isDownloading,
+        setLoading);
+    const handleSearchValueChange = useSearch(
+        setSearchValue,
+        setIsResettingSearchingEvent
+    );
     const onCellDoubleClicked = useCellDoubleClick(
         searchValue,
         seteventString,
@@ -139,12 +183,68 @@ const Log: React.FC = () => {
     const onSelectBackup = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
         setBackup(event.target.value);
         setIsBackupReady(false);
+        setIsDownloadBackupEnabled(true);
     }, [setBackup, setIsBackupReady]);
 
     const handleDatePickerChange = useCallback((date: Date | null) => {
         setDatePickerDate(date);
         setDateIsoString(date?.toISOString() || null);
-    }, [setDatePickerDate, setDateIsoString]);
+        setIsGetEventsByDateEnabled(true);
+    }, [setDatePickerDate, setDateIsoString, setIsGetEventsByDateEnabled]);
+
+    useEffect(() => {
+        if (isFetchedEventsByDate) {
+            setIsGetEventsByDateEnabled(false);
+            if ( Array.isArray(rawEventsByDate)){
+                if (rawEventsByDate.length === 0) {
+                    setMessage("No data found.");
+                    return;
+                }
+                setRawLogEvents(rawEventsByDate as RawLogEventData[]);
+            }
+        }
+        if (isFetchedSelectedEvent) {
+            setIsGetSelectedEventsEnabled(false);
+            if (Array.isArray(rawSelectedEvents) ){
+                if (rawSelectedEvents.length === 0) {
+                    setMessage("No data found.");
+                    return;
+                }
+                setSelectedEvents(rawSelectedEvents as RawLogEventData[]);
+            }
+        }
+        if (isFetchedSoftwareType){
+            setIsGetSoftwareEnabled(false);
+            console.log('rawSoftwareType',rawSoftwareType);
+            if ( typeof rawSoftwareType === 'string'){
+                setsoftwareType(rawSoftwareType);
+            }
+        }
+        if (isFetchedFingerTransaction){
+            setIsGetFingerTransactionEnabled(false);
+            if (Array.isArray(dataFingerTransaction)){
+                if (dataFingerTransaction.length === 0) {
+                    setMessage("No data found.");
+                    return;
+                }
+                setRawFingerTransactions(dataFingerTransaction as FingerRawData[]);
+            }
+        }
+
+    }, [dataFingerTransaction,
+        isFetchedEventsByDate,
+        isFetchedFingerTransaction,
+        isFetchedSelectedEvent, 
+        isFetchedSoftwareType,
+        rawEventsByDate,
+        rawSelectedEvents,
+        rawSoftwareType]);
+
+    useEffect(() => {
+        if(searchValue.length > 0 && isBackupReady){
+            setIsGetSelectedEventsEnabled(true);
+        }
+    }, [searchValue, isBackupReady]);
 
     useEffect(() => {
         if (isFetchRequest) {
@@ -158,16 +258,12 @@ const Log: React.FC = () => {
             else{
                 reset().catch((error) => setMessage(error.message));
                 setSerial(formattedSerial);
-                setIsFetchRequest(false);
+                setIsGetBackupListEnabled(true);
             }
+            setIsFetchRequest(false);
         }
     }, [serialTemp, isFetchRequest, reset]);
 
-    useEffect(() => {
-        if (isFetchedBackupList) {
-            setIsFetchRequest(false);
-        }
-    }, [isFetchedBackupList]);
 
     return (
         <div className="h-screen flex flex-col">
@@ -179,14 +275,13 @@ const Log: React.FC = () => {
                 <div className="navbar-start space-x-2 ">
                     {section === 'master' && (
                         <>
-                            <Input loading={loading} setSerialTemp={setSerialTemp} setIsFetchRequest={setIsFetchRequest}/>
-                            <GetButton loading={loading} setIsFetchRequest={setIsFetchRequest}/>
+                            <Input loading={loading} setSerialTemp={setSerialTemp} setIsFetchRequest={setIsFetchRequest} />
+                            <GetButton loading={loading} setIsFetchRequest={setIsFetchRequest} />
                             <SelectBackup
                                 backup={backup}
                                 loading={loading}
                                 onSelectBackup={onSelectBackup}
-                                isSuccessBackupList={isSuccessBackupList}
-                                backupList={backupList as string[]}
+                                backupList={backupList}
                             />
                             <InfoDropDown
                                 loading={loading}
@@ -233,12 +328,15 @@ const Log: React.FC = () => {
                 <div className="navbar-end space-x-4 ">
                     {isBackupReady && (
                         <>
-                            <IconSoftware serial={serial} backup={backup} isBackupReady={isBackupReady}/>
+                            <IconSoftware softwareType={softwareType}/>
                             <Badge serial={serial}/>
                             <MasterButton loading={loading} setSection={setSection}/>
                             <ParamButton loading={loading} setSection={setSection}/>
                             <FridgeButton loading={loading} setSection={setSection}/>
-                            <FingerButton loading={loading} setSection={setSection}/>
+                            <FingerButton
+                                loading={loading}
+                                setSection={setSection}
+                                setIsGetFingerTransactionEnabled={setIsGetFingerTransactionEnabled}/>
                             <ExcelButton
                                 loading={loading}
                                 setMessage={setMessage}
@@ -256,10 +354,8 @@ const Log: React.FC = () => {
             <div className="flex-grow flex-col space-y-4 ">
                 <AgGridMaster
                     loading={loading}
-                    isSuccessEventsByDate={isSuccessEventsByDate}
-                    eventsByDate={eventsByDate as RawLogEventData[]}
-                    selectedEvents={selectedEvents as RawLogEventData[]}
-                    isSuccessSelectedEvent={isSuccessSelectedEvent}
+                    rawLogEvents={rawLogEvents}
+                    selectedEvents={selectedEvents}
                     onCellDoubleClicked={onCellDoubleClicked}
                     isResettingSearchingEvent={isResettingSearchingEvent}
                     setIsResettingSearchingEvent={setIsResettingSearchingEvent}
@@ -289,10 +385,8 @@ const Log: React.FC = () => {
                 }
                 {section === 'fingersTransaction' &&
                     <AgGridFingersTransaction
-                        serial={serial}
-                        backup={backup}
-                        isBackupReady={isBackupReady}
-                        setMessage={setMessage}
+                        isLoadingFingerTransaction={isLoadingFingerTransaction}
+                        rawFingerTransactions={rawFingerTransactions}
                         setStoredGridApi={setStoredGridApi}
                     />
                 }

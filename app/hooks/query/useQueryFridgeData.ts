@@ -7,7 +7,6 @@ export const useQueryFridgeData = (serial:string, backup:string, isBackupReady:b
         queryKey: ['fridgeData'],
         queryFn: () => apiFridgeEvents(serial, backup),
         enabled: !!serial && !!backup && ( section === "fridge" || section === "chart") && isBackupReady,
-        refetchOnWindowFocus: false
     });
     return { isLoading, isError, data, error, isSuccess};
 };

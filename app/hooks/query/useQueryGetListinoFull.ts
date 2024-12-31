@@ -8,7 +8,7 @@ export const useQueryGetListinoFull = ( serial: string, isGetListino: boolean) =
         queryKey: ['getListinoFull'],
         queryFn: () => apiGetListinoFull(serial),
         enabled: !!serial && isGetListino,
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
     });
 
     return { isLoading, isError, data, error, isSuccess};

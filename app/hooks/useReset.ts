@@ -6,6 +6,7 @@ const useReset = (
     setSearchValue: (value: string) => void,
     setDatePiCkerDate: (date: Date) => void,
     setDateIsoString: (date: string | null) => void,
+    setIsGetBackupListEnabled: (value: boolean) => void,
     resetQueries: () => Promise<void>
 ) => {
     return useCallback(async () => {
@@ -14,8 +15,9 @@ const useReset = (
         setSearchValue('');
         setDatePiCkerDate(new Date());
         setDateIsoString(null);
+        setIsGetBackupListEnabled(false);
         await resetQueries();
-    }, [ setBackup, setIsBackupReady, setSearchValue, setDatePiCkerDate, setDateIsoString, resetQueries]);
+    }, [setBackup, setIsBackupReady, setSearchValue, setDatePiCkerDate, setDateIsoString, setIsGetBackupListEnabled, resetQueries]);
 };
 
 export default useReset;

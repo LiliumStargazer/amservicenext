@@ -13,9 +13,9 @@ import LoadingOverlayAgGrid from "@/app/components/body/LoadingOverlayAgGrid";
 
 interface AgGridMasterLogReactQueryProps {
     loading: boolean;
-    isSuccessEventsByDate: boolean;
-    eventsByDate: RawLogEventData[];
-    isSuccessSelectedEvent: boolean;
+    // isSuccessEventsByDate: boolean;
+    rawLogEvents: RawLogEventData[];
+    // isSuccessSelectedEvent: boolean;
     selectedEvents: RawLogEventData[];
     onCellDoubleClicked: (event: CellDoubleClickedEvent) => void;
     isResettingSearchingEvent: boolean;
@@ -28,9 +28,9 @@ interface AgGridMasterLogReactQueryProps {
 
 const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
                                                                     loading,
-                                                                    isSuccessEventsByDate,
-                                                                    eventsByDate,
-                                                                    isSuccessSelectedEvent,
+                                                                    // isSuccessEventsByDate,
+                                                                    rawLogEvents,
+                                                                    // isSuccessSelectedEvent,
                                                                     selectedEvents,
                                                                     onCellDoubleClicked,
                                                                     isResettingSearchingEvent,
@@ -46,12 +46,7 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
     const [gridApi, setGridApi] = useState<GridApi | null>(null);
 
     useEffect(() => {
-        if ( isSuccessEventsByDate && Array.isArray(eventsByDate) ) {
-            if (eventsByDate.length === 0) {
-                setMessage("No data found.");
-                return;
-            }
-            const rows = getRowsMap(eventsByDate);
+            const rows = getRowsMap(rawLogEvents);
             setStoredData(rows);
             if (gridApi){
                 gridApi.setGridOption('rowData', rows);
@@ -59,23 +54,15 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
             else {
                 setLogData(rows);
             }
-        }
-
-    }, [eventsByDate, gridApi, isSuccessEventsByDate, setMessage, setStoredData, setLogData]);
+    }, [rawLogEvents, gridApi, setMessage, setStoredData, setLogData]);
 
     useEffect(() => {
-        if (isSuccessSelectedEvent && Array.isArray(selectedEvents)) {
-            if ( selectedEvents.length === 0 )  {
-                setMessage('No selected events found.');
-                return;
-            }
             const rows = getRowsMap(selectedEvents);
             if (gridApi)
                 gridApi.setGridOption('rowData', rows);
 
             setMessage('');
-        }
-    }, [gridApi, isSuccessSelectedEvent, selectedEvents, setMessage]);
+    }, [gridApi, selectedEvents, setMessage]);
 
     useEffect(() => {
         if ( storedData.length > 0 && searchValue.length === 0 && gridApi && isResettingSearchingEvent) {

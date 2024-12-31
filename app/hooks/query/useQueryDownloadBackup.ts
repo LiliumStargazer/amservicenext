@@ -2,14 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 
 import {apiDownloadBackup} from "@/app/lib/api";
 
-export const useQueryDownloadBackup = ( serial: string, backup: string) => {
+export const useQueryDownloadBackup = ( serial: string, backup: string, enableDownloadBackup:boolean) => {
 
-    const { isLoading, isError, data, error , isSuccess} = useQuery({
+    const { isLoading, isError, data, error , isSuccess, isFetched} = useQuery({
         queryKey: ['downloadBackup', backup],
         queryFn: () => apiDownloadBackup(serial, backup),
-        enabled: !!serial && !!backup,
-        refetchOnWindowFocus: false
+        enabled: enableDownloadBackup,
+        refetchOnWindowFocus: false,
     });
 
-    return { isLoading, isError, data, error, isSuccess};
+    return { isLoading, isError, data, error, isSuccess, isFetched};
 };

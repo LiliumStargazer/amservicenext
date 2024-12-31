@@ -3,15 +3,21 @@ import { useQuery } from '@tanstack/react-query';
 import { apiGetSelectedEvents } from "@/app/lib/api"; // Ensure the import path is correct
 
 
-const useQuerySelectedEvents = (serial: string, backup: string, searchValue: string, isBackupReady: boolean) => {
+const useQuerySelectedEvents = (
+    serial: string,
+    backup: string,
+    searchValue: string,
+    enableGetSelectedEvents: boolean,
+) => {
 
-    const { isLoading, isError, isPending, data, error, isSuccess } = useQuery({
+    const { isLoading, isError, isPending, data, error, isSuccess , isFetched} = useQuery({
         queryKey: ['eventsFromSelectedEvents', searchValue],
         queryFn: () => apiGetSelectedEvents(serial, backup, searchValue),
-        enabled: !!serial && !!backup && !backup.includes('No such file') && searchValue.length > 0 && isBackupReady,
-        refetchOnWindowFocus: false
+        enabled: enableGetSelectedEvents,
+        refetchOnWindowFocus: false,
     });
-    return { isLoading, isError, isPending, data, error, isSuccess };
+
+    return { isLoading, isError, isPending, data, error, isSuccess , isFetched};
 };
 
 export default useQuerySelectedEvents;

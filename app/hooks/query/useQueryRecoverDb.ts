@@ -13,7 +13,7 @@ export const useQueryRecoverDb = (
         queryFn: () => apiRecoverDb(serial, backup, port),
         //enabled: !!serial && !!backup && !!port && request,
         enabled: request,
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
     });
 
     return { isLoading, isError, data, error, isSuccess};

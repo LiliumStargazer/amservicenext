@@ -7,7 +7,7 @@ export const useQueryLisTransactions = (serial:string, backup:string, section:st
         queryKey: ['lisTransaction'],
         queryFn: () => apiGetLisTransaction(serial, backup),
         enabled: !!serial && !!backup && section === "lisTransaction" && isBackupReady,
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
     });
 
     return { isLoading, isError, data, error, isSuccess};
