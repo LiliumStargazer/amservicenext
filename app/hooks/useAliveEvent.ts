@@ -3,6 +3,7 @@ import { AliveEvent } from "@/app/types/types";
 
 const useAliveEvent = (
     isSuccessAliveEvent: boolean,
+    isAliveEvent: boolean,
     aliveEvent: AliveEvent[],
     eventString: string | null,
     setDialogContent: (content: string | AliveEvent | null) => void,
@@ -10,9 +11,8 @@ const useAliveEvent = (
     setIsAliveEvent: (isAlive: boolean) => void
 ) => {
     useEffect(() => {
-        if (isSuccessAliveEvent && Array.isArray(aliveEvent)) {
+        if (( isSuccessAliveEvent && Array.isArray(aliveEvent) ) || ( isAliveEvent && Array.isArray(aliveEvent) )) {
             let matchedEvent = aliveEvent.find((event: AliveEvent) => event.EventString === eventString);
-
             if (!matchedEvent) {
                 matchedEvent = {
                     EventString: "No event found",
@@ -30,7 +30,7 @@ const useAliveEvent = (
             setIsDialogOpen(true);
             setIsAliveEvent(false);
         }
-    }, [isSuccessAliveEvent, aliveEvent, eventString, setDialogContent, setIsDialogOpen, setIsAliveEvent]);
+    }, [isSuccessAliveEvent, aliveEvent, eventString, setDialogContent, setIsDialogOpen, setIsAliveEvent, isAliveEvent]);
 };
 
 export default useAliveEvent;

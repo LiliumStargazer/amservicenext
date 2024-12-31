@@ -30,9 +30,11 @@ function Extract() {
     const [isAliveEvent, setIsAliveEvent] = useState<boolean>(false);
     const [eventString, setEventString] = useState<string | null>(null);
 
-    const { data: aliveEvent, isSuccess: isSuccessAliveEvent } = useQueryEventsFromAlive(serial, backup, isAliveEvent);
+    const { data: aliveEvent, isSuccess: isSuccessAliveEvent } = useQueryEventsFromAlive(isAliveEvent);
+
     useAliveEvent(
         isSuccessAliveEvent,
+        isAliveEvent,
         aliveEvent as AliveEvent[],
         eventString,
         setDialogContent,

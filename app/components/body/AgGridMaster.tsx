@@ -13,9 +13,7 @@ import LoadingOverlayAgGrid from "@/app/components/body/LoadingOverlayAgGrid";
 
 interface AgGridMasterLogReactQueryProps {
     loading: boolean;
-    // isSuccessEventsByDate: boolean;
     rawLogEvents: RawLogEventData[];
-    // isSuccessSelectedEvent: boolean;
     selectedEvents: RawLogEventData[];
     onCellDoubleClicked: (event: CellDoubleClickedEvent) => void;
     isResettingSearchingEvent: boolean;

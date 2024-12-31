@@ -77,6 +77,7 @@ const Log: React.FC = () => {
     const [backupList, setBackupList] = useState<string[]>([]);
     const [softwareType, setsoftwareType] = useState<string>('');
     const [rawFingerTransactions, setRawFingerTransactions] = useState<FingerRawData[]>([]);
+
     const reset = useReset(
         setBackup,
         setIsBackupReady,
@@ -86,46 +87,56 @@ const Log: React.FC = () => {
         setIsGetBackupListEnabled,
         resetQueries
     );
+
     const {
         isLoading: isLoadingBackupList,
         data: rawBackupList,
         isFetched: isFetchedBackupList
     } = useQueryGetBackupList(serial, isGetBackupListEnabled);
+
     const {
         isLoading: isDownloading,
         isSuccess: isSuccessDownloadBackup,
         isFetched: isFetchedDownloadBackup
     } = useQueryDownloadBackup(serial, backup, isDownloadBackupEnabled);
+
     const {
         isLoading: isLoadingEventsByDate,
         data: rawEventsByDate,
         isFetched: isFetchedEventsByDate
     } = useQueryEventsByDate(serial, backup, dateIsoString , isGetEventsByDateEnabled);
+
     const {
         isLoading: isLoadingSelectedEvents,
         data: rawSelectedEvents,
         isFetched: isFetchedSelectedEvent
     } = useQuerySelectedEvents(serial, backup, searchValue, isGetSelectedEventsEnabled);
+
     const {
         data: aliveEvent,
         isSuccess: isSuccessAliveEvent
-    } = useQueryEventsFromAlive(serial, backup, isAliveEvent);
+    } = useQueryEventsFromAlive(isAliveEvent);
+
     const {
         isLoading: isLoadingFridge,
         data: fridgeRawData,
         isSuccess: isSuccessFridge
     } = useQueryFridgeData(serial, backup, isBackupReady, section);
+
     const {
         data: rawSoftwareType,
         isFetched: isFetchedSoftwareType
     } = useQueryGetSoftwareType(serial, backup, isGetSoftwareEnabled);
+
     const {
         isLoading: isLoadingFingerTransaction,
         data: dataFingerTransaction,
         isFetched: isFetchedFingerTransaction
     } = useQueryFingerTransactions(serial, backup, isBackupReady, isGetFingerTransactionEnabled);
+
     useAliveEvent(
         isSuccessAliveEvent,
+        isAliveEvent,
         aliveEvent as AliveEvent[],
         eventString,
         setDialogContent,
@@ -146,29 +157,37 @@ const Log: React.FC = () => {
         setIsBackupReady,
         setIsGetSelectedEventsEnabled
     });
+
     useBackupList(
         rawBackupList as string[],
         setBackup, isFetchedBackupList,
         setIsGetBackupListEnabled,
         setIsDownloadBackupEnabled,
-        setBackupList);
+        setBackupList
+    );
+
     useBackupStatus(
         isFetchedDownloadBackup,
         isSuccessDownloadBackup,
         setIsDownloadBackupEnabled,
         setIsBackupReady,
         setIsGetEventsByDateEnabled,
-        setIsGetSoftwareEnabled);
+        setIsGetSoftwareEnabled
+    );
+
     useLoadingStatus(
         isLoadingEventsByDate,
         isLoadingSelectedEvents,
         isLoadingBackupList,
         isDownloading,
-        setLoading);
+        setLoading
+    );
+
     const handleSearchValueChange = useSearch(
         setSearchValue,
         setIsResettingSearchingEvent
     );
+
     const onCellDoubleClicked = useCellDoubleClick(
         searchValue,
         seteventString,
