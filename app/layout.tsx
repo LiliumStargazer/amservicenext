@@ -1,8 +1,6 @@
 
 import { Inter } from "next/font/google";
 import "./globals.css";
-import "@ag-grid-community/styles/ag-grid.css";
-import "@ag-grid-community/styles/ag-theme-quartz.css";
 import TankStackProvider from "@/app/lib/providers/TanstackProvidet";
 
 const inter = Inter({ subsets: ["latin"] });
