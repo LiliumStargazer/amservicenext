@@ -1,12 +1,10 @@
 'use client'
 
 import React, {useCallback, useEffect, useMemo, useState,} from "react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
 import {formatStringDateOrder, getTimeString} from "@/app/utils/utils";
 import {translateFrigoState} from "@/app/utils/eventMapping";
 import {AgGridReact} from "ag-grid-react";
-import { ColDef , GridReadyEvent, GridApi} from "ag-grid-community";
+import { ModuleRegistry, ClientSideRowModelModule, themeQuartz, colorSchemeDarkBlue, ColDef , GridReadyEvent, GridApi} from "ag-grid-community";
 import {FridgesRowData, RawFridgeData} from "@/app/types/types";
 import LoadingOverlayAgGrid from "@/app/components/body/LoadingOverlayAgGrid";
 
@@ -18,6 +16,9 @@ interface AgGridFridgeProps {
     setMessage: (message: string) => void;
     setStoredGridApi: (api: GridApi) => void;
 }
+
+ModuleRegistry.registerModules([ClientSideRowModelModule]);
+const theme = (themeQuartz.withPart(colorSchemeDarkBlue)).withParams({spacing:3});
 
 const AgGridFridge: React.FC<AgGridFridgeProps> = ({fridgeRawData, isLoadingFridge, isSuccessFridge, fridgeSelected, setMessage, setStoredGridApi}) => {
     const [fridgeTables, setFridgeTables] = useState<{[key: string]: FridgesRowData[]}>({});
@@ -103,8 +104,9 @@ const AgGridFridge: React.FC<AgGridFridgeProps> = ({fridgeRawData, isLoadingFrid
     }, [setStoredGridApi]);
     return (
         <div className="w-full h-full flex-grow" >
-            <div className="ag-theme-quartz-dark compact w-full h-full">
+            <div className="w-full h-full">
                 <AgGridReact<FridgesRowData>
+                    theme={theme}
                     loading={loading}
                     onGridReady={onGridReady}
                     rowData={fridgeTables[fridgeSelected]}

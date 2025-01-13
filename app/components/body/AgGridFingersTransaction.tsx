@@ -1,12 +1,11 @@
 'use client'
+
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import "@ag-grid-community/styles/ag-grid.css";
-import "@ag-grid-community/styles/ag-theme-quartz.css";
-import "@/app/styles/gridStyle.css";
+// import "@/app/styles/gridStyle.css";
 import { formatStringDateOrder, getTimeFromData, } from "@/app/utils/utils";
 import {AgGridReact} from "ag-grid-react";
 import {FingerData, FingerRawData} from "@/app/types/types";
-import { GridReadyEvent, ColDef } from "ag-grid-community";
+import { ModuleRegistry, ClientSideRowModelModule, themeQuartz, colorSchemeDarkBlue, GridReadyEvent, ColDef } from "ag-grid-community";
 import LoadingOverlayAgGrid from "@/app/components/body/LoadingOverlayAgGrid";
 import { GridApi } from "ag-grid-community";
 
@@ -15,6 +14,9 @@ interface AgGridFingersTransactionProps {
     rawFingerTransactions: FingerRawData[];
     setStoredGridApi: (api: GridApi) => void;
 }
+
+ModuleRegistry.registerModules([ClientSideRowModelModule]);
+const theme = (themeQuartz.withPart(colorSchemeDarkBlue)).withParams({spacing:3});
 
 const AgGridFingersTransaction: React.FC<AgGridFingersTransactionProps> = ({isLoadingFingerTransaction, rawFingerTransactions, setStoredGridApi }) => {
 
@@ -54,8 +56,9 @@ const AgGridFingersTransaction: React.FC<AgGridFingersTransactionProps> = ({isLo
 
     return (
         <div className="w-full h-full ">
-            <div className="ag-theme-quartz-dark compact w-full h-full">
+            <div className="w-full h-full">
                 <AgGridReact<FingerData>
+                    theme={theme}
                     rowData={fingerTransaction}
                     onGridReady={onGridReady}
                     columnDefs={colDefBase}

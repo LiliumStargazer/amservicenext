@@ -1,7 +1,5 @@
 'use client'
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/app/styles/gridStyle.css";
 import Dialog from "@/app/components/body/Dialog";
 import { GridReadyEvent, CellDoubleClickedEvent, ColDef , GridApi} from "ag-grid-community";

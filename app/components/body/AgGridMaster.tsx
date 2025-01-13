@@ -1,10 +1,22 @@
 'use client'
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import "@ag-grid-community/styles/ag-grid.css";
-import "@ag-grid-community/styles/ag-theme-quartz.css";
 import "@/app/styles/gridStyle.css";
-import { GridReadyEvent, CellDoubleClickedEvent , ColDef , GridApi } from "ag-grid-community";
+import {
+    ModuleRegistry,
+    RowStyleModule,
+    ClientSideRowModelModule,
+    GridReadyEvent,
+    CellDoubleClickedEvent,
+    ColDef,
+    GridApi,
+    TextFilterModule,
+    themeQuartz,
+    colorSchemeDarkBlue,
+    ValidationModule,
+    CellStyleModule,
+    NumberFilterModule,
+} from "ag-grid-community";
 import { AgGridReact } from 'ag-grid-react';
 import {LogEventData, RawLogEventData} from "@/app/types/types";
 import {rowClassRules} from "@/app/utils/rowClassRules";
@@ -24,11 +36,19 @@ interface AgGridMasterLogReactQueryProps {
     setStoredGridApi: (api: GridApi) => void;
 }
 
+ModuleRegistry.registerModules([ClientSideRowModelModule, RowStyleModule, ValidationModule, CellStyleModule,TextFilterModule, NumberFilterModule]);
+
+const theme = (themeQuartz.withPart(colorSchemeDarkBlue)).withParams({
+    spacing: 3,
+    wrapperBorderRadius: 4,
+    fontSize: 12,
+    inputBorder: '1px',
+    headerHeight: 40,
+})
+
 const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
                                                                     loading,
-                                                                    // isSuccessEventsByDate,
                                                                     rawLogEvents,
-                                                                    // isSuccessSelectedEvent,
                                                                     selectedEvents,
                                                                     onCellDoubleClicked,
                                                                     isResettingSearchingEvent,
@@ -39,26 +59,22 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
                                                                     setStoredGridApi
 }) => {
 
-    const [logData, setLogData] = useState<LogEventData[]>([]);
     const [storedData, setStoredData] = useState<LogEventData[]>([]);
     const [gridApi, setGridApi] = useState<GridApi | null>(null);
 
     useEffect(() => {
             const rows = getRowsMap(rawLogEvents);
             setStoredData(rows);
-            if (gridApi){
-                gridApi.setGridOption('rowData', rows);
-            }
-            else {
-                setLogData(rows);
-            }
-    }, [rawLogEvents, gridApi, setMessage, setStoredData, setLogData]);
-
-    useEffect(() => {
-            const rows = getRowsMap(selectedEvents);
             if (gridApi)
                 gridApi.setGridOption('rowData', rows);
 
+    }, [rawLogEvents, gridApi, setMessage, setStoredData]);
+
+    useEffect(() => {
+            const rows = getRowsMap(selectedEvents);
+            if (gridApi && selectedEvents.length > 0){
+                gridApi.setGridOption('rowData', rows);
+            }
             setMessage('');
     }, [gridApi, selectedEvents, setMessage]);
 
@@ -98,10 +114,10 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
 
     return (
         <div className="w-full h-full pb-2 flex-grow">
-            <div className="ag-theme-quartz-dark compact w-full h-full overflow-hidden" >
+            <div className="w-full h-full overflow-hidden" >
                 <AgGridReact<LogEventData>
+                    theme={theme}
                     loading={loading}
-                    rowData={logData}
                     columnDefs={colDefsBase}
                     onCellDoubleClicked={onCellDoubleClicked}
                     rowClassRules={rowClassRules}
@@ -113,7 +129,6 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
             </div>
         </div>
     );
-
 }
 
 export default AgGridMaster;

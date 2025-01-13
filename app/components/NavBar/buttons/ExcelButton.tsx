@@ -3,7 +3,7 @@ import React from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import stringApiGridToExcelConverter from '@/app/utils/stringApiGridToExcelConverter';
-import { GridApi } from "ag-grid-community";
+import { ModuleRegistry, CsvExportModule, GridApi } from "ag-grid-community";
 
 interface ExcelButtonProps {
     loading: boolean;
@@ -11,6 +11,8 @@ interface ExcelButtonProps {
     section: string;
     storedGridAPi: GridApi | null;
 }
+
+ModuleRegistry.registerModules([ CsvExportModule ]);
 
 const ExcelButton: React.FC <ExcelButtonProps>= ({loading, setMessage, section, storedGridAPi}) => {
 
