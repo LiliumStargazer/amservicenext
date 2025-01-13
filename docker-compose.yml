@@ -5,6 +5,7 @@ services:
     image: lalghisi/amservice:1.0
     volumes:
       - ./:/usr/features/app
+      - /opt/manutenzione/private-files/:/usr/features/app/app/lib/params/
     ports:
       - 3000:3000
     env_file:
