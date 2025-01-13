@@ -1,4 +1,19 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next.js Project with React 19, TypeScript, DaisyUI, and ag-Grid
+
+This project is built with [Next.js](https://nextjs.org/) updated to **React 19**, **TypeScript**, and styled using **DaisyUI**.
+
+## Project Overview
+
+The application is designed to:
+
+- **Retrieve log data from an FTP server**, automatically download and extract the data.
+- **Process raw data** into **typed data structures** for efficient handling and display.
+- Display data in **customized tables** using [**ag-Grid**](https://www.ag-grid.com/) with advanced features.
+- Implement both **native filters** and **SQL-based filters** to query specific data.
+- Enable **interactive filtering**, including opening new windows for querying data on specific dates.
+- Allow users to **double-click on table rows** to trigger external **API queries**, filter the results, and display them in **modal dialogs**.
+- Perform **server-side data manipulation** using libraries like **Protocol Buffers (Protobuf)** for deserializing `.proto` files.
+- Package and distribute the entire application using **Docker** for streamlined deployment.
 
 ## Getting Started
 
@@ -6,31 +21,29 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser to view the app.
 
-You can start editing the table by modifying `app/table.jsx`. The table auto-updates as you edit the file.
+## Technologies Used
+	•	Next.js with React 19 for the frontend framework.
+	•	TypeScript for type-safe development.
+	•	DaisyUI for styling with Tailwind CSS components.
+	•	ag-Grid for high-performance data grids.
+	•	Protocol Buffers (Protobuf) for server-side data deserialization.
+	•	Docker for containerization and deployment.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Key Features
+	•	FTP Integration: Automated download and extraction of log files.
+	•	Data Processing: From raw logs to structured, typed data.
+	•	Custom ag-Grid Tables: Tailored views and interactions for complex data.
+	•	Advanced Filtering: Native and SQL-based filtering capabilities.
+	•	Interactive Queries: Dynamic dialogs triggered by table interactions.
+	•	API Integrations: Fetch and display external data on demand.
+	•	Docker Deployment: Simplified and consistent deployment process.
 
 ## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+	•	Next.js Documentation – Learn about Next.js features and APIs.
+	•	ag-Grid Documentation – Explore ag-Grid’s capabilities.
+	•	DaisyUI Documentation – Learn how DaisyUI works with Tailwind CSS.
+	•	Docker Documentation – Understand Docker for deployment.
