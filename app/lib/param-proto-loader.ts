@@ -36,8 +36,13 @@ const loadProtoFile = (protoPath: string): Promise<protobuf.Root> => {
 //disabilitato temporaneamente
 // const loadProtoAndroid = loadProtoFile(path.resolve(process.env.PROTO_PATH_ANDROID || ''));
 // const loadProtoCE = loadProtoFile(path.resolve(process.env.PROTO_PATH_CE || ''));
-const loadProtoAndroid = loadProtoFile(path.resolve("./app/lib/params/TCoreParam.proto"));
-const loadProtoCE = loadProtoFile(path.resolve("./app/lib/params/param.proto"));
+// const loadProtoAndroid = loadProtoFile(path.resolve("./app/lib/params/TCoreParam.proto"));
+// const loadProtoCE = loadProtoFile(path.resolve("./app/lib/params/param.proto"));
+const protoPathAndroid = process.env.PROTO_PATH_ANDROID || '';
+const protoPathCE = process.env.PROTO_PATH_CE || '';
+
+const loadProtoAndroid = loadProtoFile(path.resolve(protoPathAndroid));
+const loadProtoCE = loadProtoFile(path.resolve(protoPathCE));
 
 export async function getParams(data: RawParams[], softwareType: 'android' | 'windows'): Promise<protobuf.Message<Record<string, unknown>>> {
     try {
