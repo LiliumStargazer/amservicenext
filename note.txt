@@ -17,3 +17,13 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx-selfsigned.key
 nex
 
 version: '3.3'
+
+
+sudo chown -R root:docker /opt/manutenzione/private-files
+sudo chmod -R 770 /opt/manutenzione/private-files
+
+sudo usermod -aG docker $USER
+
+/app/app/lib/params/
+
+docker run -p 80:3000 -v /opt/manutenzione/private-files:/app/app/lib/params/ --env-file ./.env.locale lalghisi/amservice:1.0
