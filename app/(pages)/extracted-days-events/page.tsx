@@ -2,7 +2,22 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import "@/app/styles/gridStyle.css";
 import Dialog from "@/app/components/body/Dialog";
-import { GridReadyEvent, CellDoubleClickedEvent, ColDef , GridApi} from "ag-grid-community";
+import {
+    ModuleRegistry,
+    RowStyleModule,
+    ClientSideRowModelModule,
+    GridReadyEvent,
+    CellDoubleClickedEvent,
+    ColDef,
+    GridApi,
+    TextFilterModule,
+    themeQuartz,
+    colorSchemeDarkBlue,
+    ValidationModule,
+    CellStyleModule,
+    NumberFilterModule,
+    ScrollApiModule
+} from "ag-grid-community";
 import {AgGridReact} from "ag-grid-react";
 import {rowClassRules} from "@/app/utils/rowClassRules";
 import { useRouter } from "next/navigation";
@@ -12,6 +27,16 @@ import {getRowsMap} from "@/app/utils/getRowMap";
 import {AliveEvent, ErrorResponse, LogEventData} from "@/app/types/types";
 import useQueryEventsFromAlive from "@/app/hooks/query/useQueryEventsFromAlive";
 import useAliveEvent from "@/app/hooks/useAliveEvent";
+
+ModuleRegistry.registerModules([ClientSideRowModelModule, RowStyleModule, ValidationModule, CellStyleModule,TextFilterModule, NumberFilterModule, ScrollApiModule]);
+
+const theme = (themeQuartz.withPart(colorSchemeDarkBlue)).withParams({
+    spacing: 3,
+    wrapperBorderRadius: 4,
+    fontSize: 12,
+    inputBorder: '1px',
+    headerHeight: 40,
+})
 
 function Extract() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -135,8 +160,9 @@ function Extract() {
                 dialogContent={dialogContent}
             />
             <div className="h-full">
-                <div className={"ag-theme-quartz-dark compact w-full h-full"}>
+                <div className={"w-full h-full"}>
                     <AgGridReact<LogEventData>
+                        theme={theme}
                         loading={loading}
                         rowData={logData}
                         columnDefs={colDefsBase}
