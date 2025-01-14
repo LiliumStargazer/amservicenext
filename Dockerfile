@@ -23,11 +23,7 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Se la cartella param è presente nella tua repository e contiene moduli o codice,
-# copiala nel contesto dell'applicazione Next.js.
-COPY app/lib/params /app/.next/standalone/app/lib/params
-
+#COPY app/lib/params /app/.next/standalone/app/lib/params
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
@@ -52,13 +48,13 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
-
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Include the 'param' folder if it's part of the standalone output
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/app/lib/params /app/.next/standalone/app/lib/params
+#COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/app/lib/params /app/.next/standalone/app/lib/params
+
 
 USER nextjs
 
