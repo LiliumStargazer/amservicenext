@@ -12,7 +12,7 @@ const apiRequest = async <GenericResponseType>(endpoint: string, payload: Record
                 'Content-Type': 'application/json'
             },
         });
-
+        console.log('apiRequest response:', response);
         if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
         }
