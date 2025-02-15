@@ -3,7 +3,7 @@ import fs from 'fs';
 import Database from 'better-sqlite3';
 import path from 'path';
 import os from 'os';
-import * as Sentry from '@sentry/nextjs';
+
 import {SystemPaths} from "@/app/types/types";
 
 function createSystemPaths(matricola: string, backupName: string = ""): SystemPaths {
@@ -86,7 +86,6 @@ async function createDirectory(localBackupDirectory: string): Promise<void> {
     try {
         fs.mkdir(localBackupDirectory, { recursive: true }, (err) => {
             if (err) {
-                Sentry.captureException(err);
                 console.error('Errore durante la creazione della cartella:', err);
                 throw err;
             }
