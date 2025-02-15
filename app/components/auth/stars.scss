@@ -1,0 +1,125 @@
+$easing: cubic-bezier(.33, 0, 0, 1);
+$maxLandscapeItems: 10;
+$assetUrlBase: 'https://assets.wrap.co/asset/';
+
+@mixin transition($transition) {
+    -moz-transition: $transition;
+    -o-transition: $transition;
+    -webkit-transition: $transition;
+    -ms-transition: $transition;
+    transition: $transition;
+}
+
+@mixin transition-delay($transition-delay) {
+    -moz-transition-delay: $transition-delay;
+    -o-transition-delay: $transition-delay;
+    -webkit-transition-delay: $transition-delay;
+    -ms-transition-delay: $transition-delay;
+    transition-delay: $transition-delay;
+}
+
+body,
+html {
+    background-color: #000;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+canvas {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.landscape {
+    z-index: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    .landscapeItem {
+        position: absolute;
+        z-index: 0;
+        left: 0;
+        bottom: -100%;
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        @include transition(1s bottom $easing);
+        &.animateIn {
+            bottom: 0px;
+        }
+        &.animateOut {
+            bottom: -100%;
+        }
+        &.mountains {
+            &.background {
+                @include transition(1s $easing);
+                bottom: 0;
+                opacity: 0;
+                z-index: 1;
+                background-color: transparent;
+                background-image: url('#{$assetUrlBase}d29ccba9-5240-45d7-94e6-86f68544c01d/original?1477070083');
+                &.animateIn {
+                    opacity: 0.6;
+                    background-blend-mode: lighten;
+                    background-color: rgba(cyan, 0.1);
+                }
+            }
+            &.midground {
+                z-index: 2;
+                background-image: url('#{$assetUrlBase}f561cc33-6c27-4789-b1ac-55e883856ee6/original?1477070083');
+            }
+            &.foreground {
+                z-index: 3;
+                background-image: url('#{$assetUrlBase}79dfa679-451e-4916-be63-14b27380cf11/original?1477070083');
+            }
+            @for $i from 1 through $maxLandscapeItems {
+                &:nth-last-child(#{$i}) {
+                    @include transition-delay(#{$i * 0.1 + 0.5}s);
+                }
+            }
+        }
+        &.trees {
+            &.background {
+                z-index: 4;
+                background-image: url('#{$assetUrlBase}935aa828-a719-4e32-9c27-f79010a263fc/original?1477070083');
+            }
+            &.midground {
+                z-index: 5;
+                background-image: url('#{$assetUrlBase}d9134d4e-c20b-4b0a-9275-1b711a6a5119/original?1477070083');
+            }
+            &.foreground {
+                z-index: 6;
+                background-image: url('#{$assetUrlBase}7306a5a6-124e-42cf-b4cf-2e9e2da26fdd/original?1477070083');
+            }
+            @for $i from 1 through $maxLandscapeItems {
+                &:nth-last-child(#{$i}) {
+                    @include transition-delay(#{$i * 0.1}s);
+                }
+            }
+        }
+        &.topographic {
+            transition: 1s opacity $easing;
+            transition-delay: 2s;
+            opacity: 0;
+            bottom: 0;
+            z-index: 7;
+            background-image: url('#{$assetUrlBase}b62cefa-1b65-4fa5-91db-cd360855b0f6/original?1477070083');
+            &.animateIn {
+                opacity: 0.2;
+            }
+            &.animateOut {
+                opacity: 0;
+            }
+        }
+    }
+}
