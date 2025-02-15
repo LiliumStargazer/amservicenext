@@ -17,7 +17,7 @@ import LoadingOverlayAgGrid from "@/app/components/body/LoadingOverlayAgGrid";
 import parseCSV from "@/app/utils/parseCSV";
 import { TechnicianStatistics, Ticket} from "@/app/types/types";
 import {ColDef} from "ag-grid-community";
-import ButtonNav from "@/app/components/shared/ButtonNav";
+import ButtonNav from "@/app/components/NavBarTop/ButtonNav";
 import Alert from "@/app/components/shared/Alert";
 
 const colDefs: ColDef<TechnicianStatistics>[] = [
