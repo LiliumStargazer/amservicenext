@@ -5,8 +5,9 @@ services:
     image: lalghisi/amservice:1.0
     volumes:
       - /opt/manutenzione/private-files/:/app/private-files/
+      - /opt/manutenzione/:/app/source/
     ports:
-      - 3000:3000
+      - 80:3000
     env_file:
         - ./.env.local
     container_name: nextjs-app
@@ -26,4 +27,13 @@ services:
     container_name: cronjob
     labels:
       - com.centurylinklabs.watchtower.enable=true
+    restart: always
+
+  portainer:
+    image: portainer/portainer-ce
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - "9000:9000"
     restart: always
