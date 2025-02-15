@@ -1,6 +1,6 @@
 import path from 'path';
 import protobuf from 'protobufjs';
-import * as Sentry from '@sentry/nextjs';
+
 import { RawParams } from "@/app/types/types";
 import fs from 'fs';
 
@@ -14,17 +14,14 @@ const loadProtoFile = (protoPath: string): Promise<protobuf.Root> => {
     return new Promise((resolve, reject) => {
         if (!fs.existsSync(protoPath) || fs.lstatSync(protoPath).isDirectory()) {
             const error = new Error(`Invalid path: ${protoPath}`);
-            Sentry.captureException(error);
             reject(error);
             return;
         }
         protobuf.load(protoPath, (err, root) => {
             if (err) {
-                Sentry.captureException(err);
                 reject(err);
             } else if (!root) {
                 const error = new Error(`Root is undefined for ${protoPath}`);
-                Sentry.captureException(error);
                 reject(error);
             } else {
                 resolve(root);
@@ -56,7 +53,6 @@ export async function getParams(data: RawParams[], softwareType: 'android' | 'wi
             return TCoreParamCE.decode(data[0].Data);
         }
     } catch (e) {
-        Sentry.captureException(e);
         throw e;
     }
 }
