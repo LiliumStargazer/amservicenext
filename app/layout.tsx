@@ -14,8 +14,9 @@ export default function RootLayout({ children,}: Readonly<{ children: React.Reac
         <html lang="en">
             <body className={inter.className} data-theme="dark">
             <TankStackProvider>
-                <div>{children}
-                </div>
+                    <div>
+                        {children}
+                    </div>
             </TankStackProvider>
             </body>
         </html>
