@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { apiRecoverDb} from "@/app/lib/api";
+import { apiRecoverDb} from "@/app/lib/api/apiGET";
 
 export const useQueryRecoverDb = (
     serial: string,

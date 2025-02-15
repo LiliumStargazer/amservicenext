@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import {apiGetLisTransaction} from "@/app/lib/api";
+import {apiGetLisTransaction} from "@/app/lib/api/apiGET";
 
 export const useQueryLisTransactions = (serial:string, backup:string, section:string, isBackupReady: boolean) => {
 

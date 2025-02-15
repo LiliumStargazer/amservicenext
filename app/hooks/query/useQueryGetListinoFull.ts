@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { apiGetListinoFull} from "@/app/lib/api";
+import { apiGetListinoFull} from "@/app/lib/api/apiGET";
 
 export const useQueryGetListinoFull = ( serial: string, isGetListino: boolean) => {
 

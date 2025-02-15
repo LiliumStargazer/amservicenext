@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import {apiFridgeEvents} from "@/app/lib/api";
+import {apiFridgeEvents} from "@/app/lib/api/apiGET";
 
 export const useQueryFridgeData = (serial:string, backup:string, isBackupReady:boolean, section:string) => {
 

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiGetBackupList} from "@/app/lib/api";
+import { apiGetBackupList} from "@/app/lib/api/apiGET";
 
 export const useQueryGetBackupList = (serial: string, enableGetBackupList: boolean) => {
     const { isLoading, isError, data, error, isSuccess, isFetched} = useQuery({

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import {apiDownloadBackup} from "@/app/lib/api";
+import {apiDownloadBackup} from "@/app/lib/api/apiGET";
 
 export const useQueryDownloadBackup = ( serial: string, backup: string, enableDownloadBackup:boolean) => {
 

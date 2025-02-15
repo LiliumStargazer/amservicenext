@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiGetTicketHistoryCorsHandling} from "@/app/lib/api"; // Ensure the import path is correct
+import { apiGetTicketHistoryCorsHandling} from "@/app/lib/api/apiGET"; // Ensure the import path is correct
 
 export const useQueryExternalTicketHistory = () => {
 

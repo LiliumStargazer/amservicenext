@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiGetAliveEventsCorsHandling } from "@/app/lib/api";
+import { apiGetAliveEventsCorsHandling } from "@/app/lib/api/apiGET";
 
 
 const useQueryEventsFromAlive = (isAliveEvent: boolean) => {

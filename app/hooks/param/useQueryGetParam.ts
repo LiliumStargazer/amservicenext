@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiGetParams } from '@/app/lib/api';
+import { apiGetParams } from '@/app/lib/api/apiGET';
 
 const useQueryGetParam = (serial: string, backup: string, isBackupReady: boolean, IDParam: string) => {
 

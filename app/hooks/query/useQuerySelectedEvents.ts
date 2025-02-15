@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { apiGetSelectedEvents } from "@/app/lib/api"; // Ensure the import path is correct
+import { apiGetSelectedEvents } from "@/app/lib/api/apiGET"; // Ensure the import path is correct
 
 
 const useQuerySelectedEvents = (

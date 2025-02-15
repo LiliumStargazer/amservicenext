@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import {apiGetSoftwareType} from "@/app/lib/api";
+import {apiGetSoftwareType} from "@/app/lib/api/apiGET";
 
 export const useQueryGetSoftwareType = (serial: string, backup: string , isGetSoftwareEnabled: boolean) => {
 

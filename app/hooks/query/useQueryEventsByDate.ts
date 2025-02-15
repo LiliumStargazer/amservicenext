@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiGetEventsByDate } from "@/app/lib/api";
+import { apiGetEventsByDate } from "@/app/lib/api/apiGET";
 
 const useQueryEventsByDate = (serial: string, backup: string, date: string | null, enableGetEventsByDate: boolean) => {
 

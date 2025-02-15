@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import {apiGetFingersTransactions} from '@/app/lib/api';
+import {apiGetFingersTransactions} from '@/app/lib/api/apiGET';
 
 export const useQueryFingerTransactions = (
     serial: string,
