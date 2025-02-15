@@ -1,9 +1,7 @@
 'use server'
 
 import { NextResponse } from 'next/server';
-import * as Sentry from "@sentry/nextjs";
-import {apiRequest} from "@/app/lib/api-handle-cors";
-import {logErrorAndRespond} from "@/app/lib/error-handler";
+import {apiRequest} from "@/app/lib/api/api-handle-cors";
 
 const getTicketLatest = (): Promise<string> => apiRequest('http://staging.gruppo-am.com/analisi_interventi.csv', { responseType: 'text' });
 
@@ -12,7 +10,6 @@ export async function GET(): Promise<NextResponse> {
         const result = await getTicketLatest();
         return NextResponse.json(result);
     } catch (error) {
-        Sentry.captureException(error);
-        return logErrorAndRespond(error);
+        return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }
 }

@@ -2,7 +2,7 @@
 'use server'
 import {  createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile} from "@/app/lib/backup-handler";
 import { NextResponse } from "next/server";
-import {logErrorAndRespond} from "@/app/lib/error-handler";
+
 
 export async function GET(req: Request): Promise<NextResponse> {
 
@@ -43,6 +43,6 @@ export async function GET(req: Request): Promise<NextResponse> {
         return NextResponse.json(results);
 
     } catch (error) {
-        return logErrorAndRespond(error);
+        return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }
 }
