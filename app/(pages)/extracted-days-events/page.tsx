@@ -22,7 +22,7 @@ import {AgGridReact} from "ag-grid-react";
 import {rowClassRules} from "@/app/utils/rowClassRules";
 import { useRouter } from "next/navigation";
 import {useQuery} from "@tanstack/react-query";
-import {apiGetEventsByDate} from "@/app/lib/api";
+import {apiGetEventsByDate} from "@/app/lib/api/apiGET";
 import {getRowsMap} from "@/app/utils/getRowMap";
 import {AliveEvent, ErrorResponse, LogEventData} from "@/app/types/types";
 import useQueryEventsFromAlive from "@/app/hooks/query/useQueryEventsFromAlive";
