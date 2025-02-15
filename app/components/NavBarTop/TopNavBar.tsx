@@ -1,9 +1,7 @@
-'use client'
 
 import React from 'react';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-
-import {faCloud, faLineChart, faList, faMusic} from "@fortawesome/free-solid-svg-icons";
+import {faCloud, faList, faMusic} from "@fortawesome/free-solid-svg-icons";
 import {getSerialValidationMessage, onClickOpenWindow, trimAndFormatSerial} from "@/app/utils/utils";
 import Image from "next/image";
 import amclub from "@/public/mini/amClubLogoMini.png";
@@ -18,18 +16,24 @@ import tableau from "@/public/mini/tableauMini.svg";
 import {faLock} from "@fortawesome/free-solid-svg-icons/faLock";
 
 import DialogPassword from "@/app/components/NavBarTop/DialogPassword";
-import {useRouter} from "next/navigation";
-import ButtonNav from "@/app/components/shared/ButtonNav";
+
+import {Session} from "@prisma/client/";
+import {signOut} from "next-auth/react";
 
 interface TopNavBarProps {
     serialTemp: string;
     setMessage: (message: string) => void;
+    session: Session | null;
 }
 
-const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
+interface User{
+    name: string;
+    email: string;
+}
+
+const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage, session} ) => {
 
     const [openRequest, setOpenRequest] = React.useState<boolean>(false);
-    const router = useRouter();
 
     const onClickWithAliveValue = () => {
         const formattedSerial = trimAndFormatSerial(serialTemp);
@@ -40,12 +44,19 @@ const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
             onClickOpenWindow("https://alive2.amdistributori.it:8443/dettaglio-distributore/?serialnumber={input}", serialTemp);
     }
 
+    const user = () => {
+        if (session && 'user' in session) {
+            return session.user as User;
+        }
+        return null;
+    }
+
     return (
         <>
             <DialogPassword openRequest={openRequest} setOpenRequest={setOpenRequest}/>
             <div className="navbar bg-neutral text-neutral-content">
                 <div className="navbar-start">
-
+                    <p className=" text-xl text-neutral-content font-bold ml-2">AM Service</p>
                 </div>
                 <div className="navbar-center">
                     <div className="tooltip tooltip-bottom" data-tip="Alive">
@@ -146,15 +157,17 @@ const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
                             <FontAwesomeIcon icon={faMusic} style={{color: "#B197FC"}} size="2x"/>
                         </button>
                     </div>
-                    <div className="tooltip tooltip-bottom" data-tip="Technicians statistics ">
-                        <button id="statistic" className="btn btn-ghost btn-md"
-                                onClick={() => router.push("/technician-tickets-kpi")}>
-                            <FontAwesomeIcon icon={faLineChart} style={{color: "#f8820e"}} size="2x"/>
-                        </button>
-                    </div>
+                    {/*<div className="tooltip tooltip-bottom" data-tip="Technicians statistics ">*/}
+                    {/*    <button id="statistic" className="btn btn-ghost btn-md"*/}
+                    {/*            onClick={() => router.push("/technician-tickets-kpi")}>*/}
+                    {/*        <FontAwesomeIcon icon={faLineChart} style={{color: "#f8820e"}} size="2x"/>*/}
+                    {/*    </button>*/}
+                    {/*</div>*/}
                 </div>
                 <div className="navbar-end">
-                    <ButtonNav setMessage={setMessage}/>
+                    <p className="text-neutral-content font-bold mr-8">Ciao {user()?.name}!</p>
+                    {/*<div className="badge badge-soft badge-neutral">Ciao {user()?.name}!</div>*/}
+                    <button className="btn btn-info " onClick={() => signOut()}>Sign Out</button>
                 </div>
             </div>
         </>
