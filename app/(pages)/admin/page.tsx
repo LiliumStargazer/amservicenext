@@ -12,6 +12,8 @@ interface User {
     export default async function AdminPage() {
         const users = await getUsers();
 
+        console.log('sono user', users);
+
         const usersMapped = users.map((user: User) => (
             <tr key={user.id}>
                 <td>{user.name}</td>
