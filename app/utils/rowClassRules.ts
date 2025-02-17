@@ -50,4 +50,5 @@ export const rowClassRules ={
     'row-ev-qrb-nocomm': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_QRB_NOCOMM',
     'row-ev-ing-nocomm': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_ING_NOCOMM',
     'row-ev-pax-error': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_PAX_ERROR',
+    'row-ev-credit-lost': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_CREDIT_LOST',
 };
