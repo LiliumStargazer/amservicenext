@@ -1,7 +1,7 @@
 'use client';
 
 import {useActionState, useEffect, useState} from 'react';
-import {registerUser, updateUser, deleteUser} from "@/app/lib/auth/registration";
+import {registerUser, updateUser, deleteUser} from "@/app/lib/auth/database-crud";
 import {LogOutButton} from "@/app/components/auth/LogoutButton";
 
 export default function UserRegistrationForm() {
