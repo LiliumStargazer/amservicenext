@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
         // Important: return the modified config
         return config
     },
+    logging: {
+        fetches: {
+            hmrRefreshes: true,
+        },
+
+    },
    output: "standalone",
 };
 

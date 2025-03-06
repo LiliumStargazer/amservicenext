@@ -15,6 +15,16 @@ services:
       - com.centurylinklabs.watchtower.enable=true
     restart: always
 
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Gi9p3BVRmzMML0
+      MYSQL_DATABASE: auth
+    volumes:
+      - /opt/manutenzione/my-sql/:/var/lib/mysql/
+    restart: always
+
   watchtower:
     image: containrrr/watchtower
     volumes:

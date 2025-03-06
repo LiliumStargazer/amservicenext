@@ -1,10 +1,5 @@
-import { prismaDb } from "@/prisma/prisma";
+import { prismaDb } from "@/app/lib/prisma";
 
 export async function getUsers() {
-    try {
-        return await prismaDb.user.findMany();
-    } catch (error) {
-        console.log('Error while getting backup backup-list from api-route:', error);
-        return [];
-    }
+    return prismaDb.user.findMany();
 }

@@ -12,7 +12,7 @@ export const rowClassRules ={
     'row-ev-dev-sernum': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_DEV_SERNUM',
     'row-ev-dev-sernumchanged': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_DEV_SERNUMCHANGED',
     'row-ev-accensione': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_ACCENSIONE',
-    'row-ev-producer-pressed': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_PRODUCT_PRESSED',
+    'row-ev-product-pressed': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_PRODUCT_PRESSED',
     'row-ev-wdogfired': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_WDOGFIRED',
     'row-ev-prod-venduto': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_PROD_VENDUTO',
     'row-ev-vendsession-end': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_VENDSESSION_END',
@@ -51,4 +51,5 @@ export const rowClassRules ={
     'row-ev-ing-nocomm': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_ING_NOCOMM',
     'row-ev-pax-error': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_PAX_ERROR',
     'row-ev-credit-lost': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_CREDIT_LOST',
+    'row-ev-erog-lento': (params: RowClassParams<LogEventData>) => params.data?.TagData === 'Eroga Lento',
 };

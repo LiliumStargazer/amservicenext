@@ -1,6 +1,6 @@
 'use server';
 
-import { prismaDb } from "@/prisma/prisma";
+import { prismaDb } from "@/app/lib/prisma";
 import bcrypt from "bcryptjs";
 
 export async function registerUser(prevState: string | undefined, formData: FormData) {

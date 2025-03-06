@@ -1,0 +1,30 @@
+services:
+  nextjs-app:
+    image: node:22-alpine
+    container_name: nextjs-dev
+    working_dir: /app
+    build:
+      context: .
+    volumes:
+      - ./private-files/:/app/private-files/
+      - ./public:/app/public
+      - .:/app  # Monta il codice locale dentro il container
+#      - .:/node_modules
+#      - ./.next:/app/.next
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    command: [ "npm", "run", "dev" ]
+    env_file:
+      - ./.env.local
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Gi9p3BVRmzMML0
+      MYSQL_DATABASE: auth
+    volumes:
+      - /Users/alghisi/WebstormProjects/my-sql:/var/lib/mysql/
+    restart: always
