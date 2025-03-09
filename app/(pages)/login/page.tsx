@@ -15,7 +15,7 @@ export default function Login() {
             <div className="hero-content flex-col lg:flex-row-reverse">
                 <ShootingStars />
                 <div className="text-center lg:text-left z-10" >
-                    <h1 className="text-5xl font-bold">AM Service</h1>
+                    <h1 className="text-5xl font-bold">AM Service </h1>
                     <p className="py-6">
                         Ut desint vires, tamen laudanda est voluntas.
                     </p>

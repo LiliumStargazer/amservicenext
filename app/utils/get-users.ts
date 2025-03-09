@@ -1,5 +1,6 @@
-import { prismaDb } from "@/app/lib/prisma";
+import { db } from "@/database/schema"
+import { users } from "@/database/schema"; // Importa la tabella users dallo schema
 
 export async function getUsers() {
-    return prismaDb.user.findMany();
+    return db.select().from(users);
 }

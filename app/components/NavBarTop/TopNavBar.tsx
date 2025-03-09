@@ -14,24 +14,16 @@ import vte from "@/public/mini/vtenextMini.png";
 import taiga from "@/public/mini/taigaMini.svg";
 import tableau from "@/public/mini/tableauMini.svg";
 import {faLock} from "@fortawesome/free-solid-svg-icons/faLock";
-
 import DialogPassword from "@/app/components/NavBarTop/DialogPassword";
-
-import {Session} from "@prisma/client/";
 import {signOut} from "next-auth/react";
+import User from "@/app/components/server components/User";
 
 interface TopNavBarProps {
     serialTemp: string;
     setMessage: (message: string) => void;
-    session: Session | null;
 }
 
-interface User{
-    name: string;
-    email: string;
-}
-
-const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage, session} ) => {
+const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
 
     const [openRequest, setOpenRequest] = React.useState<boolean>(false);
 
@@ -42,13 +34,6 @@ const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage, session} )
             setMessage(message);
         else
             onClickOpenWindow("https://alive2.amdistributori.it:8443/dettaglio-distributore/?serialnumber={input}", serialTemp);
-    }
-
-    const user = () => {
-        if (session && 'user' in session) {
-            return session.user as User;
-        }
-        return null;
     }
 
     return (
@@ -165,8 +150,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage, session} )
                     {/*</div>*/}
                 </div>
                 <div className="navbar-end">
-                    <p className="text-neutral-content font-bold mr-8">Ciao {user()?.name}!</p>
-                    {/*<div className="badge badge-soft badge-neutral">Ciao {user()?.name}!</div>*/}
+                    <User/>
                     <button className="btn btn-info " onClick={() => signOut()}>Sign Out</button>
                 </div>
             </div>

@@ -1,84 +1,79 @@
-'use server';
+'use server'
 
-import { prismaDb } from "@/app/lib/prisma";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs"
+import { db } from "@/database/schema"
+import { eq } from "drizzle-orm"
+import { users } from "@/database/schema"
 
 export async function registerUser(prevState: string | undefined, formData: FormData) {
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    const role = formData.get('role') as string;
+    const name = formData.get('name') as string
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    const role = formData.get('role') as string
 
     if (!name || !email || !password || !role) {
-        return 'All fields are required';
+        return 'All fields are required'
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10)
 
     try {
-        await prismaDb.user.create({
-            data: {
-                name,
-                email,
-                hashedPassword,
-                role
-            },
-        });
+        await db.insert(users).values({
+            name,
+            email,
+            hashedPassword,
+            role
+        })
 
-        return 'User registered successfully!';
-
+        return 'User registered successfully!'
     } catch (error) {
-        console.error('Error registering user:', error);
-        return 'User registration failed';
+        console.error('Error registering user:', error)
+        return 'User registration failed'
     }
 }
 
 export async function updateUser(prevState: string | undefined, formData: FormData) {
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    const role = formData.get('role') as string;
+    const name = formData.get('name') as string
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    const role = formData.get('role') as string
 
     if (!email) {
-        return 'Email is required';
+        return 'Email is required'
     }
 
-    const updateData: { [key: string]: string } = {};
+    const updateData: Record<string, string> = {}
 
-    if (name) updateData.name = name;
-    if (password) updateData.hashedPassword = await bcrypt.hash(password, 10);
-    if (role) updateData.role = role;
-
-    console.log('updateData:', updateData);
+    if (name) updateData.name = name
+    if (password) updateData.hashedPassword = await bcrypt.hash(password, 10)
+    if (role) updateData.role = role
 
     try {
-        await prismaDb.user.update({
-            where: { email },
-            data: updateData,
-        });
+        await db.update(users)
+            .set(updateData)
+            .where(eq(users.email, email))
 
-        return 'User updated successfully!';
+        return 'User updated successfully!'
     } catch (error) {
-        console.error('Error updating user:', error);
-        return 'User update failed';
+        console.error('Error updating user:', error)
+        return 'User update failed'
     }
 }
 
-export async function deleteUser(prevStae: string | undefined, formData: FormData) {
-    const email = formData.get('email') as string;
+export async function deleteUser(prevState: string | undefined, formData: FormData) {
+    const email = formData.get('email') as string
 
     if (!email) {
-        return 'Email is required';
+        return 'Email is required'
     }
 
     try {
-        await prismaDb.user.delete({
-            where: { email },
-        });
+        await db.delete(users)
+            .where(eq(users.email, email))
 
-        return 'User deleted successfully!';
+        return 'User deleted successfully!'
     } catch (error) {
-        console.error('Error deleting user:', error);
-        return 'User deletion failed';
+        console.error('Error deleting user:', error)
+        return 'User deletion failed'
     }
 }

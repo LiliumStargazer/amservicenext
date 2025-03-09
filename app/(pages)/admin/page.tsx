@@ -2,27 +2,15 @@
 import { getUsers } from "@/app/utils/get-users";
 import UserRegistrationForm from "@/app/components/auth/UserRegistrationForm";
 
-interface User {
-    id: string;
-    name: string | null;
-    email: string | null;
-    role: string;
-}
 
 export default async function AdminPage() {
-    let users: User[] = [];
+    const users = await getUsers();
 
-    try {
-        users = await getUsers();
-    } catch (error) {
-        console.log(error);
-    }
-
-    const usersMapped = users.map((user: User) => (
+    const usersMapped = users.map((user) => (
         <tr key={user.id}>
-            <td>{user.name}</td>
-            <td>{user.email}</td>
-            <td>{user.role}</td>
+            <td>{user.name || "N/A"}</td>
+            <td>{user.email || "N/A"}</td>
+            <td>{user.role || "user"}</td>
         </tr>
     ));
 
@@ -35,8 +23,8 @@ export default async function AdminPage() {
                             <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>email</th>
-                                <th>role</th>
+                                <th>Email</th>
+                                <th>Role</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -46,7 +34,7 @@ export default async function AdminPage() {
                     </div>
                 </div>
                 <UserRegistrationForm />
-           </div>
+            </div>
         </div>
     );
 }

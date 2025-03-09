@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
     compiler: {
-        // removeConsole: process.env.NODE_ENV === 'production',
+        removeConsole: process.env.NODE_ENV === 'production',
     },
     webpack: (config) => {
         config.module.rules.push({
@@ -13,12 +13,8 @@ const nextConfig: NextConfig = {
         // Important: return the modified config
         return config
     },
-    logging: {
-        fetches: {
-            hmrRefreshes: true,
-        },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-    },
    output: "standalone",
 };
 
