@@ -1,9 +1,9 @@
 'use server'
 
 import bcrypt from "bcryptjs"
-import { db } from "@/database/schema"
+import { db } from "@/drizzle/schema"
 import { eq } from "drizzle-orm"
-import { users } from "@/database/schema"
+import { users } from "@/drizzle/schema"
 
 export async function registerUser(prevState: string | undefined, formData: FormData) {
     const name = formData.get('name') as string

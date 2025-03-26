@@ -2,9 +2,9 @@ import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
-import { db } from "@/database/schema"
+import { db } from "@/drizzle/schema"
 import { eq } from "drizzle-orm"
-import { users } from "@/database/schema" // Assicurati di esportare la tabella users dal tuo schema
+import { users } from "@/drizzle/schema" // Assicurati di esportare la tabella users dal tuo schema
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     trustHost: true,
@@ -31,7 +31,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     .where(eq(users.email, email))
                     .limit(1)
 
-                const user = userResult[0]
+                const user = userResult[0];
 
                 if (!user || !user.hashedPassword) {
                     throw new Error("Invalid credentials")

@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState } from 'react';
-import { authenticate } from '@/app/lib/actions';
+import { authenticate } from '@/app/lib/auth/actions';
 import ShootingStars from "@/app/components/auth/ShootingStars";
 
 export default function Login() {

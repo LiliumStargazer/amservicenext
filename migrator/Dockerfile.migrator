@@ -1,0 +1,40 @@
+# Stage 1: Builder
+FROM node:22-slim AS builder
+
+# Configura Corepack e pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+# Copia e installa dipendenze
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# Copia sorgenti e configurazioni
+COPY tsconfig.json .
+COPY src/ ./src/
+COPY drizzle/ ./drizzle/
+
+# Compila TypeScript
+RUN pnpm build
+
+# Stage 2: Runtime
+FROM node:22-slim
+
+WORKDIR /app
+
+# Copia solo il necessario
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/drizzle ./drizzle
+
+# Utente non-root per sicurezza
+RUN adduser --disabled-password --gecos "" migrator && \
+    chown -R migrator:nodejs /app
+USER migrator
+
+# Health check e comando di avvio
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
+  CMD pg_isready --host=${DB_HOST} --port=${DB_PORT}
+
+CMD ["sh", "-c", "pnpm migrate && pnpm seed"]

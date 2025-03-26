@@ -1,10 +1,13 @@
 // app/admin/page.tsx
-import { getUsers } from "@/app/utils/get-users";
+import { getUsers } from "@/app/lib/auth/get-users";
 import UserRegistrationForm from "@/app/components/auth/UserRegistrationForm";
 
 
 export default async function AdminPage() {
+
     const users = await getUsers();
+    if (!users)
+        return null;
 
     const usersMapped = users.map((user) => (
         <tr key={user.id}>
