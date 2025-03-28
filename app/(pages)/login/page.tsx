@@ -1,8 +1,8 @@
 'use client';
 
 import { useActionState } from 'react';
-import { authenticate } from '@/app/lib/auth/actions';
-import ShootingStars from "@/app/components/auth/ShootingStars";
+import { authenticate } from '@/app/lib/auth-actions';
+import ShootingStars from "@/app/components/ShootingStars";
 
 export default function Login() {
     const [errorMessage, formAction] = useActionState(

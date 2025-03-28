@@ -8,17 +8,17 @@ import {
     filterTechnicianFromTickets,
     filterTicketsAndAddTTR,
     storedTechnicians
-} from "@/app/utils/ticketStatistics";
-import {useQueryExternalTicketHistory} from "@/app/hooks/technician-tickets/useQueryExternalTicketHistory";
-import {useQueryExternalLatestTicket} from "@/app/hooks/technician-tickets/useQueryExternalLatestTicket";
-import AlertLoading from "@/app/components/shared/AlertLoading";
+} from "@/app/utils/ticket-statistics-utils";
+import {useQueryExternalTicketHistory} from "@/app/hooks/useQueryExternalTicketHistory";
+import {useQueryExternalLatestTicket} from "@/app/hooks/useQueryExternalLatestTicket";
+import AlertLoading from "@/app/components/AlertLoading";
 import {AgGridReact} from "ag-grid-react";
-import LoadingOverlayAgGrid from "@/app/components/body/LoadingOverlayAgGrid";
-import parseCSV from "@/app/utils/parseCSV";
+import LoadingOverlayAgGrid from "@/app/components/LoadingOverlayAgGrid";
+import parseCsv from "@/app/utils/parse-csv";
 import { TechnicianStatistics, Ticket} from "@/app/types/types";
 import {ColDef} from "ag-grid-community";
-import ButtonNav from "@/app/components/NavBarTop/ButtonNav";
-import Alert from "@/app/components/shared/Alert";
+import ButtonNav from "@/app/components/ButtonNav";
+import Alert from "@/app/components/Alert";
 
 const colDefs: ColDef<TechnicianStatistics>[] = [
     { headerName: 'Technician', field: 'Manutentore' as keyof TechnicianStatistics, flex: 2, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: true },
@@ -62,7 +62,7 @@ const Statistics: React.FC = () => {
                     throw new Error("Error fetching tickets: " + errorTicketHistory);
 
                 if (isSuccessTicketHistory && rawTicketHistory) {
-                    const ticketHistoryParsed = await parseCSV(rawTicketHistory.toString());
+                    const ticketHistoryParsed = await parseCsv(rawTicketHistory.toString());
 
                     if ( Array.isArray(ticketHistoryParsed) )
                         setParsedTicketHistory(ticketHistoryParsed);
@@ -85,7 +85,7 @@ const Statistics: React.FC = () => {
                     throw new Error("Error fetching tickets: " + errorLatestTicket);
 
                 if (isSuccessLatestTicket && rawLatestTicket) {
-                    const ticketLatestParsed = await parseCSV(rawLatestTicket.toString());
+                    const ticketLatestParsed = await parseCsv(rawLatestTicket.toString());
                     setParsedTicketLatest(ticketLatestParsed);
                 }
             } catch (error) {

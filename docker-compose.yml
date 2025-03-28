@@ -1,9 +1,38 @@
 
-
 services:
 
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    env_file:
+      - ./.env.local
+    volumes:
+      - /opt/manutenzione/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+    restart: always
+
+  migrator:
+    container_name: migrator
+    image: lalghisi/migrator:latest
+    environment:
+      - AUTH_DRIZZLE_URL=postgres://postgres:postgres@postgres:5432/auth
+      - AUTH_ADMIN_PSW=IamAdmin
+      - AUTH_ADMIN_NAME=admin
+      - AUTH_ADMIN_EMAIL=admin@amservice.it
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - amservice-network
+    restart: no
 
   nextjs-app:
+    container_name: nextjs-app
     image: lalghisi/amservice:1.0
     volumes:
       - /opt/manutenzione/private-files/:/app/private-files/
@@ -12,33 +41,32 @@ services:
       - "80:3000"
     env_file:
         - ./.env.local
-    container_name: nextjs-app
+    depends_on:
+      postgres:
+        condition: service_healthy
     labels:
       - com.centurylinklabs.watchtower.enable=true
-    restart: always
-
-  mysql:
-    image: mysql:latest
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: Gi9p3BVRmzMML0
-      MYSQL_DATABASE: auth
-    volumes:
-      - /opt/manutenzione/my-sql/:/var/lib/mysql/
+    networks:
+      - amservice-network
     restart: always
 
   watchtower:
+    container_name: watchover
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 600 --label-enable
+    networks:
+      - amservice-network
     restart: always
 
   cronjob:
-    image: lalghisi/cron:1.0
     container_name: cronjob
+    image: lalghisi/cron:1.0
     labels:
       - com.centurylinklabs.watchtower.enable=true
+    networks:
+      - amservice-network
     restart: always
 
   portainer:
@@ -50,19 +78,6 @@ services:
       - "9000:9000"
     restart: always
 
-  postgres:
-    image: postgres:latest
-    container_name: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: auth
-    volumes:
-      - /opt/manutenzione/postgres:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres" ]
-      interval: 10s
-      retries: 5
-      start_period: 10s
-      timeout: 5s
-    restart: always
+networks:
+  amservice-network:
+    driver: bridge

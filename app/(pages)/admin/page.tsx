@@ -1,13 +1,20 @@
 // app/admin/page.tsx
-import { getUsers } from "@/app/lib/auth/get-users";
-import UserRegistrationForm from "@/app/components/auth/UserRegistrationForm";
 
+import { usersGet } from "@/app/lib/users-get";
+import UserRegistrationForm from "@/app/components/UserRegistrationForm";
+
+export const dynamic = 'force-dynamic';
 
 export default async function AdminPage() {
 
-    const users = await getUsers();
-    if (!users)
-        return null;
+    let users;
+    try {
+        users = await usersGet();
+    } catch (error) {
+        console.error("Error fetching users:", error);
+
+        return <div>Errore nel recupero degli utenti: {(error as Error).message}</div>;
+    }
 
     const usersMapped = users.map((user) => (
         <tr key={user.id}>

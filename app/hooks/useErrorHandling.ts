@@ -31,7 +31,9 @@ const useErrorHandling = ({
     setIsGetSelectedEventsEnabled
 }: UseErrorHandlingProps) => {
     useEffect(() => {
+
         if (rawBackupList && rawBackupList.error) {
+
             if ( rawBackupList.error.includes('No such file'))
                 setMessage("No backup files found, check serial number");
             else

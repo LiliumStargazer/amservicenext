@@ -1,40 +1,35 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { auth } from '@/app/lib/auth/auth';
-
-
-
-// const protectedRouters = ['/', '/admin'];
+import { auth } from '@/app/lib/auth';
 
 export default async function middleware(request: NextRequest) {
     const session = await auth();
     const pathName = request.nextUrl.pathname;
 
+    // 1. Prima gestiamo le route che non richiedono autenticazione
+    if (pathName === '/login' && !session) {
+        return NextResponse.next();
+    }
 
-    // Bypass session check for POST requests to /space-cleanup
+    // 2. Poi le richieste speciali (es. DELETE)
     if (request.method === 'DELETE' && pathName === '/space-cleanup') {
         return NextResponse.next();
     }
 
     const user = session?.user;
 
-    // Se l'utente è admin e la rotta è protetta, reindirizza ad /admin
+    // 3. Controllo admin
     if (user?.name === "admin" && pathName !== '/admin') {
         return NextResponse.redirect(new URL('/admin', request.url));
     }
 
-    // Se l'utente non è admin e cerca di accedere a /admin, reindirizza alla pagina principale
-    if (user && user.name !== "admin" && pathName === '/admin') {
-        return NextResponse.redirect(new URL('/', request.url));
-    }
-
-    // Se l'utente è loggato e cerca di accedere a /login, reindirizza alla pagina principale
+    // 4. Se già loggato e cerca di accedere a /login
     if (session && pathName === '/login') {
         return NextResponse.redirect(new URL('/', request.url));
     }
 
-    // Se la rotta è protetta e non c'è sessione, reindirizza al login
-    if (!session && pathName !== '/login') {
+    // 5. Protezione generale delle route
+    if (!session) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
 

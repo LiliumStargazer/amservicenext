@@ -1,7 +1,7 @@
 'use server'
 
 import { NextResponse } from 'next/server';
-import {apiRequest} from "@/app/lib/api/api-handle-cors";
+import {apiRequest} from "@/app/lib/api-cors";
 
 const getTicketLatest = (): Promise<string> => apiRequest('http://staging.gruppo-am.com/analisi_interventi.csv', { responseType: 'text' });
 

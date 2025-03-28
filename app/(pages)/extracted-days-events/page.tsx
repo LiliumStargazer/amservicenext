@@ -1,7 +1,7 @@
 'use client'
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import "@/app/styles/gridStyle.css";
-import Dialog from "@/app/components/body/Dialog";
+import Dialog from "@/app/components/Dialog";
 import {
     ModuleRegistry,
     RowStyleModule,
@@ -19,13 +19,13 @@ import {
     ScrollApiModule
 } from "ag-grid-community";
 import {AgGridReact} from "ag-grid-react";
-import {rowClassRules} from "@/app/utils/rowClassRules";
+import {eventsRowStyles} from "@/app/styles/events-row-styles";
 import { useRouter } from "next/navigation";
 import {useQuery} from "@tanstack/react-query";
-import {apiGetEventsByDate} from "@/app/lib/api/apiGET";
-import {getRowsMap} from "@/app/utils/getRowMap";
+import {apiGetEventsByDate} from "@/app/lib/apiGET";
+import {getRowsMap} from "@/app/utils/events-mapper";
 import {AliveEvent, ErrorResponse, LogEventData} from "@/app/types/types";
-import useQueryEventsFromAlive from "@/app/hooks/query/useQueryEventsFromAlive";
+import useQueryEventsFromAlive from "@/app/hooks/useQueryEventsFromAlive";
 import useAliveEvent from "@/app/hooks/useAliveEvent";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowStyleModule, ValidationModule, CellStyleModule,TextFilterModule, NumberFilterModule, ScrollApiModule]);
@@ -167,7 +167,7 @@ function Extract() {
                         rowData={logData}
                         columnDefs={colDefsBase}
                         onCellDoubleClicked={onCellDoubleClicked}
-                        rowClassRules={rowClassRules}
+                        rowClassRules={eventsRowStyles}
                         onGridReady={onGridReady}
                         onFirstDataRendered={onFirstDataRendered}
                     />

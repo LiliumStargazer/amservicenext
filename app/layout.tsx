@@ -1,7 +1,8 @@
 
 import { Inter } from "next/font/google";
 import "./globals.css";
-import TankStackProvider from "@/app/lib/providers/TanstackProvidet";
+import TankStackProvider from "@/app/components/TanstackProvider";
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +16,9 @@ export default function RootLayout({ children,}: Readonly<{ children: React.Reac
             <body className={inter.className} data-theme="dark">
             <TankStackProvider>
                     <div>
-                        {children}
+                        <SessionProvider>
+                            {children}
+                        </SessionProvider>
                     </div>
             </TankStackProvider>
             </body>
