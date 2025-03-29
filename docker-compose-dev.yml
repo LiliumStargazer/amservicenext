@@ -28,6 +28,7 @@ services:
 
   nextjs-app:
     container_name: nextjs-dev
+    platform: linux/arm64/v8
     build:
       context: .
       dockerfile: DockerfileDev
