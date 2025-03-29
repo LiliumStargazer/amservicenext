@@ -1,0 +1,26 @@
+# Specifica l'architettura nell'immagine base
+FROM --platform=linux/arm64/v8 node:22-alpine
+
+WORKDIR /app
+
+# Installa dipendenze per moduli nativi ARM
+RUN apk add --no-cache --virtual .build-deps \
+    g++ \
+    make \
+    python3 \
+    openssl-dev \
+    libssh2-dev \
+    musl-dev \
+    gcompat
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml* ./
+
+# Installazione ottimizzata per ARM
+RUN pnpm install --frozen-lockfile --shamefully-hoist && \
+    pnpm rebuild ssh2 ssh2-sftp-client --arch=arm64 --platform=linuxmusl && \
+    pnpm dlx tailwindcss@latest init -p && \
+    rm -rf .next/cache
+
+CMD ["sh", "-c", "pnpm run dev"]

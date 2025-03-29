@@ -1,0 +1,54 @@
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: auth
+    volumes:
+      - /Users/alghisi/WebstormProjects/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+    restart: always
+
+  migrator:
+    image: lalghisi/migrator:latest
+    container_name: migrator
+    env_file:
+      - ./.env.local
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  nextjs-app:
+    container_name: nextjs-dev
+    build:
+      context: .
+      dockerfile: DockerfileDev
+    ports:
+      - 3000:3000
+    env_file:
+      - ./.env.local
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - next_cache:/app/.next
+    environment:
+#      - CHOKIDAR_USEPOLLING=true  # Forza il file watcher a rilevare i cambiamenti in Docker
+#      - WATCHPACK_POLLING=true
+       - NEXT_HOT_RELOAD=true
+       - WATCHPACK_POLLING=1000
+       - TAILWIND_BUILD=1
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["sh", "-c", "pnpm run dev"]
+
+volumes:
+  next_cache:

@@ -3,7 +3,6 @@
 import axios from 'axios';
 import { Buffer } from 'buffer';
 import { NextResponse } from 'next/server';
-import {logErrorAndRespond} from "@/app/lib/error-handler";
 
 const gwName = "ProdottiFisiciService";
 const gwPwd = "PF@18TylS?V2";
@@ -44,7 +43,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 
         return NextResponse.json(result);
     } catch (error) {
-        return logErrorAndRespond(error);
+        return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }
 }
 

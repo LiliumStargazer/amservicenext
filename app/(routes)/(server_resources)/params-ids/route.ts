@@ -2,9 +2,6 @@
 
 import { createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile } from "@/app/lib/backup-handler";
 import { NextResponse } from "next/server";
-import * as Sentry from "@sentry/nextjs";
-import { logErrorAndRespond } from "@/app/lib/error-handler";
-
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -25,7 +22,6 @@ export async function GET(req: Request): Promise<NextResponse> {
 
         return NextResponse.json(result);
     } catch (error) {
-        Sentry.captureException(error);
-        return logErrorAndRespond(error);
+        return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }
 }

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2022",
     "lib": [
       "dom",
       "dom.iterable",
@@ -25,7 +25,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
     }
   },
   "include": [
@@ -38,6 +38,7 @@
   ],
   "exclude": [
     "node_modules",
-    "obso"
+    "obso",
+    "private-files"
   ]
 }

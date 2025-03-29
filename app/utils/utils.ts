@@ -1,18 +1,18 @@
-import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
-
-
-export function isEmpty(backupSelected: string): boolean {
-    return backupSelected === '';
-}
-
-export function isChanged(storedSerial: string | null, serial: string): boolean {
-    return storedSerial !== serial;
-}
-
-export function isNull(storedSerial: string | null): boolean {
-    return storedSerial === null;
-}
-
+// import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
+// import bcrypt from "bcryptjs";
+//
+// export function isEmpty(backupSelected: string): boolean {
+//     return backupSelected === '';
+// }
+//
+// export function isChanged(storedSerial: string | null, serial: string): boolean {
+//     return storedSerial !== serial;
+// }
+//
+// export function isNull(storedSerial: string | null): boolean {
+//     return storedSerial === null;
+// }
+//
 export function stringToDate(stringaData: string): Date {
     return new Date(stringaData);
 }
@@ -39,13 +39,13 @@ export function getTimeString(stringaInput: string): string {
     const part = stringaInput.split(" ");
     return part[1];
 }
-
-export function convertToDate(dateTimeString: string): Date {
-    const [datePart, timePart] = dateTimeString.split(' ');
-    const [day, month, year] = datePart.split('-');
-    const formattedDateString = `${year}-${month}-${day}T${timePart}`;
-    return new Date(formattedDateString);
-}
+//
+// export function convertToDate(dateTimeString: string): Date {
+//     const [datePart, timePart] = dateTimeString.split(' ');
+//     const [day, month, year] = datePart.split('-');
+//     const formattedDateString = `${year}-${month}-${day}T${timePart}`;
+//     return new Date(formattedDateString);
+// }
 
 export function getTimeFromData(dateTimeString: string): string {
     const [, timePart] = dateTimeString.split(' ');
@@ -64,10 +64,10 @@ export const onClickOpenWindow = (url: string, inputValue: string) => {
     const finalUrl = url.includes("{input}") ? url.replace("{input}", inputValue) : url;
     window.open(finalUrl, "_blank");
 }
-
-export const capitalizeFirstLetter = (string: string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-};
+//
+// export const capitalizeFirstLetter = (string: string) => {
+//     return string.charAt(0).toUpperCase() + string.slice(1);
+// };
 
 export function convertTimeStampToDate(ticks: number): string {
 
@@ -118,22 +118,22 @@ export const getLatestBackup = (backupList: string[]) => {
     }
     return latestBackup;
 };
-
-export const handleSerialValidation = (
-    serial: string,
-    setSerial: (serial: string) => void,
-    setMessage: (message: string) => void,
-    router: AppRouterInstance,
-    pathname: string
-) => {
-    const formattedSerial = trimAndFormatSerial(serial);
-    const message = getSerialValidationMessage(formattedSerial);
-    if (message !== "valid") {
-        setMessage(message);
-    } else {
-        setSerial(formattedSerial);
-        if (!pathname.includes("/log")) {
-            router.push("/log");
-        }
-    }
-};
+//
+// export const handleSerialValidation = (
+//     serial: string,
+//     setSerial: (serial: string) => void,
+//     setMessage: (message: string) => void,
+//     router: AppRouterInstance,
+//     pathname: string
+// ) => {
+//     const formattedSerial = trimAndFormatSerial(serial);
+//     const message = getSerialValidationMessage(formattedSerial);
+//     if (message !== "valid") {
+//         setMessage(message);
+//     } else {
+//         setSerial(formattedSerial);
+//         if (!pathname.includes("/log")) {
+//             router.push("/log");
+//         }
+//     }
+// };

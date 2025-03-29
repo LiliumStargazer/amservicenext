@@ -2,8 +2,6 @@
 
 import { createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile } from "@/app/lib/backup-handler";
 import { NextResponse } from "next/server";
-import * as Sentry from "@sentry/nextjs";
-import { logErrorAndRespond } from "@/app/lib/error-handler";
 import {getParams} from "@/app/lib/param-proto-loader";
 import {RawParams} from "@/app/types/types";
 
@@ -39,7 +37,6 @@ export async function GET(req: Request): Promise<NextResponse> {
         return NextResponse.json(param);
     } catch (error) {
         console.log('Error in GET /params-data', error);
-        Sentry.captureException(error);
-        return logErrorAndRespond(error);
+        return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }
 }

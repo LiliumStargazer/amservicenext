@@ -1,6 +1,5 @@
 'use server'
 import { NextResponse } from "next/server";
-import * as Sentry from '@sentry/nextjs';
 import fs from 'fs';
 
 export async function DELETE(): Promise<NextResponse> {
@@ -12,11 +11,9 @@ export async function DELETE(): Promise<NextResponse> {
             fs.rmSync(amServiceTempPath, { recursive: true });
             return NextResponse.json({ message: 'Cartella pulita con successo' });
         } else {
-            Sentry.captureException(new Error('La cartella non esiste'));
             return NextResponse.json({ error: 'La cartella non esiste' });
         }
     } catch (error) {
-        Sentry.captureException(error);
-        return NextResponse.json({ error: 'Errore nella pulizia della cartella' });
+        return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }
 }
