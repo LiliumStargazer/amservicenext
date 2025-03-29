@@ -75,7 +75,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
                     </div>
                     <div className="tooltip tooltip-bottom" data-tip="JSON configuration">
                         <button id="json" className="btn btn-ghost btn-md mt-2 text-xl"
-                                onClick={() => onClickOpenWindow("https://https://collaudo.amdistributori.it/", "")}>
+                                onClick={() => onClickOpenWindow("https://collaudo.amdistributori.it/", "")}>
                                 Json
                         </button>
                     </div>
