@@ -1,26 +1,19 @@
 # Specifica l'architettura nell'immagine base
-FROM --platform=linux/arm64/v8 node:22-alpine
-
+FROM --platform=linux/arm64/v8 node:22-slim
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 # Installa dipendenze per moduli nativi ARM
-RUN apk add --no-cache --virtual .build-deps \
-    g++ \
-    make \
+RUN apt-get update && apt-get install -y \
+    build-essential \
     python3 \
-    openssl-dev \
-    libssh2-dev \
-    musl-dev \
-    gcompat
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN corepack enable
 
 COPY package.json pnpm-lock.yaml* ./
 
 # Installazione ottimizzata per ARM
-RUN pnpm install --frozen-lockfile --shamefully-hoist && \
-    pnpm rebuild ssh2 ssh2-sftp-client --arch=arm64 --platform=linuxmusl && \
-    pnpm dlx tailwindcss@latest init -p && \
-    rm -rf .next/cache
-
+RUN pnpm install --frozen-lockfile --prod=false
 CMD ["sh", "-c", "pnpm run dev"]
