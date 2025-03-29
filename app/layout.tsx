@@ -11,16 +11,17 @@ export const metadata = {
 };
 
 export default function RootLayout({ children,}: Readonly<{ children: React.ReactNode; }>) {
+
     return (
         <html lang="en">
             <body className={inter.className} data-theme="dark">
-            <TankStackProvider>
-                    <div>
-                        <SessionProvider>
+                <SessionProvider>
+                    <TankStackProvider>
+                        <div>
                             {children}
-                        </SessionProvider>
-                    </div>
-            </TankStackProvider>
+                        </div>
+                    </TankStackProvider>
+                </SessionProvider>
             </body>
         </html>
     );
