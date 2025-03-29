@@ -31,6 +31,7 @@
     "lodash": "^4.17.21",
     "next": "^15.2.4",
     "next-auth": "5.0.0-beta.25",
+    "node-loader": "^2.1.0",
     "papaparse": "^5.5.2",
     "postgres": "^3.4.5",
     "protobufjs": "^7.4.0",
