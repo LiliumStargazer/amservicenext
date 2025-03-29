@@ -5,7 +5,6 @@ import {faCloud, faList, faMusic} from "@fortawesome/free-solid-svg-icons";
 import {getSerialValidationMessage, onClickOpenWindow, trimAndFormatSerial} from "@/app/utils/utils";
 import Image from "next/image";
 import amclub from "@/public/mini/amClubLogoMini.png";
-import { TbJson } from "react-icons/tb";
 import amwiki from "@/public/mini/logos-wikijsMini.png";
 import prestashop from "@/public/mini/PrestashopMini.png";
 import chatWooot from "@/public/mini/chatwootMini.png";
@@ -75,11 +74,9 @@ const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
                         </button>
                     </div>
                     <div className="tooltip tooltip-bottom" data-tip="JSON configuration">
-                        <button id="json" className="btn btn-ghost btn-md mt-2"
-                                onClick={() => onClickOpenWindow("https://master.d1tobnmc95bhg6.amplifyapp.com", "")}>
-                            <figure className="flex rounded-t-3xl rounded-b-3xl">
-                                <TbJson size="3em" color="purple"/>
-                            </figure>
+                        <button id="json" className="btn btn-ghost btn-md mt-2 text-xl"
+                                onClick={() => onClickOpenWindow("https://https://collaudo.amdistributori.it/", "")}>
+                                Json
                         </button>
                     </div>
                     <div className="tooltip tooltip-bottom" data-tip="Tableau statistics">
