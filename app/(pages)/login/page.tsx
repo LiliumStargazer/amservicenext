@@ -60,7 +60,7 @@ export default function Login() {
                             </label>
                         </div>
                         <div className="form-control mt-6">
-                            <button className="btn ">Login</button>
+                            <button className="btn ">Sign in</button>
                         </div>
                          {errorMessage && (
                              <>
