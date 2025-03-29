@@ -1,31 +1,32 @@
-'use client'
-
-import DatePicker from "react-datepicker";
+import {DayPicker} from "react-day-picker";
+import { it } from "date-fns/locale";
 import React from "react";
-import "react-datepicker/dist/react-datepicker.css";
 
-interface DatepickerProps {
+interface DatePickerProps {
     loading: boolean;
-    datePickerDate: Date | null;
-    handleDatePickerChange: (date: Date | null) => void;
+    datePickerDate: Date ;
+    handleDatePickerChange: (date: Date ) => void;
 }
 
-const CustomDatePicker: React.FC<DatepickerProps> = ({ loading, datePickerDate, handleDatePickerChange }) => {
+const DatePicker: React.FC <DatePickerProps>= ({ loading, datePickerDate, handleDatePickerChange }: DatePickerProps) => {
     return (
-        <DatePicker
-            placeholderText="Select a date"
-            className="btn btn-info w-36"
-            disabled={loading}
-            selected={datePickerDate}
-            onChange={handleDatePickerChange}
-            dateFormat="dd/MM/yyyy"
-            useShortMonthInDropdown
-            minDate={new Date("2000-01-01")}
-            maxDate={new Date("2100-12-31")}
-            showMonthDropdown
-            showYearDropdown
-        />
+        <div className="w-52">
+            <button popoverTarget="rdp-popover" className="input input-border" style={{ anchorName: "--rdp" } as React.CSSProperties}>
+                {datePickerDate ? datePickerDate.toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }): "Pick a date"}
+            </button>
+            <div popover="auto" id="rdp-popover" className="dropdown" style={{ positionAnchor: "--rdp" } as React.CSSProperties}>
+                <DayPicker
+                    className="react-day-picker"
+                    mode="single"
+                    disabled={loading}
+                    selected={datePickerDate}
+                    onSelect={handleDatePickerChange}
+                    required
+                    locale={it}
+                />
+            </div>
+        </div>
     );
 }
 
-export default CustomDatePicker;
+export default DatePicker;
