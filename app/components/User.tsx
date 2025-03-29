@@ -1,12 +1,23 @@
-'use client'; // Aggiungi questa direttiva in cima
+'use client';
 
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const User = () => {
-    const { data: session, status } = useSession();
+    const { data: session, status, update } = useSession();
 
-    if (status === "loading")
+    useEffect(() => {
+        const checkSession = async () => {
+            if (status === "unauthenticated") {
+                await update();
+            }
+        };
+        checkSession().catch(error => console.log("Session check failed:", error));
+    }, [status, update]);
+
+    if (status === "loading") {
         return <div className="skeleton h-8 w-40 mr-8"></div>;
+    }
 
     if (!session?.user) return null;
 
