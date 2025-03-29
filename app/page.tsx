@@ -22,7 +22,7 @@ import FridgeButton from "@/app/components/FridgeButton";
 import ExcelButton from "@/app/components/ExcelButton";
 import MasterButton from "@/app/components/MasterButton";
 import AgGridMaster from "@/app/components/AgGridMaster";
-import DatePicker from "@/app/components/DatePicker";
+// import DatePicker from "@/app/components/DatePicker";
 import SwapChartTable from "@/app/components/SwapChartTable";
 import useQueryEventsByDate from "@/app/hooks/useQueryEventsByDate";
 import useQueryEventsFromAlive from "@/app/hooks/useQueryEventsFromAlive";
@@ -44,6 +44,7 @@ import TopNavBar from "@/app/components/TopNavBar";
 import {getSerialValidationMessage, trimAndFormatSerial} from "@/app/utils/utils";
 import {useQueryGetSoftwareType} from "@/app/hooks/useQueryGetSoftwareType";
 import {useQueryFingerTransactions} from "@/app/hooks/useQueryFingerTransactions";
+import DatePicker from "@/app/components/DatePicker";
 
 const DashBoard: React.FC = () => {
     const [serial, setSerial] = useState<string>('');
@@ -57,7 +58,7 @@ const DashBoard: React.FC = () => {
     const [dialogContent, setDialogContent] = useState<string | AliveEvent | null>(null);
     const [backup, setBackup] = useState<string>('');
     const [isBackupReady, setIsBackupReady] = useState(false);
-    const [datePickerDate, setDatePickerDate] = useState<Date | null>(new Date());
+    const [datePickerDate, setDatePickerDate] = useState<Date>(new Date());
     const [dateIsoString, setDateIsoString] = useState<string | null>(null);
     const [searchValue, setSearchValue] = useState<string>('');
     const [loading, setLoading] = React.useState(false);
@@ -204,9 +205,16 @@ const DashBoard: React.FC = () => {
         setIsDownloadBackupEnabled(true);
     }, [setBackup, setIsBackupReady]);
 
-    const handleDatePickerChange = useCallback((date: Date | null) => {
+    const handleDatePickerChange = useCallback((date: Date ) => {
+
+        // conversion in local date string without timezone ( keep gmt+1 )
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const localDateString = `${year}-${month}-${day}T00:00:00.000Z`;
+
         setDatePickerDate(date);
-        setDateIsoString(date?.toISOString() || null);
+        setDateIsoString(localDateString);
         setIsGetEventsByDateEnabled(true);
     }, [setDatePickerDate, setDateIsoString, setIsGetEventsByDateEnabled]);
 
@@ -307,10 +315,15 @@ const DashBoard: React.FC = () => {
                                 isLoadingBackupList={isLoadingBackupList}
                             />
                             {isBackupReady &&(
+                                // <DatePicker
+                                //     loading={loading}
+                                //     datePickerDate={datePickerDate}
+                                //     handleDatePickerChange={handleDatePickerChange}
+                                // />
                                 <DatePicker
-                                    loading={loading}
-                                    datePickerDate={datePickerDate}
-                                    handleDatePickerChange={handleDatePickerChange}
+                                        loading={loading}
+                                        datePickerDate={datePickerDate}
+                                        handleDatePickerChange={handleDatePickerChange}
                                 />
                             )}
                             {/*<RecoverdBContainer*/}
@@ -320,6 +333,7 @@ const DashBoard: React.FC = () => {
                             {/*    setMessage={setMessage}*/}
                             {/*/>*/}
                         </>
+
                     )}
                     {isBackupReady && (
                         <>
@@ -361,6 +375,7 @@ const DashBoard: React.FC = () => {
                                 section={section}
                                 storedGridAPi={storedGridAPi}
                             />
+
                         </>
                     )}
                 </div>
