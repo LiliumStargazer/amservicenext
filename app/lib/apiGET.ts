@@ -76,3 +76,6 @@ export const apiGetTicketHistoryCorsHandling = (): Promise<unknown> =>
 
 export const apiGetTicketLatestCorsHandling = (): Promise<unknown> =>
     apiRequest(`/srv-ticket-latest`, {});
+
+export const apiGetJsonParam = (serial: string): Promise<unknown> =>
+    apiRequest(`/json-config`, { serial });
