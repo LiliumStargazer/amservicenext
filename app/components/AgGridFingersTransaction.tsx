@@ -6,7 +6,7 @@ import { formatStringDateOrder, getTimeFromData, } from "@/app/utils/utils";
 import {AgGridReact} from "ag-grid-react";
 import {FingerData, FingerRawData} from "@/app/types/types";
 import { ModuleRegistry, ClientSideRowModelModule, themeQuartz, colorSchemeDarkBlue, GridReadyEvent, ColDef } from "ag-grid-community";
-import LoadingOverlayAgGrid from "@/app/components/LoadingOverlayAgGrid";
+import LoadingOverlayAgGrid from "@/app/components/AgGridLoadingOverlay";
 import { GridApi } from "ag-grid-community";
 
 interface AgGridFingersTransactionProps {
