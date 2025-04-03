@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 import { authenticate } from '@/app/lib/auth-actions';
-import ShootingStars from "@/app/components/ShootingStars";
+import AnimationShootingStars from "@/app/components/AnimationShootingStars";
 
 export default function Login() {
     const [errorMessage, formAction] = useActionState(
@@ -13,7 +13,7 @@ export default function Login() {
     return(
          <div className="hero bg-base-200 min-h-screen">
             <div className="hero-content flex-col lg:flex-row-reverse">
-                <ShootingStars />
+                <AnimationShootingStars />
                 <div className="text-center lg:text-left z-10" >
                     <h1 className="text-5xl font-bold">AM Service </h1>
                     <p className="py-6">
