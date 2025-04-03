@@ -11,7 +11,7 @@ interface InfoDropDownProps {
     isLoadingBackupList: boolean;
 }
 
-const InfoDropDown: React.FC <InfoDropDownProps>= ({loading, backupList, isLoadingBackupList}) => {
+const DropDownInfoBackup: React.FC <InfoDropDownProps>= ({loading, backupList, isLoadingBackupList}) => {
     const [backupInfo, setBackupInfo] = useState<backupListDetails[]>([]);
     const [classNameButton, setClassNameButton] = useState(loading ? "btn btn-disabled btn-circle btn-ghost btn-sm text-info" : "btn btn-circle btn-ghost btn-sm text-info");
 
@@ -54,7 +54,7 @@ const InfoDropDown: React.FC <InfoDropDownProps>= ({loading, backupList, isLoadi
         }
     }, [backupList, isLoadingBackupList]);
 
-    if ( backupInfo.length == 0) return null;
+    if ( backupInfo.length == 0 || loading) return null;
 
     return (
         <div className="dropdown" >
@@ -87,4 +87,4 @@ const InfoDropDown: React.FC <InfoDropDownProps>= ({loading, backupList, isLoadi
     );
 }
 
-export default InfoDropDown;
+export default DropDownInfoBackup;

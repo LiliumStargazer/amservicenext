@@ -2,9 +2,9 @@
 
 import {useActionState, useEffect, useState} from 'react';
 import {registerUser, updateUser, deleteUser} from "@/app/lib/db-crud";
-import {LogoutButton} from "@/app/components/LogoutButton";
+import {ButtonSignOut} from "@/app/components/ButtonSignOut";
 
-export default function UserRegistrationForm() {
+export default function FormRegistration() {
     const [registrationResponse, registerAction, responseIsPending] = useActionState(registerUser, undefined);
     const [updateResponse, updateAction, updateIsPending] = useActionState(updateUser, undefined);
     const [deleteResponse, deleteAction, deleteIsPending] = useActionState(deleteUser, undefined);
@@ -61,7 +61,7 @@ export default function UserRegistrationForm() {
                         <button className="btn btn-neutral mt-2" onClick={handleRegisterClick} disabled={responseIsPending || updateIsPending || deleteIsPending} >Register</button>
                         <button className="btn btn-neutral mt-2" onClick={handleUpdateClick} disabled={responseIsPending || updateIsPending || deleteIsPending} >Update</button>
                         <button className="btn btn-neutral mt-2" onClick={handleDeleteClick} disabled={responseIsPending || updateIsPending || deleteIsPending} >Delete</button>
-                        <LogoutButton />
+                        <ButtonSignOut />
                     </>
                     <p className="text-sm text-red-500">{response}</p>
                 </fieldset>

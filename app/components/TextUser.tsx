@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
-const User = () => {
+const TextUser = () => {
     const { data: session, status, update } = useSession();
 
     useEffect(() => {
@@ -28,4 +28,4 @@ const User = () => {
     );
 }
 
-export default User;
+export default TextUser;

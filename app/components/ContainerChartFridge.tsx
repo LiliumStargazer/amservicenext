@@ -19,7 +19,7 @@ interface ChartProps {
     setMessage: (message: string) => void;
 }
 
-const ChartFridgeContainer: React.FC <ChartProps> = ({fridgeRawData, isLoadingFridge, isSuccessFridge, fridgeSelected, setMessage}) => {
+const ContainerChartFridge: React.FC <ChartProps> = ({fridgeRawData, isLoadingFridge, isSuccessFridge, fridgeSelected, setMessage}) => {
     const [intervalMinutes, setIntervalMinutes] = useState(0);
     const [startDate, setStartDate] = useState(new Date(Date.now() - 86400000));
     const [endDate, setEndDate] = useState(new Date());
@@ -250,4 +250,4 @@ const ChartFridgeContainer: React.FC <ChartProps> = ({fridgeRawData, isLoadingFr
     );
 }
 
-export default ChartFridgeContainer;
+export default ContainerChartFridge;

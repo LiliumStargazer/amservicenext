@@ -15,7 +15,7 @@ interface RecoverDbResponse {
     message?: string;
 }
 
-const RecoverdBContainer: React.FC <RecoverdBContainerProps>= ({loading, setMessage, serial, backup}) => {
+const ContainerRecoverDb: React.FC <RecoverdBContainerProps>= ({loading, setMessage, serial, backup}) => {
     const [port, setPort] = React.useState<string>('');
     const [request, setRequest] = React.useState<boolean>(false);
     const {
@@ -73,4 +73,4 @@ const RecoverdBContainer: React.FC <RecoverdBContainerProps>= ({loading, setMess
     );
 }
 
-export default RecoverdBContainer;
+export default ContainerRecoverDb;

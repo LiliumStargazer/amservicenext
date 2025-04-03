@@ -15,14 +15,14 @@ import tableau from "@/public/mini/tableauMini.svg";
 import {faLock} from "@fortawesome/free-solid-svg-icons/faLock";
 import DialogPassword from "@/app/components/DialogPassword";
 import {signOut} from "next-auth/react";
-import User from "@/app/components/User";
+import TextUser from "@/app/components/TextUser";
 
 interface TopNavBarProps {
     serialTemp: string;
     setMessage: (message: string) => void;
 }
 
-const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
+const NavbarTop: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
 
     const [openRequest, setOpenRequest] = React.useState<boolean>(false);
 
@@ -147,7 +147,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
                     {/*</div>*/}
                 </div>
                 <div className="navbar-end">
-                    <User/>
+                    <TextUser/>
                     <button className="btn btn-info " onClick={() => signOut()}>Sign Out</button>
                 </div>
             </div>
@@ -155,4 +155,4 @@ const TopNavBar: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
     );
 }
 
-export default TopNavBar;
+export default NavbarTop;

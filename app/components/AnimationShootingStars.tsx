@@ -2,7 +2,7 @@ import initAnimation from "@/app/lib/animation";
 import "../styles/stars.scss";
 import { useEffect, useRef } from "react";
 
-export default function ShootingStars() {
+export default function AnimationShootingStars() {
     const terrainCanvasRef = useRef(null);
     const bgCanvasRef = useRef(null);
 

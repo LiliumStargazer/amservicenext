@@ -9,7 +9,7 @@ interface InputProps {
     setIsFetchRequest: (isFetchRequest: boolean) => void;
 }
 
-const Input: React.FC<InputProps> = ({loading, setSerialTemp, setIsFetchRequest}) => {
+const InputLog: React.FC<InputProps> = ({loading, setSerialTemp, setIsFetchRequest}) => {
 
     const handleKeyDownOnLog = async (event: KeyboardEvent) => {
         if (event.key === "Enter") {
@@ -29,4 +29,4 @@ const Input: React.FC<InputProps> = ({loading, setSerialTemp, setIsFetchRequest}
     );
 };
 
-export default Input;
+export default InputLog;
