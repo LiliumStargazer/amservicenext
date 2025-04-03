@@ -1,7 +1,7 @@
 // app/admin/page.tsx
 
 import { usersGet } from "@/app/lib/users-get";
-import UserRegistrationForm from "@/app/components/UserRegistrationForm";
+import FormRegistration from "@/app/components/FormRegistration";
 
 export const dynamic = 'force-dynamic';
 
@@ -43,7 +43,7 @@ export default async function AdminPage() {
                         </table>
                     </div>
                 </div>
-                <UserRegistrationForm />
+                <FormRegistration />
             </div>
         </div>
     );
