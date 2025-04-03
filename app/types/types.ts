@@ -1,4 +1,12 @@
 
+export interface jsonParams {
+    json?: {
+        Armadi?: Array<{
+            DevList?: Device[]
+        }>
+    }
+}
+
 export interface SystemPaths {
     remoteDirectory: string;
     remoteBackupFile: string;
@@ -21,6 +29,7 @@ export interface RawParams {
 export interface ErrorResponse {
     error: string;
 }
+
 export interface RawLogEventData {
     ID: string,
     DataOraR:string,
@@ -319,6 +328,8 @@ export interface Erog {
         Capacity?: string | number;
     };
     Capacity?: string | number;
+    TipoErogatore?: string | number;
+    Ripiano?: string | number;
 }
 
 export interface Terminal {
@@ -332,6 +343,37 @@ export interface Terminal {
     TipoCertificato?: string | number;
     CodAzienda?: string | number;
     Spending?: string | number;
+}
+
+export interface GraphPlano {
+    Code?: string | number;
+    ColumnNameForEdit?: string | number;
+    PosIndexBase1?: string | number;
+}
+
+export interface Device {
+    DeviceType?: string;
+    DevType?: string;
+    Fotocellule?: string | number;
+    DevSerialID?: string | number;
+    DevPax?: {
+        PaxParam?: {
+            Enable?: string | number;
+            LockReceiptPrint?: string | number;
+            SerialNumber?: string | number;
+            TerminalList?: Terminal[];
+        };
+    };
+    DevIngenico?: {
+        IngenicoParam?: {
+            Enable?: string | number;
+            Port?: string | number;
+            SerialNumber?: string | number;
+            TerminalList?: Terminal[];
+        };
+    };
+    Position?: string | number;
+    Erogatori?: Erog[];
 }
 
 export interface Param {
@@ -529,26 +571,7 @@ export interface Param {
         MrPayWsPassphrase?: string | number;
         MrPayWsSuffix?: string | number;
     };
-    Device?: {
-        DeviceType?: string,
-        DevSerialID?: string | number,
-        DevPax?: {
-            PaxParam?: {
-                Enable?: string | number;
-                LockReceiptPrint?: string | number;
-                SerialNumber?: string | number;
-                TerminalList?: Terminal[];
-            };
-        },
-        DevIngenico?: {
-            IngenicoParam?: {
-                Enable?: string | number;
-                Port?: string | number;
-                SerialNumber?: string | number;
-                TerminalList?: Terminal[];
-            }
-        },
-    }[]; // Device[], gli square brackets [] indicano che è un array di oggetti;
+    Device?: Device[];
     EtaLimite?: {
         age?: string | number;
     }[];
@@ -563,6 +586,7 @@ export interface Param {
         EnrolledQuality?: string | number;
         PeopleID?: string | number;
     }[];
+    GraphPlano?: GraphPlano[];
     HopperParam?: {
         Name?: string | number;
         CoinValue?: string | number;
