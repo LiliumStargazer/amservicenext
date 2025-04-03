@@ -4,25 +4,23 @@ import React, {useCallback, useEffect, useState} from "react";
 import {AliveEvent, ErrorResponse, FingerRawData, RawFridgeData, RawLogEventData} from "@/app/types/types";
 import { GridApi } from "ag-grid-community";
 import SelectBackup from "@/app/components/SelectBackup";
-import InfoDropDown from "@/app/components/InfoDropDown";
+import DropDownInfoBackup from "@/app/components/DropDownInfoBackup";
 import IconSoftware from "@/app/components/IconSoftware";
 import Badge from "@/app/components/Badge";
 import SearchEvents from "@/app/components/SearchEvents";
 import Alert from "@/app/components/Alert";
 import AgGridFridge from "@/app/components/AgGridFridge";
 import Dialog from "@/app/components/Dialog";
-import ChartFridgeContainer from "@/app/components/ChartFridgeContainer";
-import GetButton from "@/app/components/GetButton";
-import Input from "@/app/components/Input";
+import ContainerChartFridge from "@/app/components/ContainerChartFridge";
+import ButtonGet from "@/app/components/ButtonGet";
+import InputLog from "@/app/components/InputLog";
 import SelectFridge from "@/app/components/SelectFridge";
 import AgGridFingersTransaction from "@/app/components/AgGridFingersTransaction";
-import FingerButton from "@/app/components/FingerButton";
-import ParamButton from "@/app/components/ParamButton";
-import FridgeButton from "@/app/components/FridgeButton";
-import ExcelButton from "@/app/components/ExcelButton";
-import MasterButton from "@/app/components/MasterButton";
+import ButtonFinger from "@/app/components/ButtonFinger";
+import ButtonParam from "@/app/components/ButtonParam";
+import ButtonFridge from "@/app/components/ButtonFridge";
+import ButtonExcel from "@/app/components/ButtonExcel";
 import AgGridMaster from "@/app/components/AgGridMaster";
-// import DatePicker from "@/app/components/DatePicker";
 import SwapChartTable from "@/app/components/SwapChartTable";
 import useQueryEventsByDate from "@/app/hooks/useQueryEventsByDate";
 import useQueryEventsFromAlive from "@/app/hooks/useQueryEventsFromAlive";
@@ -40,11 +38,12 @@ import useBackupStatus from "@/app/hooks/useBackupStatus";
 import useBackupList from "@/app/hooks/useBackupList";
 import useSearch from "@/app/hooks/useSearch";
 import ParamContainer from "@/app/components/ParamContainer";
-import TopNavBar from "@/app/components/TopNavBar";
+import NavbarTop from "@/app/components/NavbarTop";
 import {getSerialValidationMessage, trimAndFormatSerial} from "@/app/utils/utils";
 import {useQueryGetSoftwareType} from "@/app/hooks/useQueryGetSoftwareType";
 import {useQueryFingerTransactions} from "@/app/hooks/useQueryFingerTransactions";
 import DatePicker from "@/app/components/DatePicker";
+import ButtonHome from "@/app/components/ButtonHome";
 
 const DashBoard: React.FC = () => {
     const [serial, setSerial] = useState<string>('');
@@ -143,6 +142,7 @@ const DashBoard: React.FC = () => {
         setIsDialogOpen,
         setIsAliveEvent
     );
+
     useErrorHandling({
         eventsByDate: rawEventsByDate as ErrorResponse,
         selectedEvents: rawSelectedEvents as ErrorResponse,
@@ -293,7 +293,7 @@ const DashBoard: React.FC = () => {
 
     return (
         <div className="h-screen flex flex-col">
-            <TopNavBar
+            <NavbarTop
                 serialTemp={serialTemp}
                 setMessage={setMessage}
             />
@@ -301,37 +301,26 @@ const DashBoard: React.FC = () => {
                 <div className="navbar-start space-x-2 ">
                     {section === 'master' && (
                         <>
-                            <Input loading={loading} setSerialTemp={setSerialTemp} setIsFetchRequest={setIsFetchRequest} />
-                            <GetButton loading={loading} setIsFetchRequest={setIsFetchRequest} />
+                            <InputLog loading={loading} setSerialTemp={setSerialTemp} setIsFetchRequest={setIsFetchRequest} />
+                            <ButtonGet loading={loading} setIsFetchRequest={setIsFetchRequest} />
                             <SelectBackup
                                 backup={backup}
                                 loading={loading}
                                 onSelectBackup={onSelectBackup}
                                 backupList={backupList}
                             />
-                            <InfoDropDown
+                            <DropDownInfoBackup
                                 loading={loading}
                                 backupList={backupList as string[]}
                                 isLoadingBackupList={isLoadingBackupList}
                             />
                             {isBackupReady &&(
-                                // <DatePicker
-                                //     loading={loading}
-                                //     datePickerDate={datePickerDate}
-                                //     handleDatePickerChange={handleDatePickerChange}
-                                // />
                                 <DatePicker
                                         loading={loading}
                                         datePickerDate={datePickerDate}
                                         handleDatePickerChange={handleDatePickerChange}
                                 />
                             )}
-                            {/*<RecoverdBContainer*/}
-                            {/*    serial={serial}*/}
-                            {/*    backup={backup}*/}
-                            {/*    loading={loading}*/}
-                            {/*    setMessage={setMessage}*/}
-                            {/*/>*/}
                         </>
 
                     )}
@@ -362,20 +351,19 @@ const DashBoard: React.FC = () => {
                         <>
                             <IconSoftware softwareType={softwareType}/>
                             <Badge serial={serial}/>
-                            <MasterButton loading={loading} setSection={setSection}/>
-                            <ParamButton loading={loading} setSection={setSection}/>
-                            <FridgeButton loading={loading} setSection={setSection}/>
-                            <FingerButton
+                            <ButtonHome loading={loading} setSection={setSection}/>
+                            <ButtonParam loading={loading} setSection={setSection}/>
+                            <ButtonFridge loading={loading} setSection={setSection}/>
+                            <ButtonFinger
                                 loading={loading}
                                 setSection={setSection}
                                 setIsGetFingerTransactionEnabled={setIsGetFingerTransactionEnabled}/>
-                            <ExcelButton
+                            <ButtonExcel
                                 loading={loading}
                                 setMessage={setMessage}
                                 section={section}
                                 storedGridAPi={storedGridAPi}
                             />
-
                         </>
                     )}
                 </div>
@@ -398,7 +386,7 @@ const DashBoard: React.FC = () => {
                     setStoredGridApi={setStoredGridApi}
                 />
                 {section === 'chart' &&
-                    <ChartFridgeContainer
+                    <ContainerChartFridge
                         fridgeRawData={fridgeRawData as RawFridgeData[]}
                         isLoadingFridge={isLoadingFridge}
                         isSuccessFridge={isSuccessFridge}
