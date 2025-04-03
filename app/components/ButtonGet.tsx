@@ -7,7 +7,7 @@ interface GetButtonProps {
     setIsFetchRequest: (isFetchRequest: boolean) => void;
 }
 
-const GetButton: React.FC<GetButtonProps> = ({loading, setIsFetchRequest}) => {
+const ButtonGet: React.FC<GetButtonProps> = ({loading, setIsFetchRequest}) => {
     const classNameButton = loading ? "btn btn-info btn-disabled" : "btn btn-info";
 
     const handleClickLog = async () => {
@@ -25,4 +25,4 @@ const GetButton: React.FC<GetButtonProps> = ({loading, setIsFetchRequest}) => {
     );
 };
 
-export default GetButton;
+export default ButtonGet;

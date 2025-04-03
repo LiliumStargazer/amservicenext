@@ -8,7 +8,7 @@ interface MasterButtonProps {
     setSection: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const MasterButton: React.FC <MasterButtonProps>= ({loading, setSection}) => {
+const ButtonMaster: React.FC <MasterButtonProps>= ({loading, setSection}) => {
     return (
         <div>
             <button onClick={() => setSection('master')} disabled={loading}>
@@ -18,4 +18,4 @@ const MasterButton: React.FC <MasterButtonProps>= ({loading, setSection}) => {
     );
 }
 
-export default MasterButton;
+export default ButtonMaster;
