@@ -162,7 +162,7 @@ export interface FingerRawData {
     Money: number;
     Motivo: string;
     ActualValue: number;
-};
+}
 
 export interface ChartData {
     date: Date;
@@ -173,7 +173,7 @@ export interface ChartData {
 
 export type TypeConfigParams = {
     [key: string]: boolean | number | string | undefined;
-};
+}
 
 export interface backupListDetails{
     dashDateTimeFormat: Date,
