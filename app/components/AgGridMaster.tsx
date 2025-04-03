@@ -21,7 +21,7 @@ import { AgGridReact } from 'ag-grid-react';
 import {LogEventData, RawLogEventData} from "@/app/types/types";
 import {eventsRowStyles} from "@/app/styles/events-row-styles";
 import {getRowsMap} from "@/app/utils/events-mapper";
-import LoadingOverlayAgGrid from "@/app/components/LoadingOverlayAgGrid";
+import LoadingOverlayAgGrid from "@/app/components/AgGridLoadingOverlay";
 
 interface AgGridMasterLogReactQueryProps {
     loading: boolean;
