@@ -7,9 +7,10 @@ import useQueryGetParamsID from "@/app/hooks/useQueryGetParamsID";
 import {useQueryClient} from "@tanstack/react-query";
 import {ErrorResponse, Param, ParamList} from "@/app/types/types";
 import SelectParam from "@/app/components/SelectParam";
-import ParamListAccordition from "@/app/components/ParamListAccordition";
 import useQueryGetParam from "@/app/hooks/useQueryGetParam";
 import {useQueryGetListinoFull} from "@/app/hooks/useQueryGetListinoFull";
+import ParamSections from "@/app/components/ParamSections";
+import {useQueryGetJsonParam} from "@/app/hooks/useQueryGetJsonParam";
 
 interface SelectParamProps {
     serial: string;
@@ -27,6 +28,7 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
     const [IDParam, setIDParam] = useState<string>('');
     const [paramIdList, setParamIdList] = useState<React.ReactNode[]>([]);
     const [param, setParam] = useState<Param>({});
+    const [jsonParams, setJsonParams] = useState({});
     const [loading, setLoading] = useState(false);
     const [isGetListino, setIsGetListino] = useState(true);
     const [listinoItems, setListinoItems] = useState<Array<{ code: number, prodName: string }> | null>(null);
@@ -47,25 +49,38 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
         data: rawListino,
         isError: isErrorListino,
     } = useQueryGetListinoFull(serial, isGetListino );
+    const {
+        isLoading: isLoadingJsonParam,
+        isSuccess: isSuccessJsonParam,
+        data: rawJsonParams,
+    } =useQueryGetJsonParam(serial, isBackupReady);
+
+    useEffect(() => {
+        if (isLoadingParamIDList || isLoadingParams || isLoadingListino || isLoadingJsonParam) {
+            setLoading(true);
+        }else{
+            setLoading(false);
+        }
+    }, [isLoadingParamIDList, isLoadingParams, isLoadingListino, isLoadingJsonParam]);
+
+
+    useEffect(() => {
+        if (isSuccessJsonParam && rawJsonParams && typeof rawJsonParams === 'object')
+            setJsonParams(rawJsonParams);
+    }, [isSuccessJsonParam, rawJsonParams]);
 
     useEffect(() => {
         if (isErrorListino) {
             setMessage("Error on listino: " + (rawListino as ErrorResponse).error);
             return;
         }
-
         if (isSuccessListino && rawListino && typeof rawListino === 'object'){
             setListinoItems((rawListino as Listino).items);
         }
         setIsGetListino(false);
     }, [isErrorListino, isSuccessListino, listinoItems, rawListino, setMessage]);
 
-    useEffect(() => {
-        if (isLoadingParamIDList || isLoadingParams || isLoadingListino) {
-            setLoading(true);
-            return;
-        }
-    }, [isLoadingParamIDList, isLoadingParams, isLoadingListino]);
+
 
     useEffect(() => {
         if ((dataIDList as ErrorResponse)?.error) {
@@ -81,16 +96,15 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
 
 
     useEffect(() => {
-
         if (isSuccessParams && rawParams && typeof rawParams === 'object' ) {
 
             if (Object.keys(rawParams).length === 0){
                 setMessage('No param data found');
-                setLoading(false);
+                // setLoading(false);
                 return;
             }
             setParam(rawParams);
-            setLoading(false);
+            // setLoading(false);
         }
     }, [isSuccessParams, rawParams, setMessage]);
 
@@ -101,7 +115,7 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
                 const valuesArray: ParamList[] = Object.values(dataIDList);
                 if (valuesArray.length === 0) {
                     setMessage('No param id found');
-                    setLoading(false);
+                    // setLoading(false);
                     return;
                 }
                 const maxIdElement = valuesArray.reduce((max, element) =>  element.ID > max.ID ? element : max, valuesArray[0]);
@@ -114,12 +128,13 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
 
                 setParamIdList(paramArrayTemp);
                 setIDParam((maxIdElement.ID).toString());
-                setLoading(false);
+                // setLoading(false);
             } catch (error) {
                 setMessage('Error processing param data: ' + error);
             }
         }
     }, [dataIDList, IsSuccessIDList,setMessage, setIDParam]);
+
 
     const handleOnChange  = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         setIDParam(e.target.value);
@@ -140,10 +155,16 @@ const ParamContainer: React.FC<SelectParamProps>= ({serial, backup, isBackupRead
                     paramIdList={paramIdList}
                 />
             </div>
-        <ParamListAccordition
-           loading={loading}
-           param={param}
-           listinoItems={listinoItems}
+        {/*<ParamListAccordition*/}
+        {/*   loading={loading}*/}
+        {/*   param={param}*/}
+        {/*   listinoItems={listinoItems}*/}
+        {/*/>*/}
+        <ParamSections
+            loading={loading}
+            param={param}
+            listinoItems={listinoItems}
+            jsonParams={ jsonParams}
         />
         </>
     );
