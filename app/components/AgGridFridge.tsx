@@ -6,7 +6,7 @@ import {translateFrigoState} from "@/app/utils/device-costants";
 import {AgGridReact} from "ag-grid-react";
 import { ModuleRegistry, ClientSideRowModelModule, themeQuartz, colorSchemeDarkBlue, ColDef , GridReadyEvent, GridApi} from "ag-grid-community";
 import {FridgesRowData, RawFridgeData} from "@/app/types/types";
-import LoadingOverlayAgGrid from "@/app/components/LoadingOverlayAgGrid";
+import LoadingOverlayAgGrid from "@/app/components/AgGridLoadingOverlay";
 
 interface AgGridFridgeProps {
     fridgeRawData: RawFridgeData[];
