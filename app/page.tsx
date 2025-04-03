@@ -44,6 +44,7 @@ import {useQueryGetSoftwareType} from "@/app/hooks/useQueryGetSoftwareType";
 import {useQueryFingerTransactions} from "@/app/hooks/useQueryFingerTransactions";
 import DatePicker from "@/app/components/DatePicker";
 import ButtonHome from "@/app/components/ButtonHome";
+import ButtonLinkVTE from "@/app/components/ButtonLinkVTE";
 
 const DashBoard: React.FC = () => {
     const [serial, setSerial] = useState<string>('');
@@ -349,6 +350,7 @@ const DashBoard: React.FC = () => {
                 <div className="navbar-end space-x-4 ">
                     {isBackupReady && (
                         <>
+                            <ButtonLinkVTE serial={serial} />
                             <IconSoftware softwareType={softwareType}/>
                             <Badge serial={serial}/>
                             <ButtonHome loading={loading} setSection={setSection}/>
