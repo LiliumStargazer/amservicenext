@@ -1,5 +1,5 @@
 'use client'
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faFileExcel} from "@fortawesome/free-solid-svg-icons/faFileExcel";
 import apiAggridExcelConverter from '@/app/utils/api-aggrid-excel-converter';
@@ -14,8 +14,15 @@ interface ExcelButtonProps {
 
 ModuleRegistry.registerModules([ CsvExportModule ]);
 
-const ExcelButton: React.FC <ExcelButtonProps>= ({loading, setMessage, section, storedGridAPi}) => {
+const ButtonExcel: React.FC <ExcelButtonProps>= ({loading, setMessage, section, storedGridAPi}) => {
+    const [fade, setFade] = useState(false);
 
+    useEffect(() => {
+        if (fade) {
+            const timer = setTimeout(() => setFade(false), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [fade]);
 
     async function handleExportClick() {
         if ( storedGridAPi ) {
@@ -36,10 +43,16 @@ const ExcelButton: React.FC <ExcelButtonProps>= ({loading, setMessage, section, 
                 onClick={()=> handleExportClick()}
                 disabled={loading}
             >
-                <FontAwesomeIcon icon={faFileExcel} size="2xl" className="text-success" />
+                <FontAwesomeIcon
+                    icon={faFileExcel}
+                    size="2xl"
+                    className="text-success"
+                    fade={fade ? true : undefined}
+                    onClick={() => {setFade(true)}}
+                />
             </button>
         </div>
     );
 }
 
-export default ExcelButton;
+export default ButtonExcel;
