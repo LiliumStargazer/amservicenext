@@ -79,3 +79,6 @@ export const apiGetTicketLatestCorsHandling = (): Promise<unknown> =>
 
 export const apiGetJsonParam = (serial: string): Promise<unknown> =>
     apiRequest(`/json-config`, { serial });
+
+export const apiGetVteData = (serial: string): Promise<unknown> =>
+    apiRequest(`/vte-data`, { serial });
