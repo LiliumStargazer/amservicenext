@@ -44,7 +44,7 @@ import DatePicker from "@/app/components/DatePicker";
 import ButtonHome from "@/app/components/ButtonHome";
 import {useParamData} from "@/app/hooks/useParamData";
 import ParamSections from "@/app/components/ParamSections";
-import SelectParamNew from "@/app/components/SelectParamNew";
+import SelectParam from "@/app/components/SelectParam";
 import {useVteData} from "@/app/hooks/useVteData";
 import Badge from "@/app/components/Badge";
 import BadgeVTE from "@/app/components/BadgeVTE";
@@ -436,7 +436,7 @@ const DashBoard: React.FC = () => {
                 {section === 'param' && (
                     <>
                         <div className=" flex justify-center">
-                            <SelectParamNew
+                            <SelectParam
                                 loading={isLoadingParam}
                                 IDParam={IDParam}
                                 handleOnChangeParam={handleOnChangeParam}
