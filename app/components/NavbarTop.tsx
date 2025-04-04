@@ -22,7 +22,7 @@ interface TopNavBarProps {
     setMessage: (message: string) => void;
 }
 
-const NavbarTop: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
+const NavbarTop: React.FC<TopNavBarProps> = ({serialTemp, setMessage}) => {
 
     const [openRequest, setOpenRequest] = React.useState<boolean>(false);
 
@@ -139,12 +139,6 @@ const NavbarTop: React.FC<TopNavBarProps> = ({serialTemp, setMessage} ) => {
                             <FontAwesomeIcon icon={faMusic} style={{color: "#B197FC"}} size="2x"/>
                         </button>
                     </div>
-                    {/*<div className="tooltip tooltip-bottom" data-tip="Technicians statistics ">*/}
-                    {/*    <button id="statistic" className="btn btn-ghost btn-md"*/}
-                    {/*            onClick={() => router.push("/technician-tickets-kpi")}>*/}
-                    {/*        <FontAwesomeIcon icon={faLineChart} style={{color: "#f8820e"}} size="2x"/>*/}
-                    {/*    </button>*/}
-                    {/*</div>*/}
                 </div>
                 <div className="navbar-end">
                     <TextUser/>
