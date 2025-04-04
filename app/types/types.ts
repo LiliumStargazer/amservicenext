@@ -5,6 +5,7 @@ export interface jsonParams {
             DevList?: Device[]
         }>
     }
+    modello?: string
 }
 
 export interface SystemPaths {
