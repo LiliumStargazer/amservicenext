@@ -22,7 +22,7 @@ const IconSoftware: React.FC <IconSoftwareProps>= ({softwareType}) => {
     if (!softwareIcon) return null;
 
     return (
-        <div>
+        <div className="max-w-fit">
             {softwareIcon}
         </div>
     );
