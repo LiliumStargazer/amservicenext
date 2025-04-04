@@ -9,7 +9,7 @@ interface SearchEventsProps {
 
 const SearchEvents: React.FC <SearchEventsProps> = ({loading, handleSearchValueChange}) => {
     return (
-        <label className="input input-bordered input-info flex items-center gap-2 w-96">
+        <label className="input input-bordered input-info flex items-center ml-2 mr-2 w-full mb-2">
             <input
                 type="search"
                 className="grow text-sm"
