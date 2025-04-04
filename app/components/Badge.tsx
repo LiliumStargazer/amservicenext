@@ -3,12 +3,13 @@
 import React from "react";
 
 interface BadgeProps {
-    serial: string;
+    text: string;
+
 }
 
-const Badge: React.FC<BadgeProps> = ({serial}) => {
+const Badge: React.FC<BadgeProps> = ({text}) => {
     return (
-        serial ? <span className="badge badge-lg badge-info">{serial}</span> : null
+        text ? <span className="badge badge-lg badge-info min-w-fit">{text}</span> : null
     );
 }
 
