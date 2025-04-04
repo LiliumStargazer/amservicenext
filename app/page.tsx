@@ -6,7 +6,6 @@ import { GridApi } from "ag-grid-community";
 import SelectBackup from "@/app/components/SelectBackup";
 import DropDownInfoBackup from "@/app/components/DropDownInfoBackup";
 import IconSoftware from "@/app/components/IconSoftware";
-import Badge from "@/app/components/Badge";
 import SearchEvents from "@/app/components/SearchEvents";
 import Alert from "@/app/components/Alert";
 import AgGridFridge from "@/app/components/AgGridFridge";
@@ -37,14 +36,18 @@ import useCellDoubleClick from "@/app/hooks/useCellDoubleClick";
 import useBackupStatus from "@/app/hooks/useBackupStatus";
 import useBackupList from "@/app/hooks/useBackupList";
 import useSearch from "@/app/hooks/useSearch";
-import ParamContainer from "@/app/components/ParamContainer";
 import NavbarTop from "@/app/components/NavbarTop";
 import {getSerialValidationMessage, trimAndFormatSerial} from "@/app/utils/utils";
 import {useQueryGetSoftwareType} from "@/app/hooks/useQueryGetSoftwareType";
 import {useQueryFingerTransactions} from "@/app/hooks/useQueryFingerTransactions";
 import DatePicker from "@/app/components/DatePicker";
 import ButtonHome from "@/app/components/ButtonHome";
-import ButtonLinkVTE from "@/app/components/ButtonLinkVTE";
+import {useParamData} from "@/app/hooks/useParamData";
+import ParamSections from "@/app/components/ParamSections";
+import SelectParamNew from "@/app/components/SelectParamNew";
+import {useVteData} from "@/app/hooks/useVteData";
+import Badge from "@/app/components/Badge";
+import BadgeVTE from "@/app/components/BadgeVTE";
 
 const DashBoard: React.FC = () => {
     const [serial, setSerial] = useState<string>('');
@@ -77,6 +80,17 @@ const DashBoard: React.FC = () => {
     const [backupList, setBackupList] = useState<string[]>([]);
     const [softwareType, setsoftwareType] = useState<string>('');
     const [rawFingerTransactions, setRawFingerTransactions] = useState<FingerRawData[]>([]);
+    const {
+        IDParam,
+        rawIdList,
+        param,
+        jsonParams,
+        isLoadingParam,
+        listinoItems,
+        handleOnChangeParam,
+        machineModel
+    } = useParamData({serial, backup, isBackupReady, setMessage});
+    const {customerName, VTElink} = useVteData(serial);
 
     const reset = useReset(
         setBackup,
@@ -298,8 +312,8 @@ const DashBoard: React.FC = () => {
                 serialTemp={serialTemp}
                 setMessage={setMessage}
             />
-            <div className="navbar bg-base-100">
-                <div className="navbar-start space-x-2 ">
+            <div className="bg-base-100 text-neutral-content min-h-8 max-h-8 flex flex-row mb-4 mt-2 w-full">
+                <div className="space-x-2 flex flex-row ml-2 mr-2 w-full"> {/* Aggiunto w-full */}
                     {section === 'master' && (
                         <>
                             <InputLog loading={loading} setSerialTemp={setSerialTemp} setIsFetchRequest={setIsFetchRequest} />
@@ -317,58 +331,64 @@ const DashBoard: React.FC = () => {
                             />
                             {isBackupReady &&(
                                 <DatePicker
-                                        loading={loading}
-                                        datePickerDate={datePickerDate}
-                                        handleDatePickerChange={handleDatePickerChange}
+                                    loading={loading}
+                                    datePickerDate={datePickerDate}
+                                    handleDatePickerChange={handleDatePickerChange}
                                 />
                             )}
+                            <div className="flex flex-row space-x-2 mt-2">
+                                <IconSoftware softwareType={softwareType}/>
+                                <Badge text={serial}/>
+                                <Badge text={machineModel}/>
+                                <BadgeVTE customerName={customerName} VTElink={VTElink}/>
+                            </div>
                         </>
+                    )}
 
-                    )}
-                    {isBackupReady && (
-                        <>
-                            {(section === 'chart' || section ==='fridge') &&
-                                <SwapChartTable section={section} setSection={setSection}
-                                />
-                            }
-                            { (section === 'fridge' || section ==='chart') &&
-                                <SelectFridge
-                                    fridgeRawData={fridgeRawData as RawFridgeData[]}
-                                    isLoadingFridge={isLoadingFridge}
-                                    isSuccessFridge={isSuccessFridge}
-                                    setFridgeSelected={setFridgeSelected}
-                                />
-                            }
-                        </>
-                    )}
-                </div>
-                {isBackupReady && section === 'master' && (
-                    <div className="navbar-center space-x-4">
-                        <SearchEvents loading={loading} handleSearchValueChange={handleSearchValueChange}/>
+                    <div className="flex justify-end space-x-2">
+                        {isBackupReady && (
+                            <>
+                                {(section === 'chart' || section ==='fridge') &&
+                                    <SwapChartTable section={section} setSection={setSection}
+                                    />
+                                }
+                                { (section === 'fridge' || section ==='chart') &&
+                                    <SelectFridge
+                                        fridgeRawData={fridgeRawData as RawFridgeData[]}
+                                        isLoadingFridge={isLoadingFridge}
+                                        isSuccessFridge={isSuccessFridge}
+                                        setFridgeSelected={setFridgeSelected}
+                                    />
+                                }
+                            </>
+                        )}
                     </div>
-                )}
-                <div className="navbar-end space-x-4 ">
-                    {isBackupReady && (
-                        <>
-                            <ButtonLinkVTE serial={serial} />
-                            <IconSoftware softwareType={softwareType}/>
-                            <Badge serial={serial}/>
-                            <ButtonHome loading={loading} setSection={setSection}/>
-                            <ButtonParam loading={loading} setSection={setSection}/>
-                            <ButtonFridge loading={loading} setSection={setSection}/>
-                            <ButtonFinger
-                                loading={loading}
-                                setSection={setSection}
-                                setIsGetFingerTransactionEnabled={setIsGetFingerTransactionEnabled}/>
-                            <ButtonExcel
-                                loading={loading}
-                                setMessage={setMessage}
-                                section={section}
-                                storedGridAPi={storedGridAPi}
-                            />
-                        </>
-                    )}
+                    <div className="flex space-x-4 ml-auto ">
+                        {isBackupReady && (
+                            <>
+                                <ButtonHome loading={loading} setSection={setSection}/>
+                                <ButtonParam loading={loading} setSection={setSection}/>
+                                <ButtonFridge loading={loading} setSection={setSection}/>
+                                <ButtonFinger
+                                    loading={loading}
+                                    setSection={setSection}
+                                    setIsGetFingerTransactionEnabled={setIsGetFingerTransactionEnabled}/>
+                                <ButtonExcel
+                                    loading={loading}
+                                    setMessage={setMessage}
+                                    section={section}
+                                    storedGridAPi={storedGridAPi}
+                                />
+                            </>
+                        )}
+                    </div>
                 </div>
+            </div>
+
+            <div className="bg-base-100 text-neutral-content min-h-8 max-h-8 flex mb-4">
+                {isBackupReady && section === 'master' && (
+                    <SearchEvents loading={loading} handleSearchValueChange={handleSearchValueChange}/>
+                )}
             </div>
             <Alert
                 message={message}
@@ -414,12 +434,22 @@ const DashBoard: React.FC = () => {
                     />
                 }
                 {section === 'param' && (
-                    <ParamContainer
-                        serial={serial}
-                        backup={backup}
-                        isBackupReady={isBackupReady}
-                        setMessage={setMessage}
-                    />
+                    <>
+                        <div className=" flex justify-center">
+                            <SelectParamNew
+                                loading={isLoadingParam}
+                                IDParam={IDParam}
+                                handleOnChangeParam={handleOnChangeParam}
+                                rawIdList={rawIdList}
+                            />
+                        </div>
+                        <ParamSections
+                            loading={isLoadingParam}
+                            param={param}
+                            listinoItems={listinoItems}
+                            jsonParams={jsonParams}
+                        />
+                    </>
                 )}
             </div>
             <Dialog isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} dialogContent={dialogContent}/>
