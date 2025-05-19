@@ -54,3 +54,7 @@ private-files/note.txt
 /drizzle/meta
 
 /test
+
+.vscode/
+package-lock.json
+
