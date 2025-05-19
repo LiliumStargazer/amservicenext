@@ -1,7 +1,9 @@
 // pages/api/route.ts
 'use server'
-import { createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile } from "@/app/lib/backup-handler";
+
 import { NextResponse } from "next/server";
+import {DatabasePath} from "@/app/class/DatabasePath";
+import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -10,14 +12,16 @@ export async function GET(req: Request): Promise<NextResponse> {
     const backup = searchParams.get('backup');
 
     if (!serial || !backup) {
-        return NextResponse.json({ error: 'Missing serial or backup parameter' });
+        return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
     }
 
+    const databasePath = new DatabasePath(serial, backup);
+    if (!databasePath.localUnzippedDb)
+        return NextResponse.json({ error: 'Missing database path from fridge' });
+
     try {
-        const systemPaths = createSystemPaths(serial, backup);
-        systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
         const query = 'SELECT *  FROM FrigoView';
-        const  results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
+        const  results = await executeQueryOnDb(databasePath.localUnzippedDb, query);
         return NextResponse.json(results);
     } catch (error) {
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });

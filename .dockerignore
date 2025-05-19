@@ -1,5 +1,5 @@
 # Node.js dependencies  
-node_modules  
+node_modules/
 npm-debug.log*  
 yarn-debug.log*  
 yarn-error.log*  
@@ -35,4 +35,6 @@ next-env.d.ts
 
 # File specifici del progetto  
 README.md  
-appunti.txt  
+appunti.txt
+
+test

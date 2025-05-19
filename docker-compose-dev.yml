@@ -33,13 +33,14 @@ services:
       context: .
       dockerfile: DockerfileDev
     ports:
-      - 3000:3000
+      - "3000:3000"
     env_file:
       - ./.env.local
     volumes:
       - ./:/app
       - /app/node_modules
       - next_cache:/app/.next
+      - shared-volume:/tmp/tempAmService
     environment:
 #      - CHOKIDAR_USEPOLLING=true  # Forza il file watcher a rilevare i cambiamenti in Docker
 #      - WATCHPACK_POLLING=true
@@ -51,5 +52,14 @@ services:
         condition: service_healthy
     command: ["sh", "-c", "pnpm run dev"]
 
+  db-recovery:
+    container_name: db-recovery
+    volumes:
+      - shared-volume:/backups
+    image: lalghisi/dbrecover
+
 volumes:
+  shared-volume:
+    driver: local
   next_cache:
+    driver: local

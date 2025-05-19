@@ -48,6 +48,8 @@ import SelectParam from "@/app/components/SelectParam";
 import {useVteData} from "@/app/hooks/useVteData";
 import Badge from "@/app/components/Badge";
 import BadgeVTE from "@/app/components/BadgeVTE";
+import ButtonRecoverDb from "@/app/components/ButtonRecoverDb";
+import ContainerRecoverDb from "@/app/components/ContainerRecoverDb";
 
 const DashBoard: React.FC = () => {
     const [serial, setSerial] = useState<string>('');
@@ -328,14 +330,14 @@ const DashBoard: React.FC = () => {
                                 loading={loading}
                                 backupList={backupList as string[]}
                                 isLoadingBackupList={isLoadingBackupList}
+                                isBackupReady={isBackupReady}
                             />
-                            {isBackupReady &&(
-                                <DatePicker
-                                    loading={loading}
-                                    datePickerDate={datePickerDate}
-                                    handleDatePickerChange={handleDatePickerChange}
-                                />
-                            )}
+                            <DatePicker
+                                loading={loading}
+                                datePickerDate={datePickerDate}
+                                handleDatePickerChange={handleDatePickerChange}
+                                isBackupReady={isBackupReady}
+                            />
                             <div className="flex flex-row space-x-2 mt-2">
                                 <IconSoftware softwareType={softwareType}/>
                                 <Badge text={serial}/>
@@ -344,7 +346,6 @@ const DashBoard: React.FC = () => {
                             </div>
                         </>
                     )}
-
                     <div className="flex justify-end space-x-2">
                         {isBackupReady && (
                             <>
@@ -364,49 +365,56 @@ const DashBoard: React.FC = () => {
                         )}
                     </div>
                     <div className="flex space-x-4 ml-auto ">
-                        {isBackupReady && (
-                            <>
-                                <ButtonHome loading={loading} setSection={setSection}/>
-                                <ButtonParam loading={loading} setSection={setSection}/>
-                                <ButtonFridge loading={loading} setSection={setSection}/>
-                                <ButtonFinger
-                                    loading={loading}
-                                    setSection={setSection}
-                                    setIsGetFingerTransactionEnabled={setIsGetFingerTransactionEnabled}/>
-                                <ButtonExcel
-                                    loading={loading}
-                                    setMessage={setMessage}
-                                    section={section}
-                                    storedGridAPi={storedGridAPi}
-                                />
-                            </>
-                        )}
+                        <>
+                            <ButtonHome loading={loading} setSection={setSection}/>
+                            <ButtonRecoverDb loading={loading} setSection={setSection} />
+                            {isBackupReady && (
+                                <>
+                                    <ButtonParam isBackupReady={isBackupReady} loading={loading} setSection={setSection}/>
+                                    <ButtonFridge isBackupReady={isBackupReady} loading={loading} setSection={setSection}/>
+                                    <ButtonFinger
+                                        isBackupReady={isBackupReady}
+                                        loading={loading}
+                                        setSection={setSection}
+                                        setIsGetFingerTransactionEnabled={setIsGetFingerTransactionEnabled}/>
+                                    <ButtonExcel
+                                        isBackupReady={isBackupReady}
+                                        loading={loading}
+                                        setMessage={setMessage}
+                                        section={section}
+                                        storedGridAPi={storedGridAPi}
+                                    />
+                                </>
+                            )}
+                        </>
                     </div>
                 </div>
             </div>
-
-            <div className="bg-base-100 text-neutral-content min-h-8 max-h-8 flex mb-4">
-                {isBackupReady && section === 'master' && (
-                    <SearchEvents loading={loading} handleSearchValueChange={handleSearchValueChange}/>
+            <div className="bg-base-100 text-neutral-content min-h-8 max-h-8 flex flex-row w-full mb-4">
+                { section === 'master' && (
+                    <SearchEvents loading={loading} handleSearchValueChange={handleSearchValueChange} isBackupReady={isBackupReady}/>
                 )}
             </div>
             <Alert
                 message={message}
                 setMessage={setMessage}
             />
+
             <div className="flex-grow flex-col space-y-4 ">
-                <AgGridMaster
-                    loading={loading}
-                    rawLogEvents={rawLogEvents}
-                    selectedEvents={selectedEvents}
-                    onCellDoubleClicked={onCellDoubleClicked}
-                    isResettingSearchingEvent={isResettingSearchingEvent}
-                    setIsResettingSearchingEvent={setIsResettingSearchingEvent}
-                    section={section}
-                    setMessage={setMessage}
-                    searchValue={searchValue}
-                    setStoredGridApi={setStoredGridApi}
-                />
+                {section === 'master' &&
+                    <AgGridMaster
+                        loading={loading}
+                        rawLogEvents={rawLogEvents}
+                        selectedEvents={selectedEvents}
+                        onCellDoubleClicked={onCellDoubleClicked}
+                        isResettingSearchingEvent={isResettingSearchingEvent}
+                        setIsResettingSearchingEvent={setIsResettingSearchingEvent}
+                        section={section}
+                        setMessage={setMessage}
+                        searchValue={searchValue}
+                        setStoredGridApi={setStoredGridApi}
+                    />
+                }
                 {section === 'chart' &&
                     <ContainerChartFridge
                         fridgeRawData={fridgeRawData as RawFridgeData[]}
@@ -415,6 +423,10 @@ const DashBoard: React.FC = () => {
                         fridgeSelected={fridgeSelected}
                         setMessage={setMessage}
                     />
+                }
+                {
+                    section ==='recoverdb' &&
+                        <ContainerRecoverDb />
                 }
                 {section === 'fridge' &&
                     <AgGridFridge

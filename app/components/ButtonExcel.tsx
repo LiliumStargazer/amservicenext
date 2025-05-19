@@ -6,6 +6,7 @@ import apiAggridExcelConverter from '@/app/utils/api-aggrid-excel-converter';
 import { ModuleRegistry, CsvExportModule, GridApi } from "ag-grid-community";
 
 interface ExcelButtonProps {
+    isBackupReady: boolean
     loading: boolean;
     setMessage: (message: string) => void;
     section: string;
@@ -14,8 +15,9 @@ interface ExcelButtonProps {
 
 ModuleRegistry.registerModules([ CsvExportModule ]);
 
-const ButtonExcel: React.FC <ExcelButtonProps>= ({loading, setMessage, section, storedGridAPi}) => {
+const ButtonExcel: React.FC <ExcelButtonProps>= ({isBackupReady, loading, setMessage, section, storedGridAPi}) => {
     const [fade, setFade] = useState(false);
+    const isDisabled = !isBackupReady || loading;
 
     useEffect(() => {
         if (fade) {
@@ -41,7 +43,7 @@ const ButtonExcel: React.FC <ExcelButtonProps>= ({loading, setMessage, section, 
         <div >
             <button
                 onClick={()=> handleExportClick()}
-                disabled={loading}
+                disabled={isDisabled}
             >
                 <FontAwesomeIcon
                     icon={faFileExcel}

@@ -6,9 +6,11 @@ interface DatePickerProps {
     loading: boolean;
     datePickerDate: Date ;
     handleDatePickerChange: (date: Date ) => void;
+    isBackupReady:boolean
 }
 
-const DatePicker: React.FC <DatePickerProps>= ({ loading, datePickerDate, handleDatePickerChange }: DatePickerProps) => {
+const DatePicker: React.FC <DatePickerProps>= ({ loading, datePickerDate, handleDatePickerChange, isBackupReady }: DatePickerProps) => {
+    const isDisabled = !isBackupReady || loading;
     return (
         <div className="w-52">
             <button popoverTarget="rdp-popover" className="input input-border" style={{ anchorName: "--rdp" } as React.CSSProperties}>
@@ -18,7 +20,7 @@ const DatePicker: React.FC <DatePickerProps>= ({ loading, datePickerDate, handle
                 <DayPicker
                     className="react-day-picker"
                     mode="single"
-                    disabled={loading}
+                    disabled={isDisabled}
                     selected={datePickerDate}
                     onSelect={handleDatePickerChange}
                     required

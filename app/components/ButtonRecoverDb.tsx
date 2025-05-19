@@ -2,18 +2,15 @@
 
 import React, {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faFingerprint} from "@fortawesome/free-solid-svg-icons/faFingerprint";
+import {faDatabase} from "@fortawesome/free-solid-svg-icons/faDatabase";
 
 interface FingerButtonProps {
-    isBackupReady: boolean
     loading: boolean;
     setSection: React.Dispatch<React.SetStateAction<string>>;
-    setIsGetFingerTransactionEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ButtonFinger: React.FC <FingerButtonProps>= ({isBackupReady, loading, setSection,setIsGetFingerTransactionEnabled}) => {
+const ButtonRecoverDb: React.FC <FingerButtonProps>= ({ loading, setSection}) => {
     const [fade, setFade] = useState(false);
-    const isDisabled = !isBackupReady || loading;
 
 
     useEffect(() => {
@@ -22,21 +19,21 @@ const ButtonFinger: React.FC <FingerButtonProps>= ({isBackupReady, loading, setS
             return () => clearTimeout(timer);
         }
     }, [fade]);
-    const handleFingerClick = () => {
-        setSection("fingersTransaction");
-        setIsGetFingerTransactionEnabled(true);
+    const handleClick = () => {
+        setSection("recoverdb");
     }
 
     return (
         <div >
             <button
-                onClick={handleFingerClick}
-                disabled={isDisabled}
+                onClick={handleClick}
+                disabled={loading}
             >
                 <FontAwesomeIcon
-                    icon={faFingerprint}
+                    icon={faDatabase}
                     size="2xl"
                     className="text-secondary"
+                    style={{color: "#63E6BE",}}
                     fade={fade ? true : undefined}
                     onClick={() => {setFade(true)}}
                 />
@@ -45,4 +42,4 @@ const ButtonFinger: React.FC <FingerButtonProps>= ({isBackupReady, loading, setS
     );
 }
 
-export default ButtonFinger;
+export default ButtonRecoverDb;

@@ -1,7 +1,8 @@
 // Desc: Route to get software type
 'use server'
-import {  createSystemPaths, setLocalBackupUnzippedFile} from "@/app/lib/backup-handler";
+// import {  createSystemPaths, setLocalBackupUnzippedFile} from "@/app/lib/backup-handler";
 import { NextResponse } from "next/server";
+import {DatabasePath} from "@/app/class/DatabasePath";
 
 export async function GET(req: Request): Promise<NextResponse> {
 
@@ -11,15 +12,17 @@ export async function GET(req: Request): Promise<NextResponse> {
     const backup = searchParams.get('backup');
 
     if (!serial || !backup ) {
-        return NextResponse.json({ error: 'Missing serial or backup parameter' });
+        return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
     }
 
+    const databasePath = new DatabasePath(serial, backup);
+    if (!databasePath.localUnzippedDb)
+        return NextResponse.json({ error: 'Missing database path from stoftware type' }, { status: 400 });
+
     try {
-        const systemPaths = createSystemPaths(serial, backup);
-        systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
 
         let swType = "android";
-        if (systemPaths.localBackupUnzippedFile.includes("DbBackup")) {
+        if (databasePath.localUnzippedDb.includes("DbBackup")) {
             swType = "windows";
         }
 

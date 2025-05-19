@@ -9,21 +9,12 @@ interface InfoDropDownProps {
     loading: boolean;
     backupList: string[];
     isLoadingBackupList: boolean;
+    isBackupReady: boolean
 }
 
-const DropDownInfoBackup: React.FC <InfoDropDownProps>= ({loading, backupList, isLoadingBackupList}) => {
+const DropDownInfoBackup: React.FC <InfoDropDownProps>= ({loading, backupList, isLoadingBackupList, isBackupReady}) => {
     const [backupInfo, setBackupInfo] = useState<backupListDetails[]>([]);
-    const [classNameButton, setClassNameButton] = useState(loading ? "btn btn-disabled btn-circle btn-ghost btn-sm text-info" : "btn btn-circle btn-ghost btn-sm text-info");
-
-
-    useEffect(() => {
-        if (loading) {
-            setClassNameButton("btn btn-disabled btn-circle btn-ghost btn-sm text-info");
-        } else {
-            setClassNameButton("btn btn-circle btn-ghost btn-sm text-info");
-        }
-    }, [loading]);
-
+    const classNameButton = ( loading || !isBackupReady )  ? "btn btn-disabled btn-circle btn-ghost btn-sm text-info" : "btn btn-circle btn-ghost btn-sm text-info";
 
     useEffect(() => {
         if ( isLoadingBackupList ) return;
@@ -53,8 +44,6 @@ const DropDownInfoBackup: React.FC <InfoDropDownProps>= ({loading, backupList, i
             setBackupInfo(backupListTemp);
         }
     }, [backupList, isLoadingBackupList]);
-
-    if ( backupInfo.length == 0 || loading) return null;
 
     return (
         <div className="dropdown" >

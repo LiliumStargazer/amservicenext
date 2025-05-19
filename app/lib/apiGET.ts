@@ -32,9 +32,6 @@ const apiRequest = async <GenericResponseType>(endpoint: string, payload: Record
     }
 };
 
-export const apiRecoverDb = (serial: string, backup:string , port: string): Promise<unknown> =>
-    apiRequest(`/recover-db`, { serial, backup, port });
-
 export const apiGetListinoFull = (serial: string): Promise<unknown> =>
     apiRequest(`/get-listino-full`, { serial });
 
@@ -82,3 +79,6 @@ export const apiGetJsonParam = (serial: string): Promise<unknown> =>
 
 export const apiGetVteData = (serial: string): Promise<unknown> =>
     apiRequest(`/vte-data`, { serial });
+
+export const apiRecoverDB = (serial: string, backupSelected: string): Promise<unknown> =>
+    apiRequest(`/recover-db`, { serial, backup: backupSelected });

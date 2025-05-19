@@ -1,7 +1,8 @@
 // Desc: Route to get backup data
 'use server'
-import {  createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile} from "@/app/lib/backup-handler";
 import { NextResponse } from "next/server";
+import {DatabasePath} from "@/app/class/DatabasePath";
+import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
 
 export async function GET(req: Request): Promise<NextResponse> {
 
@@ -12,13 +13,14 @@ export async function GET(req: Request): Promise<NextResponse> {
     const event = searchParams.get('event');
 
     if (!serial || !backup || !event) {
-        return NextResponse.json({ error: 'Missing serial or backup parameter' });
+        return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
     }
 
-    try {
-        const systemPaths = createSystemPaths(serial, backup);
-        systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
+    const databasePath = new DatabasePath(serial, backup);
+    if (!databasePath.localUnzippedDb)
+        return NextResponse.json({ error: 'Missing database path from filter events' });
 
+    try {
         let tableName = "EventiView";
         let columns = [
             "DataOraR", "EventString", "ID", "Code", "State",
@@ -26,7 +28,7 @@ export async function GET(req: Request): Promise<NextResponse> {
             "Tag1", "Tag2", "Tag3", "Tag4", "Fase", "TagData"
         ];
 
-        if (systemPaths.localBackupUnzippedFile.includes("DbBackup")) {
+        if (databasePath.localUnzippedDb.includes("DbBackup")) {
             tableName = "EventiAll";
             columns = [
                 "DataOraR", "EventString", "ID", "Code", "State",
@@ -42,7 +44,7 @@ export async function GET(req: Request): Promise<NextResponse> {
             query += ` WHERE ${conditions}`;
         }
 
-        const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
+        const results = await executeQueryOnDb(databasePath.localUnzippedDb, query);
         return NextResponse.json(results);
 
     } catch (error) {

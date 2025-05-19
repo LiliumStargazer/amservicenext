@@ -1,7 +1,7 @@
 // Desc: Route to get software type
 'use server'
 import { NextResponse } from "next/server";
-import {Vtiger} from "@/app/lib/vtger";
+import {Vtiger} from "@/app/class/Vtger";
 
 export async function GET(req: Request): Promise<NextResponse> {
 

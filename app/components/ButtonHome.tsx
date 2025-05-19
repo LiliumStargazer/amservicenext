@@ -10,6 +10,10 @@ interface MasterButtonProps {
 
 const ButtonHome: React.FC <MasterButtonProps>= ({loading, setSection}) => {
     const [fade, setFade] = useState(false);
+    // const [isDisabled, setIsDisabled] = useState(true);
+
+    const isDisabled = loading;
+
 
     useEffect(() => {
         if (fade) {
@@ -20,7 +24,7 @@ const ButtonHome: React.FC <MasterButtonProps>= ({loading, setSection}) => {
 
     return (
         <div>
-            <button disabled={loading} onClick={() => setSection('master')}>
+            <button disabled={isDisabled} onClick={() => setSection('master')}>
                 <FontAwesomeIcon
                     icon={faHouse}
                     size="2xl"

@@ -5,12 +5,14 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faGear} from "@fortawesome/free-solid-svg-icons/faGear";
 
 interface ParamButtonProps {
+    isBackupReady: boolean;
     loading: boolean;
     setSection: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ButtonParam: React.FC <ParamButtonProps>= ({loading, setSection}) => {
+const ButtonParam: React.FC <ParamButtonProps>= ({isBackupReady, loading, setSection}) => {
     const [fade, setFade] = useState(false);
+    const isDisabled = !isBackupReady || loading;
 
     useEffect(() => {
         if (fade) {
@@ -22,7 +24,7 @@ const ButtonParam: React.FC <ParamButtonProps>= ({loading, setSection}) => {
         <div >
             <button
                 onClick={() => setSection("param")}
-                disabled={loading}
+                disabled={isDisabled}
             >
                 <FontAwesomeIcon
                     icon={faGear} size="2xl"

@@ -1,8 +1,9 @@
 // Desc: Route to get backup data
 'use server'
-import { createDirectory, createSystemPaths, unzipFile } from "@/app/lib/backup-handler";
-import SftpConnector from "@/app/lib/ftp-handler";
+import SftpConnector from "@/app/class/SftpConnector";
 import { NextResponse } from "next/server";
+import {DatabasePath} from "@/app/class/DatabasePath";
+import { unzipFile } from "@/app/lib/zip-handler";
 
 export async function GET(req: Request): Promise<NextResponse> {
 
@@ -12,15 +13,14 @@ export async function GET(req: Request): Promise<NextResponse> {
     const backup = searchParams.get('backup');
 
     if (!serial || !backup) {
-        return NextResponse.json({ error: 'Missing serial or backup parameter' });
+        return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
     }
-
     try {
-        const systemPaths = createSystemPaths(serial, backup);
-        await createDirectory(systemPaths.localBackupDirectory);
+        const databasePath = new DatabasePath(serial, backup);
         const sftpConnector = new SftpConnector();
-        await sftpConnector.downloadBackup(systemPaths);
-        await unzipFile(systemPaths);
+        await sftpConnector.downloadBackup(databasePath);
+        await unzipFile(databasePath);
+
         return NextResponse.json(true);
     } catch (error) {
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });

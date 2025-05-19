@@ -1,9 +1,10 @@
 'use server'
 
-import { createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile } from "@/app/lib/backup-handler";
 import { NextResponse } from "next/server";
 import {getParams} from "@/app/lib/param-proto-loader";
 import {RawParams} from "@/app/types/types";
+import {DatabasePath} from "@/app/class/DatabasePath";
+import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -16,22 +17,21 @@ export async function GET(req: Request): Promise<NextResponse> {
         id = "MAX(ID)";
 
     if (!serial || !backup)
-        return NextResponse.json({ error: 'Missing serial or backup parameter' });
+        return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
 
-    console.log('GET /params-data', serial, backup, id);
+    const databasePath = new DatabasePath(serial, backup);
+    if (!databasePath.localUnzippedDb)
+        return NextResponse.json({ error: 'Missing database path from param data' }, { status: 400 });
 
     try {
-        const systemPaths = createSystemPaths(serial, backup);
-        systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
         const query = `SELECT Data FROM Param WHERE ID=(SELECT ${id} FROM Param)`;
-        const backupName = systemPaths.localBackupUnzippedFile;
         let softwareType: 'android' | 'windows' = 'android';
 
-        if (backupName.includes("DbBackup")) {
+        if (databasePath.localUnzippedDb.includes("DbBackup")) {
             softwareType = 'windows';
         }
 
-        const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query) as RawParams[];
+        const results = await executeQueryOnDb(databasePath.localUnzippedDb, query) as RawParams[];
         const param = await getParams(results, softwareType);
 
         return NextResponse.json(param);

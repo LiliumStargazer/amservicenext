@@ -109,8 +109,8 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
         { headerName: 'Tag Data', field: 'TagData', flex: 2, minWidth: 140, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: true, floatingFilter: true, suppressHeaderFilterButton: true, suppressFloatingFilterButton: true },
     ], []);
 
-    if (section !== 'master')
-        return;
+    // if (section !== 'master')
+    //     return;
 
     return (
         <div className="w-full h-full pb-2 flex-grow">

@@ -5,11 +5,14 @@ import React from "react";
 interface SearchEventsProps {
     loading: boolean;
     handleSearchValueChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    isBackupReady: boolean
 }
 
-const SearchEvents: React.FC <SearchEventsProps> = ({loading, handleSearchValueChange}) => {
+const SearchEvents: React.FC <SearchEventsProps> = ({loading, handleSearchValueChange, isBackupReady}) => {
+    const isDisabled= !isBackupReady || loading;
     return (
-        <label className="input input-bordered input-info flex items-center ml-2 mr-2 w-full mb-2">
+        <div className="flex flex-wrap items-center justify-center w-full">
+        <label className="input input-bordered input-info ml-2 mr-2 mb-2">
             <input
                 type="search"
                 className="grow text-sm"
@@ -17,7 +20,7 @@ const SearchEvents: React.FC <SearchEventsProps> = ({loading, handleSearchValueC
                 aria-label="SearchEvents"
                 aria-describedby="button-addon2"
                 onChange={handleSearchValueChange}
-                disabled={loading}
+                disabled={isDisabled}
             />
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -30,6 +33,7 @@ const SearchEvents: React.FC <SearchEventsProps> = ({loading, handleSearchValueC
                     clipRule="evenodd" />
             </svg>
         </label>
+        </div>
     );
 }
 

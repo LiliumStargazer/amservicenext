@@ -10,10 +10,15 @@ export interface jsonParams {
 
 export interface SystemPaths {
     remoteDirectory: string;
-    remoteBackupFile: string;
-    localBackupDirectory: string;
-    localBackupZippedFile: string;
-    localBackupUnzippedFile: string | null;
+    remoteDb: string;
+    localDirectory: string;
+    localZippedDb: string;
+    localUnzippedDB: string | null;
+}
+
+export interface DbPaths {
+    dbPath: string;
+    dbProdPath: string;
 }
 
 export interface PasswordLevels {

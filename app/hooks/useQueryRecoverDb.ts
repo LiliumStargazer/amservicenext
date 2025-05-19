@@ -1,20 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
+import {apiRecoverDB} from "@/app/lib/apiGET";
 
-import { apiRecoverDb} from "@/app/lib/apiGET";
-
-export const useQueryRecoverDb = (
-    serial: string,
-    backup: string,
-    port:string,
-    request:boolean
-) => {
-    const { isLoading, isError, data, error , isSuccess} = useQuery({
-        queryKey: ['recoverDb', serial, backup, port, request],
-        queryFn: () => apiRecoverDb(serial, backup, port),
-        //enabled: !!serial && !!backup && !!port && request,
-        enabled: request,
+export const useQueryRecoverDb = (serial: string, backup: string, isDownloadSuccess: boolean) => {
+    const query = useQuery({
+        queryKey: ['recoverDb', serial, backup],
+        queryFn: () => apiRecoverDB(serial, backup),
+        enabled: serial.length === 5 && backup.length > 0 && isDownloadSuccess, // Blocca esecuzioni
+        refetchOnMount: false,
         refetchOnWindowFocus: false,
+        staleTime: 0,
     });
 
-    return { isLoading, isError, data, error, isSuccess};
+    return {
+        ...query,
+        // triggerecoverDb: () => query.refetch(), // Wrapper esplicito
+    };
 };

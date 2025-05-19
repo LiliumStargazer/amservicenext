@@ -5,12 +5,14 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSnowflake} from "@fortawesome/free-solid-svg-icons/faSnowflake";
 
 interface FridgeButtonProps {
+    isBackupReady: boolean;
     loading: boolean;
     setSection: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ButtonFridge: React.FC <FridgeButtonProps>= ({loading, setSection}, ) => {
+const ButtonFridge: React.FC <FridgeButtonProps>= ({isBackupReady, loading, setSection}, ) => {
     const [fade, setFade] = useState(false);
+    const isDisabled = !isBackupReady || loading;
 
     useEffect(() => {
         if (fade) {
@@ -20,7 +22,7 @@ const ButtonFridge: React.FC <FridgeButtonProps>= ({loading, setSection}, ) => {
     }, [fade]);
     return (
         <div >
-            <button onClick={() => setSection('chart')} disabled={loading}>
+            <button onClick={() => setSection('chart')} disabled={isDisabled}>
                 <FontAwesomeIcon
                     icon={faSnowflake}
                     size="2xl"

@@ -1,7 +1,8 @@
 // Desc: Route to get backup data
 'use server'
-import {  createSystemPaths, executeQueryDbAll, setLocalBackupUnzippedFile} from "@/app/lib/backup-handler";
 import { NextResponse } from "next/server";
+import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
+import {DatabasePath} from "@/app/class/DatabasePath";
 
 
 export async function GET(req: Request): Promise<NextResponse> {
@@ -13,19 +14,20 @@ export async function GET(req: Request): Promise<NextResponse> {
     const date = searchParams.get('date');
 
     if (!serial || !backup || !date) {
-        return NextResponse.json({ error: 'Missing serial or backup parameter' });
+        return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
     }
     try {
-
-        const systemPaths = createSystemPaths(serial, backup);
-        systemPaths.localBackupUnzippedFile = setLocalBackupUnzippedFile(systemPaths.localBackupDirectory, systemPaths.localBackupUnzippedFile);
+        const databasePath = new DatabasePath(serial, backup);
+        console.log("databasePath", databasePath);
+        if (!databasePath.localUnzippedDb)
+            return NextResponse.json({ error: 'Missing database path from events by date' });
 
         if (date === 'null') {
             let maxDateQuery = `SELECT * FROM EventiView WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiView )`;
-            if (systemPaths.localBackupUnzippedFile.includes("DbBackup")) {
+            if (databasePath.localUnzippedDb.includes("DbBackup")) {
                 maxDateQuery = `SELECT * FROM EventiALl WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiAll )`;
             }
-            const queryWithMaxDate = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, maxDateQuery);
+            const queryWithMaxDate = await executeQueryOnDb(databasePath.localUnzippedDb, maxDateQuery);
             return NextResponse.json(queryWithMaxDate);
         }
 
@@ -35,11 +37,11 @@ export async function GET(req: Request): Promise<NextResponse> {
         const endOfDayString = `${year}-${month}-${day} 23:59:59`;
 
         let query = `SELECT * FROM EventiView WHERE DataOraR BETWEEN '${startOfDayString}' AND '${endOfDayString}'`;
-        if (systemPaths.localBackupUnzippedFile.includes("DbBackup")) {
+        if (databasePath.localUnzippedDb.includes("DbBackup")) {
             query = `SELECT * FROM EventiAll WHERE DataOraR BETWEEN '${startOfDayString}' AND '${endOfDayString}'`;
         }
 
-        const results = await executeQueryDbAll(systemPaths.localBackupUnzippedFile, query);
+        const results = await executeQueryOnDb(databasePath.localUnzippedDb, query);
         return NextResponse.json(results);
 
     } catch (error) {
