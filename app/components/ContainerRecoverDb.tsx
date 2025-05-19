@@ -2,94 +2,42 @@
 
 import React, {useEffect, useState} from 'react';
 
-import {fetcher} from "@/app/utils/fetcher";
+import {fetcher} from "@/app/lib/axiosClient";
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation'
 import AlertMultiple from "@/app/components/AlertMultiple.";
-
+import { AlertStatus } from "@/app/enum/enum";
+console.log('AlertStatus importato:', AlertStatus);
 
 
 const ContainerRecoverDb: React.FC = () => {
     const [serial, setSerial] = React.useState<string>("");
     const [backupOptions, setBackupOptions] = useState<React.ReactNode[]>([]);
     const [backupSelected, setBackupSelected] = React.useState<string>("");
-    const [recoverClicked, setRecoverClicked] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
-
+    const [status, setStatus] = useState<AlertStatus>(AlertStatus.None);
     const { data: dataBackupList, error: errorBackupList, isLoading: isLoadingBackupList } = useSWR(
         serial.length === 5 ? ['/backups-list', { serial }] : null,
-        fetcher, {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false
-        }
+        fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false}
     );
-
-    const { trigger: triggerCheckIntegrity, data: checkIntegrityResponse, error: integrityError, isMutating: isCheckingIntegrity } = useSWRMutation(
+    const { trigger: triggerCheckIntegrity, error: integrityError, isMutating: isCheckingIntegrity } = useSWRMutation(
         ['/integrity-check', { serial, backup: backupSelected }] , fetcher
     );
-
-    const { trigger: triggerDowload, data: downloadResponse, error: errorDownload, isMutating: isDownloadLoading  } = useSWRMutation(
+    const { trigger: triggerDowload, error: errorDownload, isMutating: isDownloadLoading  } = useSWRMutation(
         ['/download-backup', { serial, backup: backupSelected }],  fetcher
     )
-
-    const { trigger: triggerRecover, data: dataRecoverDb, error: errorRecoverDb, isMutating: isLoadingRecoverDb } = useSWRMutation(
+    const { trigger: triggerRecover, error: errorRecoverDb, isMutating: isLoadingRecoverDb } = useSWRMutation(
         ['/recover-db', { serial, backup: backupSelected  }], fetcher
     );
 
-    const handleCkeckIntegrity = async () => {
-        setRecoverClicked(false);
-        if (!serial)
-            return setMessage("Seriale mancante");
-
-        if (!backupSelected)
-            return setMessage("Backup mancante");
-
-        try{
-            await triggerDowload();
-            await triggerCheckIntegrity();
-            console.log('checkIntegrityResponse', checkIntegrityResponse)
-        }
-        catch (error) {
-            setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
-        }
-    }
-
-    const handleClickRecover = async () => {
-        if (!serial)
-            return setMessage("Seriale mancante");
-
-        if (!backupSelected)
-            return setMessage("Backup mancante");
-
-        console.log('handleClickRecover');
-        setRecoverClicked(true);
-        try{
-            await triggerDowload();
-        }
-        catch (error) {
-            setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
-        }
-    };
-
-    const onSelectBackup = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedBackup = event.target.value;
-        setBackupSelected(selectedBackup);
-    }
-
     useEffect(() => {
-        if (errorBackupList)
-            setMessage("Error while trying to fetch backupSelected list " + errorBackupList.message);
-        if (errorDownload)
-            setMessage("Error while trying to download backup " + errorDownload.message);
-        if (errorRecoverDb)
-            setMessage("Error while trying to recover db " + errorRecoverDb.message);
-        if (integrityError)
-            setMessage("Error while trying to check integrity " + integrityError.message);
-
-    }, [errorRecoverDb, errorDownload, setMessage, errorBackupList, integrityError]);
-
-    useEffect(() => {
-
+        if (serial.length !== 5) {
+            setStatus(AlertStatus.None);
+            setMessage("");
+            setBackupOptions([]);
+            setBackupSelected("");
+            return;
+        }
         if (dataBackupList && Array.isArray(dataBackupList) ){
             const filteredAndSortedBackups = dataBackupList
                 .filter(element => !element[1].includes("0 bytes"))
@@ -102,33 +50,55 @@ const ContainerRecoverDb: React.FC = () => {
             setBackupOptions(backupOptions);
             setBackupSelected(filteredAndSortedBackups[0]);
         }
-    }, [dataBackupList]);
+    }, [dataBackupList, serial]);
 
     useEffect(() => {
-        const recover = async () => {
-            try {
-                await triggerRecover();
-            } catch (error) {
-                setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
+        if (errorBackupList) setMessage("Error while trying to fetch backupSelected list " + errorBackupList.message);
+        if (errorDownload) setMessage("Error while trying to download backup " + errorDownload.message);
+        if (errorRecoverDb) setMessage("Error while trying to recover db " + errorRecoverDb.message);
+        if (integrityError) setMessage("Error while trying to check integrity " + integrityError.message);
+    }, [errorRecoverDb, errorDownload, setMessage, errorBackupList, integrityError]);
+
+    const handleCkeckIntegrity = async () => {
+        if (!serial) return setMessage("Seriale mancante");
+        if (!backupSelected) return setMessage("Backup mancante");
+        try{
+            await triggerDowload();
+            const result = await triggerCheckIntegrity();
+            console.log(result);
+            if (result && result == "OK") {
+                setMessage("Integrity check passed");
+                setStatus(AlertStatus.Success);
             }
-        };
-
-        if (downloadResponse && recoverClicked){
-            console.log('download response', downloadResponse);
-            console.log('recvoerClicked',recoverClicked);
-            recover().catch((error) => setMessage(error.toString()));
-            setRecoverClicked(false);
+            else {
+                setMessage("Integrity check failed");
+                setStatus(AlertStatus.Error);
+            }
+        }   catch (error) {
+            setStatus(AlertStatus.Error);
+            setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
         }
+    }
 
-    }, [downloadResponse, setMessage, triggerRecover, recoverClicked]);
-
-
-
-    useEffect(() => {
-        if (dataRecoverDb) {
-            setMessage("DB recovered successfully");
+    const handleClickRecover = async () => {
+        if (!serial) return setMessage("Seriale mancante");
+        if (!backupSelected) return setMessage("Backup mancante");
+        try{
+            await triggerDowload();
+            const result = await triggerRecover();
+            if (result) {
+                setMessage("DB recovered successfully");
+                setStatus(AlertStatus.Success);
+            }
+            else {
+                setMessage("DB recovery failed");
+                setStatus(AlertStatus.Error);
+            }
+        }catch (error) {
+            setStatus(AlertStatus.Error);
+            setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
         }
-    }, [dataRecoverDb, setMessage]);
+    };
 
     return (
         <>
@@ -136,6 +106,7 @@ const ContainerRecoverDb: React.FC = () => {
             <AlertMultiple
                 isLoading={isLoadingBackupList || isLoadingRecoverDb || isDownloadLoading || isCheckingIntegrity}
                 message={message}
+                status={status}
             />
             </div>
             <div className="flex items-center justify-center ">
@@ -156,7 +127,7 @@ const ContainerRecoverDb: React.FC = () => {
                         <label className="select">
                             <span className="label">Backups</span>
                             <select
-                                onChange={onSelectBackup}
+                                onChange={e => setBackupSelected(e.target.value)}
                                 disabled={backupOptions.length === 0}
                             >
                                 {backupOptions}

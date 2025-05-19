@@ -1,6 +1,6 @@
 import {NextResponse} from "next/server";
-import {postData} from "@/app/utils/fetcher";
-import type { ApiError } from "@/app/utils/fetcher";
+import {postData} from "@/app/lib/axiosClient";
+import type { ApiError } from "@/app/lib/axiosClient";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -18,7 +18,7 @@ export async function GET(req: Request): Promise<NextResponse> {
         );
         return NextResponse.json('OK', { status: 200 });
     } catch (error) {
-        console.log('integrity check error: ',error);
+    /*     console.log('integrity check error: ',error); */
         return NextResponse.json(
             { error: error instanceof Error ? error.message : 'Errore sconosciuto' },
             { status: (error as ApiError).status || 500 }
