@@ -3,8 +3,8 @@
 import { NextResponse } from "next/server";
 import {getParams} from "@/app/lib/param-proto-loader";
 import {RawParams} from "@/app/types/types";
-import {DatabasePath} from "@/app/class/DatabasePath";
 import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
+import { DatabasePath } from "@/app/class/DatabasePath";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -20,18 +20,19 @@ export async function GET(req: Request): Promise<NextResponse> {
         return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
 
     const databasePath = new DatabasePath(serial, backup);
-    if (!databasePath.localUnzippedDb)
+    
+    if (!databasePath.databaseUnzipped)
         return NextResponse.json({ error: 'Missing database path from param data' }, { status: 400 });
 
     try {
         const query = `SELECT Data FROM Param WHERE ID=(SELECT ${id} FROM Param)`;
         let softwareType: 'android' | 'windows' = 'android';
 
-        if (databasePath.localUnzippedDb.includes("DbBackup")) {
+        if (databasePath.databaseUnzipped.includes("DbBackup")) {
             softwareType = 'windows';
         }
 
-        const results = await executeQueryOnDb(databasePath.localUnzippedDb, query) as RawParams[];
+        const results = await executeQueryOnDb(databasePath.databaseUnzipped, query) as RawParams[];
         const param = await getParams(results, softwareType);
 
         return NextResponse.json(param);

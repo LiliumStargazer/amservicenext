@@ -7,86 +7,77 @@ export class DatabasePath {
     protected readonly BASE_TEMP_DIR = "tempAmService";
     protected readonly CONFIG_DIR = "config";
     protected readonly UPDATE_DIR = "update";
-    protected readonly _remoteConfigDir: string;
-    protected readonly _remoteUploadFIleName: string;
-    protected readonly _remoteDb: string | undefined;
-    protected readonly _localDirectory: string | undefined;
-    protected readonly _localZippedDb: string | undefined;
-    private readonly _localUnzippedDB: string | undefined;
-    protected readonly _localUnzippedProdDb: string | undefined;
-    protected readonly _localUnzippedFingerDb: string | undefined;
-    protected readonly _localRecoveredDb: string | undefined;
-    protected readonly _localRecoveredZippedDb: string | undefined ;
+    protected readonly BACKUP_ZIP = "DB.zip";
+    protected readonly BACKUP_WITH_FINGER_ZIP = "DBAndFinger.zip";
+    protected readonly BACKUP_NAMES = ["AndBk.s3db", "DbBackup.s3db", "AndBkFarma.s3db"];
+    protected readonly BACKUP_RECOVERED_NAMES = ["AndDbTouch.s3db", "TouchBull.s3db"];
+    protected readonly BACKUP_PROD_NAMES = ["ProdDbTouch.s3db", "TouchBull.s3db"];
+    protected readonly BACKUP_FINGER_NAMES = ["fingerRead.db", "DbRFinger.db"];
+    protected readonly _backupDir: string;
+    protected readonly _backupFileZip: string;
+    private readonly _databaseUnzipped: string;
+    protected readonly _databaseProductUnzipped: string;
+    protected readonly _databaseFingerUnzipped: string;
+    protected readonly _databaseRecovered: string;
+    protected readonly _databaseProductRecovered: string;
+    protected readonly _databaseRecoveredZipped: string;
+    protected readonly _databaseWithFingerZipped: string;
 
-    constructor(private matricola: string, private backupName: string | undefined) {
-        this._remoteConfigDir = this.remoteConfigPath;
-        this._remoteUploadFIleName = this.remoteUploadPathFile;
-
-        if (this.backupName !== undefined) {
-            this._remoteDb = path.join(this.remoteConfigPath, this.backupName);
-            this._localDirectory = this.localBasePath(this.backupName);
-            this._localZippedDb = path.join(this._localDirectory, this.backupName);
-            this._localUnzippedDB = this.unzippedDbPath;
-            this._localUnzippedProdDb = this.unzippedDbProdPath;
-            this._localUnzippedFingerDb = this.unzippedFingerDbPath;
-            this._localRecoveredDb = this.localRecoveredDBPath;
-            this._localRecoveredZippedDb = path.join(this._localDirectory, "DB.zip");
-                // path.join(this._localDirectory, "DB.zip");
-        }
-
+    constructor(private serial: string, private backupName: string) {
+        this._backupDir = this.create_backupDir(this.serial, this.backupName); ///tmp/tempAmService/1234/AndBk17    
+        this._backupFileZip = path.join(this._backupDir, this.backupName); ///tmp/tempAmService/1234/AndBk17/AndBk17.zip
+        this._databaseUnzipped = this.unzippedDbPath(this._backupDir); //tmp/tempAmService/1234/AndBk17/AndBk17.s3db
+        this._databaseProductUnzipped = this.unzippedDbProdPath(this._backupDir); //tmp/tempAmService/1234/AndBk17/ProdDbTouch.s3db
+        this._databaseFingerUnzipped = this.unzippedFingerDbPath(this._backupDir); //tmp/tempAmService/1234/AndBk17/fingerRead.db
+        this._databaseRecovered = this.localRecoveredDBPath(this._backupDir, this._databaseUnzipped); //tmp/tempAmService/1234/AndBk17/AndDbTouch.s3db
+        this._databaseProductRecovered = this.unzippedDbProdPath(this._backupDir); //tmp/tempAmService/1234/AndBk17/ProdDbTouch.s3db
+        this._databaseRecoveredZipped = path.join(this._backupDir, this.BACKUP_ZIP); // tmp/tempAmService/1234/AndBk17/DB.zip
+        this._databaseWithFingerZipped = path.join(this._backupDir, this.BACKUP_WITH_FINGER_ZIP); // tmp/tempAmService/1234/AndBk17/DBAndFinger.zip
     }
 
-    get remoteConfigDir(): string {
-        return this._remoteConfigDir;
-    }
-    get remoteUploadFIleName(): string {
-        return this._remoteUploadFIleName;
+    get backupDir(): string {
+        return this._backupDir;
     }
 
-    get remoteDb(): string | undefined {
-        return this._remoteDb;
+    get backupFileZip(): string {
+        return this._backupFileZip;
     }
 
-    get localDirectory(): string | undefined {
-        return this._localDirectory;
+    get databaseUnzipped(): string {
+        return this._databaseUnzipped;
     }
 
-    get localZippedDb(): string | undefined {
-        return this._localZippedDb;
+    get databaseProductUnzipped(): string {
+        return this._databaseProductUnzipped;
     }
 
-    get localUnzippedDb(): string | undefined {
-        return this._localUnzippedDB;
+    get databaseFingerUnzipped(): string {
+        return this._databaseFingerUnzipped;
     }
 
-    get localUnzippedProdDb(): string | undefined {
-        return this._localUnzippedProdDb;
-    }
-    get localUnzippedFingerDb(): string | undefined {
-        return this._localUnzippedFingerDb;
+    get databaseRecovered(): string {
+        return this._databaseRecovered;
     }
 
-    get localRecoveredDb(): string | undefined {
-        return this._localRecoveredDb;
+    get databaseProductRecovered(): string {
+        return this.databaseProductRecovered;
     }
 
-    private get remoteConfigPath(): string {
-        return path.join(this.matricola, this.CONFIG_DIR);
+    get databaseRecoveredZipped(): string {
+        return this._databaseRecoveredZipped;
     }
 
-    get remoteUploadPathFile(): string {
-        return path.join(this.matricola, this.UPDATE_DIR, "DB.zip");
+    get databaseWithFingerZipped(): string {
+        return this._databaseWithFingerZipped;
     }
 
-    get localRecoveredZippedDb(): string | undefined {
-        return this._localRecoveredZippedDb;
-    }
 
-    private localBasePath(backupName: string): string {
+
+    private create_backupDir(serial: string, backupName: string): string {
         const localPath = path.join(
             fs.realpathSync(os.tmpdir()),
             this.BASE_TEMP_DIR,
-            this.matricola,
+            serial,
             path.parse(backupName).name
         );
 
@@ -103,72 +94,44 @@ export class DatabasePath {
         return localPath;
     }
 
-    private get unzippedDbPath(): string | undefined {
-        if (!this._localDirectory || !fs.existsSync(this._localDirectory)){
-            return undefined;
-        }
-
-        const files = fs.readdirSync(this._localDirectory);
-        if (!files || files.length === 0) {
-            return undefined;
-        }
-
-        const backupFiles = ["AndBk.s3db", "DbBackup.s3db", "AndBkFarma.s3db"];
+    private unzippedDbPath(backupDir: string):string  {
+        const files = fs.readdirSync(backupDir);
+        let pathfile = "";
         for (const file of files) {
-            if (backupFiles.includes(file)) {
-                return path.join(this._localDirectory, file);
+            if (this.BACKUP_NAMES.includes(file)) {
+                pathfile = path.join(backupDir, file);
             }
         }
-        return undefined;
+        return pathfile;
     }
 
-    private get unzippedDbProdPath(): string | undefined {
-        if (this._localDirectory === undefined){
-            return undefined;
-        }
-
-        const files = fs.readdirSync(this._localDirectory);
-        if (!files || files.length === 0) {
-            return undefined;
-        }
-
-        const backupFiles = ["ProdDbTouch.s3db", "TouchBull.s3db"];
+    private unzippedDbProdPath(backupDir: string): string  {
+        const files = fs.readdirSync(backupDir);
+        let pathfile = "";
         for (const file of files) {
-            if (backupFiles.includes(file)) {
-                return path.join(this._localDirectory, file);
+            if (this.BACKUP_PROD_NAMES.includes(file)) {
+                pathfile =  path.join(backupDir, file);
             }
         }
-
-        return undefined;
+        return pathfile;
     }
 
-    private get unzippedFingerDbPath(): string | undefined {
-        if (this._localDirectory === undefined)
-            return undefined;
-
-        const files = fs.readdirSync(this._localDirectory);
-        if (!files || files.length === 0) {
-            return undefined;
-        }
-
-        const backupFiles = ["fingerRead.db", "DbRFinger.db"];
+    private unzippedFingerDbPath(backupDir: string): string {
+        const files = fs.readdirSync(backupDir);
+        let pathfile = "";
         for (const file of files) {
-            if (backupFiles.includes(file)) {
-                return path.join(this._localDirectory, file);
+            if (this.BACKUP_FINGER_NAMES.includes(file)) {
+                pathfile = path.join(backupDir, file);
             }
         }
-        return undefined;
+        return pathfile;
     }
 
-    private get localRecoveredDBPath(): string | undefined {
-        if (this._localDirectory === undefined)
-            return undefined;
-
-        if ( this._localUnzippedDB?.includes("AndBk") )
-            return path.join(this._localDirectory, "AndDbTouch.s3db");
-        else if ( this._localUnzippedDB?.includes("DbBackup") )
-                return path.join(this._localDirectory, "TouchBull.s3db");
-        else
-            return undefined;
+    private localRecoveredDBPath(backupDir: string, databaseUnzippedPath: string): string {
+        if ( databaseUnzippedPath.includes("AndBk") )
+            return path.join(backupDir, "AndDbTouch.s3db");        
+        if ( databaseUnzippedPath.includes("DbBackup") )
+            return path.join(backupDir, "TouchBull.s3db");
+        return "";
     }
 }

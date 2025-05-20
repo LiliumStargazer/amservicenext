@@ -2,8 +2,8 @@
 'use server'
 
 import { NextResponse } from "next/server";
-import {DatabasePath} from "@/app/class/DatabasePath";
 import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
+import { DatabasePath } from "@/app/class/DatabasePath";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -16,12 +16,10 @@ export async function GET(req: Request): Promise<NextResponse> {
     }
 
     const databasePath = new DatabasePath(serial, backup);
-    if (!databasePath.localUnzippedDb)
-        return NextResponse.json({ error: 'Missing database path from fridge' });
 
     try {
         const query = 'SELECT *  FROM FrigoView';
-        const  results = await executeQueryOnDb(databasePath.localUnzippedDb, query);
+        const  results = await executeQueryOnDb(databasePath.databaseUnzipped, query);
         return NextResponse.json(results);
     } catch (error) {
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });

@@ -2,8 +2,10 @@
 'use server'
 import SftpConnector from "@/app/class/SftpConnector";
 import { NextResponse } from "next/server";
-import {DatabasePath} from "@/app/class/DatabasePath";
+
 import { unzipFile } from "@/app/lib/zip-handler";
+import { SftpPath } from "@/app/class/SftpPath";
+import { DatabasePath } from "@/app/class/DatabasePath";
 
 export async function GET(req: Request): Promise<NextResponse> {
 
@@ -16,11 +18,11 @@ export async function GET(req: Request): Promise<NextResponse> {
         return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
     }
     try {
+        const sftpPath = new SftpPath(serial, backup);
         const databasePath = new DatabasePath(serial, backup);
         const sftpConnector = new SftpConnector();
-        await sftpConnector.downloadBackup(databasePath);
-        await unzipFile(databasePath);
-
+        await sftpConnector.downloadBackup(databasePath, sftpPath);
+        await unzipFile(databasePath.backupFileZip, databasePath.backupDir);
         return NextResponse.json(true);
     } catch (error) {
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });

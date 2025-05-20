@@ -1,7 +1,8 @@
 'use server'
 import SftpConnector from "@/app/class/SftpConnector";
 import { NextResponse } from "next/server";
-import {DatabasePath} from "@/app/class/DatabasePath";
+/* import {DatabasePath} from "@/app/class/DatabasePath"; */
+import { SftpPath } from "@/app/class/SftpPath";
 
 
 export async function GET(req: Request): Promise<NextResponse> {
@@ -14,10 +15,9 @@ export async function GET(req: Request): Promise<NextResponse> {
         return NextResponse.json({ error: 'Missing serial parameter' }, { status: 400 });
     }
     try {
-        const databasePath = new DatabasePath(serial, undefined);
+        const sftpPath = new SftpPath(serial);
         const sftpConnector = new SftpConnector();
-        const backupLists = await sftpConnector.getBackupList(databasePath);
-
+        const backupLists = await sftpConnector.getSftpBackupList(sftpPath);
         return NextResponse.json(backupLists);
     } catch (error) {
         console.log('Error while getting backup backup-list from api-route:', error);

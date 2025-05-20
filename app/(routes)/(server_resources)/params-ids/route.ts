@@ -2,8 +2,8 @@
 
 // import { createSystemPaths, executeQueryOnDb, setLocalBackupUnzippedFile } from "@/app/lib/backup-handler";
 import { NextResponse } from "next/server";
-import {DatabasePath} from "@/app/class/DatabasePath";
 import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
+import { DatabasePath } from "@/app/class/DatabasePath";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -14,14 +14,10 @@ export async function GET(req: Request): Promise<NextResponse> {
     if (!serial || !backup) {
         return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
     }
-
     const databasePath = new DatabasePath(serial, backup);
-    if (!databasePath.localUnzippedDb)
-        return NextResponse.json({ error: 'Missing database path from params ids' }, { status: 400 });
-
     try {
         const query = "SELECT ID, DataOra FROM Param";
-        const result = await executeQueryOnDb(databasePath.localUnzippedDb, query);
+        const result = await executeQueryOnDb(databasePath.databaseUnzipped, query);
 
         return NextResponse.json(result);
     } catch (error) {

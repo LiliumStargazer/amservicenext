@@ -2,50 +2,23 @@ import fs from "fs";
 import decompress from "decompress";
 import path from "path";
 import archiver from "archiver";
-import {DatabasePath} from "@/app/class/DatabasePath";
 
-export async function unzipFile(databasePath: DatabasePath): Promise<void> {
-
-    if (!databasePath.localZippedDb) {
-        return Promise.reject(new Error("File not found"));
-    }
-
-    const localFile = databasePath.localZippedDb;
-
-    if (fs.existsSync(localFile) && fs.statSync(localFile).isFile()) {
-        const destinationFolder = databasePath.localDirectory;
-        await decompress(localFile, destinationFolder);
+export async function unzipFile(file: string, destinationPath: string): Promise<void> {
+    if (fs.existsSync(file) && fs.statSync(file).isFile()) {
+        const destinationFolder = destinationPath;
+        await decompress(file, destinationFolder);
     } else {
-        throw new Error(`File not found: ${localFile}`);
+        throw new Error(`File not found: ${file}`);
     }
-
 }
 
-export async function createZipFile(databasePath: DatabasePath): Promise<void> {
-    if (!databasePath.localDirectory) {
-        return Promise.reject(new Error("Directory not found"));
-    }
-
-    if (!databasePath.localRecoveredDb || !databasePath.localUnzippedProdDb) {
-        return Promise.reject(new Error("Recover DB path or prod path is not defined"));
-    }
-
-    if ( !fs.existsSync(databasePath.localRecoveredDb) || !fs.existsSync(databasePath.localUnzippedProdDb) ) {
-        return Promise.reject(new Error("File not found"));
-    }
-
-    const zipFilePath = databasePath.localRecoveredZippedDb;
-
-    if (!zipFilePath) {
-        return Promise.reject(new Error("Zip file path is not defined"));
-    }
-
+export async function createZipFile(filesToZip: string[], zippedFilePath: string): Promise<void> {
     return new Promise((resolve, reject) => {
-        const output = fs.createWriteStream(zipFilePath);
+        const output = fs.createWriteStream(zippedFilePath);
         const archive = archiver("zip", { zlib: { level: 9 } });
 
         output.on("close", () => {
-            console.log(`Zip file created: ${zipFilePath} (${archive.pointer()} total bytes)`);
+            console.log(`Zip file created: ${zippedFilePath} (${archive.pointer()} total bytes)`);
             resolve();
         });
 
@@ -54,8 +27,6 @@ export async function createZipFile(databasePath: DatabasePath): Promise<void> {
         });
 
         archive.pipe(output);
-
-        const filesToZip = [databasePath.localRecoveredDb, databasePath.localUnzippedProdDb];
 
         for (const file of filesToZip) {
             if (file && fs.existsSync(file) && fs.statSync(file).isFile()) {

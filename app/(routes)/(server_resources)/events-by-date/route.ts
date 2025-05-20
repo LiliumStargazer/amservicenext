@@ -2,7 +2,8 @@
 'use server'
 import { NextResponse } from "next/server";
 import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
-import {DatabasePath} from "@/app/class/DatabasePath";
+import { DatabasePath } from "@/app/class/DatabasePath";
+
 
 
 export async function GET(req: Request): Promise<NextResponse> {
@@ -18,16 +19,13 @@ export async function GET(req: Request): Promise<NextResponse> {
     }
     try {
         const databasePath = new DatabasePath(serial, backup);
-        console.log("databasePath", databasePath);
-        if (!databasePath.localUnzippedDb)
-            return NextResponse.json({ error: 'Missing database path from events by date' });
 
         if (date === 'null') {
             let maxDateQuery = `SELECT * FROM EventiView WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiView )`;
-            if (databasePath.localUnzippedDb.includes("DbBackup")) {
+            if (databasePath.backupFileZip.includes("DbBackup")) {
                 maxDateQuery = `SELECT * FROM EventiALl WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiAll )`;
             }
-            const queryWithMaxDate = await executeQueryOnDb(databasePath.localUnzippedDb, maxDateQuery);
+            const queryWithMaxDate = await executeQueryOnDb(databasePath.databaseUnzipped, maxDateQuery);
             return NextResponse.json(queryWithMaxDate);
         }
 
@@ -37,11 +35,11 @@ export async function GET(req: Request): Promise<NextResponse> {
         const endOfDayString = `${year}-${month}-${day} 23:59:59`;
 
         let query = `SELECT * FROM EventiView WHERE DataOraR BETWEEN '${startOfDayString}' AND '${endOfDayString}'`;
-        if (databasePath.localUnzippedDb.includes("DbBackup")) {
+        if (databasePath.databaseUnzipped.includes("DbBackup")) {
             query = `SELECT * FROM EventiAll WHERE DataOraR BETWEEN '${startOfDayString}' AND '${endOfDayString}'`;
         }
 
-        const results = await executeQueryOnDb(databasePath.localUnzippedDb, query);
+        const results = await executeQueryOnDb(databasePath.databaseUnzipped, query);
         return NextResponse.json(results);
 
     } catch (error) {

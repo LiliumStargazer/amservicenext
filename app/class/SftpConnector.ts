@@ -1,5 +1,7 @@
 import Client, {FileInfo} from 'ssh2-sftp-client';
-import {DatabasePath} from "@/app/class/DatabasePath";
+
+import { SftpPath } from './SftpPath';
+import { DatabasePath } from './DatabasePath';
 
 class SftpConnector {
     private readonly sftp: Client;
@@ -24,23 +26,21 @@ class SftpConnector {
         await this.sftp.connect(this.config);
     }
 
-    async downloadBackup(databasePath: DatabasePath): Promise<void> {
+    async downloadBackup(databasePath: DatabasePath, sftpPath: SftpPath): Promise<void> {
         try {
-            if (!databasePath.remoteDb || !databasePath.localZippedDb) {
-                throw new Error("Percorsi remoti o locali non validi.");
-            }
-
             await this.createSftpSession();
-            await this.sftp.fastGet(databasePath.remoteDb, databasePath.localZippedDb);
+            await this.sftp.fastGet(sftpPath.backupFileZip, databasePath.backupFileZip);
         } finally {
             await this.sftp.end();
         }
     }
 
-    async getBackupList(databasePath: DatabasePath): Promise<string[][]> {
+
+    async getBackupList(databasePath: DatabasePath, sftpPath: SftpPath): Promise<string[][]> {
         try {
             await this.createSftpSession();
-            const fileList: FileInfo[] = await this.sftp.list(databasePath.remoteConfigDir, undefined);
+            
+            const fileList: FileInfo[] = await this.sftp.list(sftpPath.configDir, undefined);
             return this.mapToBackupList(fileList);
         } catch (error) {
             console.error("Error while getting backup-list of backups:", error);
@@ -50,14 +50,23 @@ class SftpConnector {
         }
     }
 
-    async uploadBackup(databasePath: DatabasePath): Promise<void> {
-        if (!databasePath.localRecoveredZippedDb) {
-            throw new Error("Percorsi remoti o locali non validi.");
-        }
+    async getSftpBackupList(sftpPath: SftpPath): Promise<string[][]> {
         try {
             await this.createSftpSession();
+            const fileList: FileInfo[] = await this.sftp.list(sftpPath.configDir, undefined);
+            return this.mapToBackupList(fileList);
+        } catch (error) {
+            console.error("Error while getting backup-list of backups:", error);
+            throw error;
+        } finally {
+            await this.sftp.end();
+        }
+    }
 
-            await this.sftp.fastPut(databasePath.localRecoveredZippedDb, databasePath.remoteUploadFIleName);
+    async uploadBackup(localFilePath: string, remoteFilePath: string): Promise<void> {
+        try {
+            await this.createSftpSession();
+            await this.sftp.fastPut(localFilePath, remoteFilePath);
         } catch (e) {
             console.error('Errore completo:', e);
             throw new Error(`Errore durante l'upload del backup: ${(e as Error).message}`);

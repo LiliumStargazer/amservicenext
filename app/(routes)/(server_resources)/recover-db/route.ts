@@ -1,7 +1,9 @@
 import {NextResponse} from "next/server";
-import {DatabasePath} from "@/app/class/DatabasePath";
 import {createZipFile} from "@/app/lib/zip-handler";
 import SftpConnector from "@/app/class/SftpConnector";
+import { DatabasePath } from "@/app/class/DatabasePath";
+import { SftpPath } from "@/app/class/SftpPath";
+import { postData } from "@/app/lib/axiosClient";
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
@@ -9,30 +11,22 @@ export async function GET(req: Request): Promise<NextResponse> {
     const serial = searchParams.get('serial');
     const backup = searchParams.get('backup');
 
-
     if (!serial || !backup) {
         return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
     }
+    const databasePath = new DatabasePath(serial, backup);
+    const sftpPath = new SftpPath(serial, backup);
 
     try {
-        const databasePath = new DatabasePath(serial, backup);
-
-        const response = await fetch('http://db-recovery:5000/recover', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({serial: serial, backup: backup}),
-        });
-
+        const response = await postData('http://db-recovery:5000/recover', { serial, backup }) as Response;
         if (!response.ok) {
             const errorData = await response.json();
             return NextResponse.json({ error: errorData.error || 'Errore sconosciuto' }, { status: response.status });
         }
-
-        await createZipFile(databasePath);
+        const fileToZip= [databasePath.databaseRecovered, databasePath.databaseProductRecovered];
+        await createZipFile(fileToZip, databasePath.databaseRecoveredZipped);
         const sftpConnector = new SftpConnector();
-        await sftpConnector.uploadBackup(databasePath);
+        await sftpConnector.uploadBackup(databasePath.databaseRecoveredZipped, sftpPath.backupFixedZip);
 
         return NextResponse.json('OK', { status: 200 });
     } catch (error) {

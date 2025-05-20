@@ -1,8 +1,9 @@
 // Desc: Route to get backup data
 'use server'
 import { NextResponse } from "next/server";
-import {DatabasePath} from "@/app/class/DatabasePath";
+
 import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
+import { DatabasePath } from "@/app/class/DatabasePath";
 
 export async function GET(req: Request): Promise<NextResponse> {
 
@@ -17,8 +18,6 @@ export async function GET(req: Request): Promise<NextResponse> {
     }
 
     const databasePath = new DatabasePath(serial, backup);
-    if (!databasePath.localUnzippedDb)
-        return NextResponse.json({ error: 'Missing database path from filter events' });
 
     try {
         let tableName = "EventiView";
@@ -28,7 +27,7 @@ export async function GET(req: Request): Promise<NextResponse> {
             "Tag1", "Tag2", "Tag3", "Tag4", "Fase", "TagData"
         ];
 
-        if (databasePath.localUnzippedDb.includes("DbBackup")) {
+        if (databasePath.databaseUnzipped.includes("DbBackup")) {
             tableName = "EventiAll";
             columns = [
                 "DataOraR", "EventString", "ID", "Code", "State",
@@ -44,7 +43,7 @@ export async function GET(req: Request): Promise<NextResponse> {
             query += ` WHERE ${conditions}`;
         }
 
-        const results = await executeQueryOnDb(databasePath.localUnzippedDb, query);
+        const results = await executeQueryOnDb(databasePath.databaseUnzipped, query);
         return NextResponse.json(results);
 
     } catch (error) {
