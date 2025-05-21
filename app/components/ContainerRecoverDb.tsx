@@ -1,12 +1,10 @@
 'use client'
 
 import React, {useEffect, useState} from 'react';
-
-import {fetcher} from "@/app/lib/axiosClient";
-import useSWR from 'swr';
-import useSWRMutation from 'swr/mutation'
 import AlertMultiple from "@/app/components/AlertMultiple.";
 import { AlertStatus } from "@/app/enum/enum";
+import { useCheckIntegrityMutation, useDownloadBackupMutation, useRecoverDbMutation, useTransferFingerDbMutation } from '@/app/hooks/useMutations';
+import { useBackupList } from '../hooks/useQueries';
 console.log('AlertStatus importato:', AlertStatus);
 
 
@@ -16,19 +14,42 @@ const ContainerRecoverDb: React.FC = () => {
     const [backupSelected, setBackupSelected] = React.useState<string>("");
     const [message, setMessage] = useState<string>("");
     const [status, setStatus] = useState<AlertStatus>(AlertStatus.None);
-    const { data: dataBackupList, error: errorBackupList, isLoading: isLoadingBackupList } = useSWR(
+    const [sourceSerial, setSourceSerial] = React.useState<string>("");
+    const [destinationSerial, setDestinationSerial] = React.useState<string>("");
+    const [sourceBackup, setSourceBackup] = React.useState<string>("");
+    const [sourceBackupOptions, setSourceBackupOptions] = useState<React.ReactNode[]>([]);
+    const { trigger: triggerCheckIntegrity, error: integrityError, isMutating: isCheckingIntegrity } = useCheckIntegrityMutation();
+    const { trigger: triggerDownload, error: errorDownload, isMutating: isDownloadLoading } = useDownloadBackupMutation();
+    const { trigger: triggerRecover, error: errorRecoverDb, isMutating: isLoadingRecoverDb } = useRecoverDbMutation();
+    const { trigger: triggerTransfer, error: errorTransfer, isMutating: isLoadingTransfer } = useTransferFingerDbMutation();
+    const { data: dataBackupList, error: errorBackupList, isLoading: isLoadingBackupList } = useBackupList(serial);
+    const { data: sourceBackupList, error: errorSourceBackupList, isLoading: isLoadingSourceBackupList } = useBackupList(sourceSerial);
+ 
+  /*   const { data: dataBackupList, error: errorBackupList, isLoading: isLoadingBackupList } = useSWR(
         serial.length === 5 ? ['/backups-list', { serial }] : null,
         fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false}
     );
-    const { trigger: triggerCheckIntegrity, error: integrityError, isMutating: isCheckingIntegrity } = useSWRMutation(
-        ['/integrity-check', { serial, backup: backupSelected }] , fetcher
-    );
-    const { trigger: triggerDowload, error: errorDownload, isMutating: isDownloadLoading  } = useSWRMutation(
+    const { data: sourceBackupList, error: errorSourceBackupList, isLoading: isLoadingSourceBackupList } = useSWR(
+        sourceSerial.length === 5 ? ['/backups-list', { serial: sourceSerial }] : null,
+        fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false}
+    ); */
+/*     const { trigger: triggerCheckIntegrity, error: integrityError, isMutating: isCheckingIntegrity } = useSWRMutation(
+        ['/integrity-check'], (key, { arg }: { arg: { serial: string; backup: string } }) => fetcher([key[0], arg])
+    ); */
+    /* const { trigger: triggerDowload, error: errorDownload, isMutating: isDownloadLoading  } = useSWRMutation(
         ['/download-backup', { serial, backup: backupSelected }],  fetcher
-    )
+    ) */
+  /*   const { trigger: triggerDowload, error: errorDownload, isMutating: isDownloadLoading  } = useSWRMutation(
+        ['/download-backup'],
+        (key, { arg }: { arg: { serial: string; backup: string } }) => fetcher([key[0], arg])
+    );
+
     const { trigger: triggerRecover, error: errorRecoverDb, isMutating: isLoadingRecoverDb } = useSWRMutation(
         ['/recover-db', { serial, backup: backupSelected  }], fetcher
     );
+    const { trigger: triggerTransfer, error: errorTransfer, isMutating: isLoadingTransfer } = useSWRMutation(
+        ['/transfer-finger-db', { sourceSerial, backup: sourceBackup, targetSerial: destinationSerial }], fetcher
+    ); */
 
     useEffect(() => {
         if (serial.length !== 5) {
@@ -53,18 +74,45 @@ const ContainerRecoverDb: React.FC = () => {
     }, [dataBackupList, serial]);
 
     useEffect(() => {
+        if (sourceSerial.length !== 5) {
+            setStatus(AlertStatus.None);
+            setMessage("");
+            setSourceBackupOptions([]);
+            setSourceBackup("");
+            return;
+        }
+        if (sourceBackupList && Array.isArray(sourceBackupList) ){
+            const filteredAndSortedBackups = sourceBackupList
+                .filter(element => !element[1].includes("0 bytes"))
+                .map(element => element[0]);
+
+            filteredAndSortedBackups.sort().reverse();
+            const sourceBackupOptions: React.ReactNode[] = [] = filteredAndSortedBackups.map(element =>
+                <option key={element}>{element}</option>
+            );
+            setSourceBackupOptions(sourceBackupOptions);
+            setSourceBackup(filteredAndSortedBackups[0]);
+        }
+    }, [sourceBackupList, sourceSerial]);
+
+    useEffect(() => {
         if (errorBackupList) setMessage("Error while trying to fetch backupSelected list " + errorBackupList.message);
         if (errorDownload) setMessage("Error while trying to download backup " + errorDownload.message);
         if (errorRecoverDb) setMessage("Error while trying to recover db " + errorRecoverDb.message);
         if (integrityError) setMessage("Error while trying to check integrity " + integrityError.message);
-    }, [errorRecoverDb, errorDownload, setMessage, errorBackupList, integrityError]);
+        if (errorSourceBackupList) setMessage("Error while trying to fetch source backup list " + errorSourceBackupList.message);
+        if (errorTransfer) setMessage("Error while trying to transfer finger " + errorTransfer.message);
+        if (errorSourceBackupList || errorBackupList || errorDownload || errorRecoverDb || integrityError || errorTransfer) {
+            setStatus(AlertStatus.Error);
+        }
+    }, [errorRecoverDb, errorDownload, setMessage, errorBackupList, integrityError, errorSourceBackupList, errorTransfer]);
 
     const handleCkeckIntegrity = async () => {
         if (!serial) return setMessage("Seriale mancante");
         if (!backupSelected) return setMessage("Backup mancante");
         try{
-            await triggerDowload();
-            const result = await triggerCheckIntegrity();
+            await triggerDownload({ serial, backup: backupSelected });
+            const result = await triggerCheckIntegrity({ serial, backup: backupSelected });
             console.log(result);
             if (result && result == "OK") {
                 setMessage("Integrity check passed");
@@ -75,7 +123,6 @@ const ContainerRecoverDb: React.FC = () => {
                 setStatus(AlertStatus.Error);
             }
         }   catch (error) {
-            setStatus(AlertStatus.Error);
             setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
         }
     }
@@ -84,8 +131,7 @@ const ContainerRecoverDb: React.FC = () => {
         if (!serial) return setMessage("Seriale mancante");
         if (!backupSelected) return setMessage("Backup mancante");
         try{
-            await triggerDowload();
-            const result = await triggerRecover();
+            const result = await triggerRecover({ serial, backup: backupSelected });
             if (result) {
                 setMessage("DB recovered successfully");
                 setStatus(AlertStatus.Success);
@@ -95,8 +141,45 @@ const ContainerRecoverDb: React.FC = () => {
                 setStatus(AlertStatus.Error);
             }
         }catch (error) {
-            setStatus(AlertStatus.Error);
             setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
+        }
+    };
+
+    const handleTransfer = async () => {
+        if (!sourceSerial) return setMessage("Source seriale mancante");
+        if (!destinationSerial) return setMessage("Destination seriale mancante");
+        if (!sourceBackup) return setMessage("Backup mancante");
+
+        try {
+            setStatus(AlertStatus.Info);
+            setMessage("Starting transfer...");
+
+            const downloadResult = await triggerDownload({ serial: sourceSerial, backup: sourceBackup });
+            if (!downloadResult) {
+                setStatus(AlertStatus.Error);
+                setMessage("Download failed");
+                return;
+            }
+
+            setMessage("Integrity check started");
+            const integrityResult = await triggerCheckIntegrity({ serial: sourceSerial, backup: sourceBackup });
+            if (integrityResult !== "OK") {
+                setStatus(AlertStatus.Error);
+                setMessage("Integrity check failed");
+                return;
+            }
+
+            const transferResult = await triggerTransfer({ sourceSerial, targetSerial: destinationSerial, backup: sourceBackup });
+            if (transferResult) {
+                setStatus(AlertStatus.Success);
+                setMessage("Finger transfered successfully");
+            } else {
+                setStatus(AlertStatus.Error);
+                setMessage("Transfer failed");
+            }
+        } catch (error) {
+            setStatus(AlertStatus.Error);
+            setMessage(error instanceof Error ? error.message : "Errore sconosciuto");
         }
     };
 
@@ -104,7 +187,7 @@ const ContainerRecoverDb: React.FC = () => {
         <>
             <div>
             <AlertMultiple
-                isLoading={isLoadingBackupList || isLoadingRecoverDb || isDownloadLoading || isCheckingIntegrity}
+                isLoading={isLoadingBackupList || isLoadingRecoverDb || isDownloadLoading || isCheckingIntegrity || isLoadingSourceBackupList || isLoadingTransfer}
                 message={message}
                 status={status}
             />
@@ -113,7 +196,6 @@ const ContainerRecoverDb: React.FC = () => {
                 <div className="card w-full max-w-md bg-base-100 shadow-xl ">
                     <div className="card-header">
                         <h2 className="card-title">Recover DB</h2>
-                        <p className="text-sm text-gray-500">Select the backup to recover</p>
                     </div>
                     <div className="card-body space-y-4">
                         <label className="input">
@@ -124,6 +206,7 @@ const ContainerRecoverDb: React.FC = () => {
                                 onChange={(e) => setSerial(e.target.value)}
                             />
                         </label>
+                        <p className="text-sm text-gray-500">Select the backup to recover</p>
                         <label className="select">
                             <span className="label">Backups</span>
                             <select
@@ -149,6 +232,48 @@ const ContainerRecoverDb: React.FC = () => {
                         </button>
                     </div>
                 </div>
+                <div className="card w-full max-w-md bg-base-100 shadow-xl ">
+                    <div className="card-header">
+                        <h2 className="card-title">Transfer Fingers</h2>
+                        
+                    </div>
+                    <div className="card-body space-y-4">
+                        <label className="input">
+                            <span className="label">Source Serial</span>
+                            <input
+                                type="text"
+                                placeholder="Enter source serial..."
+                                onChange={(e) => setSourceSerial(e.target.value)}
+                            />
+                        </label>
+                        <p className="text-sm text-gray-500">Select the backup to transfer</p>
+                        <label className="select">
+                            <span className="label">Transfer</span>
+
+                            <select
+                                onChange={e => setSourceBackup(e.target.value)}
+                                disabled={sourceBackupOptions.length === 0}
+                            >
+                                {sourceBackupOptions}
+                            </select>
+                        </label>
+                        <label className="input">
+                            <span className="label">Destination Serial</span>
+                            <input
+                                type="text"
+                                placeholder="Enter destination serial..."
+                                onChange={(e) => setDestinationSerial(e.target.value)}
+                            />
+                        </label>
+                        <button
+                            className="btn btn-soft"
+                            onClick={handleTransfer}
+                            disabled={sourceBackupOptions.length === 0 || sourceSerial.length !== 5 || destinationSerial.length !== 5}
+                        >
+                            Transfer
+                        </button>
+                    </div>
+                </div>                
             </div>
         </>
     );

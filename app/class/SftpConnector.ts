@@ -75,6 +75,18 @@ class SftpConnector {
         }
     }
 
+    async createPath(path: string): Promise<void> {
+        try {
+            await this.createSftpSession();
+            await this.sftp.mkdir(path, true); 
+        } catch (error) {
+            console.error('Errore durante la creazione della directory:', error);
+            throw new Error(`Errore durante la creazione della directory: ${(error as Error).message}`);
+        } finally {
+            await this.sftp.end();
+        }
+    }
+
     private mapToBackupList(fileList: FileInfo[]): string[][] {
         // Filtra i file esclusi e mappa i file rimanenti in un array di attributi
         return fileList
@@ -112,6 +124,8 @@ class SftpConnector {
             return `${sizeInBytes} bytes`;
         }
     }
+
+    
 }
 
 export default SftpConnector;

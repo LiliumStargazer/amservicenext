@@ -16,7 +16,7 @@ export class SftpPath {
 
     constructor(private serial: string, private backupName?: string) {
         this._configDir = path.join(this.serial, this.CONFIG_DIR); // /1234/config
-        this._outDir = path.join(this.serial, this.OUT_DIR); // /1234/Out
+        this._outDir = path.join(this.serial,this.CONFIG_DIR, this.OUT_DIR); // /1234/Out
         this._backupFileZip = this.backupName ? path.join(this.serial, this.CONFIG_DIR, this.backupName) : ""; // /1234/config/AndBk17.zip
         this._backupWithFingerZip = path.join(this.serial, this.CONFIG_DIR, this.OUT_DIR, this.BACKUP_WITH_FINGER_ZIP); // /1234/config/Out/DBAndFinger.zip
         this._backupFixedZip = path.join(this.serial, this.UPDATE_DIR, this.BACKUP_FIXED_ZIP); // /1234/update/DB.zip

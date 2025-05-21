@@ -24,7 +24,8 @@ export async function GET(req: Request): Promise<NextResponse> {
         const fileToZip = [databasePath.databaseUnzipped, databasePath.databaseFingerUnzipped, databasePath.databaseProductUnzipped];
         await createZipFile(fileToZip, databasePath.databaseWithFingerZipped);
         const sftpConnector = new SftpConnector();
-        await sftpConnector.uploadBackup(databasePath.databaseWithFingerZipped, sftpPath.outDir);
+        await sftpConnector.createPath(sftpPath.outDir);
+        await sftpConnector.uploadBackup(databasePath.databaseWithFingerZipped, sftpPath.backupWithFingerZip);
         return NextResponse.json('OK', { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });
