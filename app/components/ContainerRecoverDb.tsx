@@ -24,32 +24,6 @@ const ContainerRecoverDb: React.FC = () => {
     const { trigger: triggerTransfer, error: errorTransfer, isMutating: isLoadingTransfer } = useTransferFingerDbMutation();
     const { data: dataBackupList, error: errorBackupList, isLoading: isLoadingBackupList } = useBackupList(serial);
     const { data: sourceBackupList, error: errorSourceBackupList, isLoading: isLoadingSourceBackupList } = useBackupList(sourceSerial);
- 
-  /*   const { data: dataBackupList, error: errorBackupList, isLoading: isLoadingBackupList } = useSWR(
-        serial.length === 5 ? ['/backups-list', { serial }] : null,
-        fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false}
-    );
-    const { data: sourceBackupList, error: errorSourceBackupList, isLoading: isLoadingSourceBackupList } = useSWR(
-        sourceSerial.length === 5 ? ['/backups-list', { serial: sourceSerial }] : null,
-        fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false}
-    ); */
-/*     const { trigger: triggerCheckIntegrity, error: integrityError, isMutating: isCheckingIntegrity } = useSWRMutation(
-        ['/integrity-check'], (key, { arg }: { arg: { serial: string; backup: string } }) => fetcher([key[0], arg])
-    ); */
-    /* const { trigger: triggerDowload, error: errorDownload, isMutating: isDownloadLoading  } = useSWRMutation(
-        ['/download-backup', { serial, backup: backupSelected }],  fetcher
-    ) */
-  /*   const { trigger: triggerDowload, error: errorDownload, isMutating: isDownloadLoading  } = useSWRMutation(
-        ['/download-backup'],
-        (key, { arg }: { arg: { serial: string; backup: string } }) => fetcher([key[0], arg])
-    );
-
-    const { trigger: triggerRecover, error: errorRecoverDb, isMutating: isLoadingRecoverDb } = useSWRMutation(
-        ['/recover-db', { serial, backup: backupSelected  }], fetcher
-    );
-    const { trigger: triggerTransfer, error: errorTransfer, isMutating: isLoadingTransfer } = useSWRMutation(
-        ['/transfer-finger-db', { sourceSerial, backup: sourceBackup, targetSerial: destinationSerial }], fetcher
-    ); */
 
     useEffect(() => {
         if (serial.length !== 5) {
@@ -192,24 +166,24 @@ const ContainerRecoverDb: React.FC = () => {
                 status={status}
             />
             </div>
-            <div className="flex items-center justify-center ">
-                <div className="card w-full max-w-md bg-base-100 shadow-xl ">
+            <div className="flex items-center justify-center space-x-4">
+                <div className="card w-full max-w-sm bg-base-200 shadow-xl ">
                     <div className="card-header">
-                        <h2 className="card-title">Recover DB</h2>
+                        <h2 className="card-title flex justify-center w-full mt-2">Recover DB</h2>
                     </div>
                     <div className="card-body space-y-4">
-                        <label className="input">
+                        <label className="input w-full">
                             <span className="label">Serial</span>
                             <input
                                 type="text"
-                                placeholder="type here.."
                                 onChange={(e) => setSerial(e.target.value)}
                             />
                         </label>
                         <p className="text-sm text-gray-500">Select the backup to recover</p>
-                        <label className="select">
+                        <label className="select w-full">
                             <span className="label">Backups</span>
                             <select
+                                className="w-full"
                                 onChange={e => setBackupSelected(e.target.value)}
                                 disabled={backupOptions.length === 0}
                             >
@@ -217,14 +191,14 @@ const ContainerRecoverDb: React.FC = () => {
                             </select>
                         </label>
                         <button
-                            className="btn btn-soft"
+                            className="btn btn-soft w-full"
                             onClick={handleClickRecover}
                             disabled={backupOptions.length === 0}
                         >
                             Recover
                         </button>
                         <button
-                            className="btn btn-soft"
+                            className="btn btn-soft w-full"
                             onClick={handleCkeckIntegrity}
                             disabled={backupOptions.length === 0}
                         >
@@ -232,22 +206,20 @@ const ContainerRecoverDb: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <div className="card w-full max-w-md bg-base-100 shadow-xl ">
+                <div className="card w-full max-w-sm bg-base-200 shadow-xl ">
                     <div className="card-header">
-                        <h2 className="card-title">Transfer Fingers</h2>
-                        
+                        <h2 className="card-title flex justify-center w-full mt-2">Transfer Fingers</h2>
                     </div>
                     <div className="card-body space-y-4">
-                        <label className="input">
-                            <span className="label">Source Serial</span>
+                        <label className="input w-full">
+                            <span className="label w-64">Source Serial</span>
                             <input
                                 type="text"
-                                placeholder="Enter source serial..."
                                 onChange={(e) => setSourceSerial(e.target.value)}
                             />
                         </label>
                         <p className="text-sm text-gray-500">Select the backup to transfer</p>
-                        <label className="select">
+                        <label className="select w-full">
                             <span className="label">Transfer</span>
 
                             <select
@@ -257,16 +229,15 @@ const ContainerRecoverDb: React.FC = () => {
                                 {sourceBackupOptions}
                             </select>
                         </label>
-                        <label className="input">
-                            <span className="label">Destination Serial</span>
+                        <label className="input w-full">
+                            <span className="label w-64">Destination Serial</span>
                             <input
                                 type="text"
-                                placeholder="Enter destination serial..."
                                 onChange={(e) => setDestinationSerial(e.target.value)}
                             />
                         </label>
                         <button
-                            className="btn btn-soft"
+                            className="btn btn-soft w-full"
                             onClick={handleTransfer}
                             disabled={sourceBackupOptions.length === 0 || sourceSerial.length !== 5 || destinationSerial.length !== 5}
                         >
