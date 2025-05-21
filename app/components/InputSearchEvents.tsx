@@ -2,24 +2,32 @@
 
 import React from "react";
 
+import debounce from "lodash/debounce";
+
 interface SearchEventsProps {
     loading: boolean;
-    handleSearchValueChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    /* handleSearchValueChange: (event: React.ChangeEvent<HTMLInputElement>) => void; */
+    setSearchValue: (serial: string) => void;
     isBackupReady: boolean
 }
 
-const SearchEvents: React.FC <SearchEventsProps> = ({loading, handleSearchValueChange, isBackupReady}) => {
+const InputSearchEvents: React.FC <SearchEventsProps> = ({loading, setSearchValue, isBackupReady}) => {
     const isDisabled= !isBackupReady || loading;
+    
+    const debouncedSetSearchValue = React.useMemo(
+        () => debounce((value: string) => setSearchValue(value), 300),
+        [setSearchValue]
+    );
+
     return (
-        <div className="flex flex-wrap items-center justify-center w-full">
-        <label className="input input-bordered input-info ml-2 mr-2 mb-2">
+        <label className="input input-bordered input-info ml-2 mr-2 flex w-full max-w-xs items-center">
             <input
                 type="search"
                 className="grow text-sm"
                 placeholder="Search events in the whole database..."
-                aria-label="SearchEvents"
+                aria-label="InputSearchEvents"
                 aria-describedby="button-addon2"
-                onChange={handleSearchValueChange}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => debouncedSetSearchValue(event.target.value)}
                 disabled={isDisabled}
             />
             <svg
@@ -33,8 +41,7 @@ const SearchEvents: React.FC <SearchEventsProps> = ({loading, handleSearchValueC
                     clipRule="evenodd" />
             </svg>
         </label>
-        </div>
     );
 }
 
-export default SearchEvents;
+export default InputSearchEvents;

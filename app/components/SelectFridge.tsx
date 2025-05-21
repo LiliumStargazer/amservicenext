@@ -7,20 +7,14 @@ import {RawFridgeData} from "@/app/types/types";
 interface SelectFridgeProps {
     fridgeRawData: RawFridgeData[];
     setFridgeSelected: (value: number) => void;
-    isLoadingFridge: boolean;
-    isSuccessFridge: boolean;
 }
 
-const SelectFridge: React.FC<SelectFridgeProps> = ({ fridgeRawData, setFridgeSelected ,isLoadingFridge,isSuccessFridge}) => {
+const SelectFridge: React.FC<SelectFridgeProps> = ({ fridgeRawData, setFridgeSelected}) => {
     const [input, setInput] = useState<React.ReactNode[]>([]);
 
     useEffect(() => {
 
-        if (isLoadingFridge) {
-            return;
-        }
-
-        if (isSuccessFridge && Array.isArray(fridgeRawData)) {
+        if (fridgeRawData && Array.isArray(fridgeRawData)) {
 
             if (fridgeRawData.length === 0)
                 return;
@@ -47,7 +41,7 @@ const SelectFridge: React.FC<SelectFridgeProps> = ({ fridgeRawData, setFridgeSel
             });
             setInput(inputElements);
         }
-    }, [fridgeRawData, setFridgeSelected, isSuccessFridge, isLoadingFridge]);
+    }, [fridgeRawData, setFridgeSelected]);
 
     if (input.length < 2)
         return null;

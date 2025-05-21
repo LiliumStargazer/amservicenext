@@ -14,13 +14,15 @@ export async function GET(req: Request): Promise<NextResponse> {
     const backup = searchParams.get('backup');
     const date = searchParams.get('date');
 
-    if (!serial || !backup || !date) {
-        return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
+    console.log("date", date);
+
+    if (!serial || !backup) {
+        return NextResponse.json({ error: 'Missing serial or backup or date parameter' }, { status: 400 });
     }
     try {
         const databasePath = new DatabasePath(serial, backup);
 
-        if (date === 'null') {
+        if (!date) {
             let maxDateQuery = `SELECT * FROM EventiView WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiView )`;
             if (databasePath.backupFileZip.includes("DbBackup")) {
                 maxDateQuery = `SELECT * FROM EventiALl WHERE DATE(DataOraR) = ( SELECT DATE(MAX(DataOraR)) FROM EventiAll )`;

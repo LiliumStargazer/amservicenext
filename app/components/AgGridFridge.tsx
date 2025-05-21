@@ -10,8 +10,6 @@ import LoadingOverlayAgGrid from "@/app/components/AgGridLoadingOverlay";
 
 interface AgGridFridgeProps {
     fridgeRawData: RawFridgeData[];
-    isLoadingFridge: boolean;
-    isSuccessFridge: boolean;
     fridgeSelected: number;
     setMessage: (message: string) => void;
     setStoredGridApi: (api: GridApi) => void;
@@ -20,17 +18,13 @@ interface AgGridFridgeProps {
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 const theme = (themeQuartz.withPart(colorSchemeDarkBlue)).withParams({spacing:3});
 
-const AgGridFridge: React.FC<AgGridFridgeProps> = ({fridgeRawData, isLoadingFridge, isSuccessFridge, fridgeSelected, setMessage, setStoredGridApi}) => {
+const AgGridFridge: React.FC<AgGridFridgeProps> = ({fridgeRawData, fridgeSelected, setMessage, setStoredGridApi}) => {
     const [fridgeTables, setFridgeTables] = useState<{[key: string]: FridgesRowData[]}>({});
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        if (isLoadingFridge) {
-            setLoading(true);
-            return;
-        }
 
-        if (isSuccessFridge && Array.isArray(fridgeRawData)) {
+        if (fridgeRawData && Array.isArray(fridgeRawData)) {
             if (fridgeRawData.length === 0) {
                 setMessage('No fridge data found');
                 setLoading(false);
@@ -81,7 +75,7 @@ const AgGridFridge: React.FC<AgGridFridgeProps> = ({fridgeRawData, isLoadingFrid
             setFridgeTables(fridgesParsedData);
             setLoading(false);
         }
-    }, [fridgeRawData, isLoadingFridge, isSuccessFridge, setMessage, setFridgeTables, setLoading]);
+    }, [fridgeRawData, setMessage, setFridgeTables, setLoading]);
 
     const colDefsBase: ColDef<FridgesRowData>[]  = useMemo(() => [
         { headerName: 'ID', field: 'Id', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true, floatingFilter: true, suppressHeaderFilterButton: true , suppressFloatingFilterButton: true},

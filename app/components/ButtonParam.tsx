@@ -8,9 +8,10 @@ interface ParamButtonProps {
     isBackupReady: boolean;
     loading: boolean;
     setSection: React.Dispatch<React.SetStateAction<string>>;
+    setMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ButtonParam: React.FC <ParamButtonProps>= ({isBackupReady, loading, setSection}) => {
+const ButtonParam: React.FC <ParamButtonProps>= ({isBackupReady, loading, setSection, setMessage}) => {
     const [fade, setFade] = useState(false);
     const isDisabled = !isBackupReady || loading;
 
@@ -20,10 +21,18 @@ const ButtonParam: React.FC <ParamButtonProps>= ({isBackupReady, loading, setSec
             return () => clearTimeout(timer);
         }
     }, [fade]);
+
+    const handleParamClick = () => {
+        if (isBackupReady) {
+            setSection("param");
+        } else {
+            setMessage("Backup not ready");
+        }
+    }
     return (
         <div >
             <button
-                onClick={() => setSection("param")}
+                onClick={handleParamClick}
                 disabled={isDisabled}
             >
                 <FontAwesomeIcon

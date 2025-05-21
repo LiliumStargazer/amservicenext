@@ -1,18 +1,19 @@
 'use client'
 
-import React, {useCallback, useEffect, useState} from "react";
+import React, {use, useCallback, useEffect, useRef, useState} from "react";
 import {AliveEvent, ErrorResponse, FingerRawData, RawFridgeData, RawLogEventData} from "@/app/types/types";
+import { CellDoubleClickedEvent } from "ag-grid-community";
 import { GridApi } from "ag-grid-community";
 import SelectBackup from "@/app/components/SelectBackup";
 import DropDownInfoBackup from "@/app/components/DropDownInfoBackup";
 import IconSoftware from "@/app/components/IconSoftware";
-import SearchEvents from "@/app/components/SearchEvents";
+import SearchEvents from "@/app/components/InputSearchEvents";
 import Alert from "@/app/components/Alert";
 import AgGridFridge from "@/app/components/AgGridFridge";
 import Dialog from "@/app/components/Dialog";
 import ContainerChartFridge from "@/app/components/ContainerChartFridge";
 import ButtonGet from "@/app/components/ButtonGet";
-import InputLog from "@/app/components/InputLog";
+import InputLog from "@/app/components/InputSerial";
 import SelectFridge from "@/app/components/SelectFridge";
 import AgGridFingersTransaction from "@/app/components/AgGridFingersTransaction";
 import ButtonFinger from "@/app/components/ButtonFinger";
@@ -23,9 +24,8 @@ import AgGridMaster from "@/app/components/AgGridMaster";
 import SwapChartTable from "@/app/components/SwapChartTable";
 import useQueryEventsByDate from "@/app/hooks/useQueryEventsByDate";
 import useQueryEventsFromAlive from "@/app/hooks/useQueryEventsFromAlive";
-import useQuerySelectedEvents from "@/app/hooks/useQuerySelectedEvents";
+import useQueryfilteredEvents from "@/app/hooks/useQueryfilteredEvents";
 import useResetQueries from "@/app/hooks/useResetQueries";
-import {useQueryGetBackupList} from "@/app/hooks/useQueryGetBackupList";
 import {useQueryDownloadBackup} from "@/app/hooks/useQueryDownloadBackup";
 import {useQueryFridgeData} from "@/app/hooks/useQueryFridgeData";
 import useAliveEvent from "@/app/hooks/useAliveEvent";
@@ -50,10 +50,18 @@ import Badge from "@/app/components/Badge";
 import BadgeVTE from "@/app/components/BadgeVTE";
 import ButtonRecoverDb from "@/app/components/ButtonRecoverDb";
 import ContainerRecoverDb from "@/app/components/ContainerRecoverDb";
+import { useDownloadBackupMutation, useGetAliveEventsCorsHandlingMutation, useGetEventsByDateMutation, useGetEventsFilteredMutation } from "@/app/hooks/useMutations";
+import { date } from "drizzle-orm/pg-core";
+import { debounce } from "lodash";
+import InputSearchEvents from "@/app/components/InputSearchEvents";
+import { useBackupListQuery, useGetFilteredEventsQuery } from "@/app/hooks/useQueries";
+import ContainerFridgeSection from "@/app/components/ContainerFridgeSection";
+import { Status } from "@/app/enum/enum";
+import ContainerBadge from "@/app/components/ContainerBadge";
 
 const DashBoard: React.FC = () => {
     const [serial, setSerial] = useState<string>('');
-    const [serialTemp, setSerialTemp] = useState<string>('');
+    const [status, setStatus] = useState<Status>(Status.None);
     const [isFetchRequest, setIsFetchRequest] = useState<boolean>(false);
     const [storedGridAPi, setStoredGridApi] = useState<GridApi | null>(null);
     const [message, setMessage] = useState<string>('');
@@ -68,259 +76,216 @@ const DashBoard: React.FC = () => {
     const [searchValue, setSearchValue] = useState<string>('');
     const [loading, setLoading] = React.useState(false);
     const [isResettingSearchingEvent, setIsResettingSearchingEvent] = useState(false);
-    const [fridgeSelected, setFridgeSelected] = useState<number>(0);
     const [section, setSection] = useState<string>('master');
     const resetQueries = useResetQueries();
     const [isGetBackupListEnabled, setIsGetBackupListEnabled] = useState<boolean>(false);
     const [isDownloadBackupEnabled, setIsDownloadBackupEnabled] = useState<boolean>(false);
     const [isGetEventsByDateEnabled, setIsGetEventsByDateEnabled] = useState<boolean>(false);
-    const [isGetSelectedEventsEnabled, setIsGetSelectedEventsEnabled] = useState<boolean>(false);
+    const [isGetfilteredEventsEnabled, setIsGetfilteredEventsEnabled] = useState<boolean>(false);
     const [isGetSoftwareEnabled, setIsGetSoftwareEnabled] = useState<boolean>(false);
     const [isGetFingerTransactionEnabled, setIsGetFingerTransactionEnabled] = useState<boolean>(false);
     const [rawLogEvents, setRawLogEvents] = useState<RawLogEventData[]>([]);
-    const [selectedEvents, setSelectedEvents] = useState<RawLogEventData[]>([]);
+    const [filteredEvents, setFilteredEvents] = useState<RawLogEventData[]>([]);
     const [backupList, setBackupList] = useState<string[]>([]);
     const [softwareType, setsoftwareType] = useState<string>('');
     const [rawFingerTransactions, setRawFingerTransactions] = useState<FingerRawData[]>([]);
-    const {
-        IDParam,
-        rawIdList,
-        param,
-        jsonParams,
-        isLoadingParam,
-        listinoItems,
-        handleOnChangeParam,
-        machineModel
-    } = useParamData({serial, backup, isBackupReady, setMessage});
-    const {customerName, VTElink} = useVteData(serial);
+    const { data: backupListData, error: errorBackupList, isLoading: isLoadingBackupList } = useBackupListQuery(serial);
+    const { trigger: triggerDownloadBackup, isMutating: isLoadingDownloadBackup, error: errorDownloadBackup } = useDownloadBackupMutation();
+    const { trigger: triggerGetEventsByDate, error: errorGetEventsByDate, data: dataGetEventsByDate } = useGetEventsByDateMutation();
+    /* const { trigger: triggerEventsByFilter, error: errorEventsByFilter, isMutating: isMutatingEventsByFilter, data: dataEventsByFilter } = useGetEventsFilteredMutation(); */
+    const { data: dataFilteredEvents, error: errorFilteredEvents, isLoading: isLoadingFilteredEvents } = useGetFilteredEventsQuery(serial, backup, isBackupReady, searchValue);
+    const { trigger: triggerAliveEvents, error: errorAliveEvents, isMutating: isMutatingAliveEvents, data: dataAliveEvents } = useGetAliveEventsCorsHandlingMutation();
 
-    const reset = useReset(
-        setBackup,
-        setIsBackupReady,
-        setSearchValue,
-        setDatePickerDate,
-        setDateIsoString,
-        setIsGetBackupListEnabled,
-        resetQueries
-    );
+    useEffect(() => {
+        if ( isLoadingBackupList || isLoadingFilteredEvents || isLoadingDownloadBackup || isMutatingAliveEvents) {
+            setStatus(Status.Loading);
+            return;
+        }
+        if (errorBackupList || errorFilteredEvents || errorDownloadBackup || errorAliveEvents) {
+            console.log('errorBackupList', errorBackupList);
+            console.log('errorFilteredEvents', errorFilteredEvents);
+            console.log('errorDownloadBackup', errorDownloadBackup);
+            console.log('errorAliveEvents', errorAliveEvents);
 
-    const {
-        isLoading: isLoadingBackupList,
-        data: rawBackupList,
-        isFetched: isFetchedBackupList
-    } = useQueryGetBackupList(serial, isGetBackupListEnabled);
+            setStatus(Status.Error);
+            setMessage('Error fetching data');
+            return;
+        }
+        if (serial.length === 5 && backupList.length > 0) {
+            setStatus(Status.Success);
+        } else {
+            setStatus(Status.None);
+        }
 
-    const {
-        isLoading: isDownloading,
-        isSuccess: isSuccessDownloadBackup,
-        isFetched: isFetchedDownloadBackup
-    } = useQueryDownloadBackup(serial, backup, isDownloadBackupEnabled);
+    }, [isLoadingBackupList, 
+        isLoadingFilteredEvents, 
+        isLoadingDownloadBackup, 
+        isMutatingAliveEvents, 
+        errorBackupList, 
+        errorFilteredEvents, 
+        errorDownloadBackup, 
+        errorAliveEvents, 
+        serial.length, backupList.length
+    ]);
 
-    const {
-        isLoading: isLoadingEventsByDate,
-        data: rawEventsByDate,
-        isFetched: isFetchedEventsByDate
-    } = useQueryEventsByDate(serial, backup, dateIsoString , isGetEventsByDateEnabled);
+    const onCellDoubleClicked = useCallback(async (event: CellDoubleClickedEvent) => {
+        if (event.colDef.field === 'EventString') {
+            try {
+                await triggerAliveEvents();
+                if (Array.isArray(dataAliveEvents)) {
+                    const matchedEvent = dataAliveEvents.find(
+                        (aliveEvent: AliveEvent) => aliveEvent.EventString === event.value
+                    );
+                    if (!matchedEvent) {
+                        setMessage("No event found");
+                        return;
+                    }
+                    setDialogContent(matchedEvent);
+                    setIsDialogOpen(true);
+                }
+            } catch (error) {
+                setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
+            }
+        }           
+        if (event.colDef.field === 'TagData') {
+            setDialogContent(event.data.TagData);
+            setIsDialogOpen(true);
+        }
+        if (event && event.colDef.field === 'DataOraR') {
+            const [day, month, year] = event.data.DataOraR.split('/');
+            const newDate = new Date(Date.UTC(year, month - 1, day, 12, 0, 0)).toISOString();
+            const id = event.data.ID;
 
-    const {
-        isLoading: isLoadingSelectedEvents,
-        data: rawSelectedEvents,
-        isFetched: isFetchedSelectedEvent
-    } = useQuerySelectedEvents(serial, backup, searchValue, isGetSelectedEventsEnabled);
+            const queryParams = new URLSearchParams({
+                date: newDate,
+                id: id.toString(),
+                serial: serial.toString(),
+                backup: backup.toString(),
+            }).toString();
 
-    const {
-        data: aliveEvent,
-        isSuccess: isSuccessAliveEvent
-    } = useQueryEventsFromAlive(isAliveEvent);
+            const newWindow = window.open(`/extracted-days-events?${queryParams}`, '_blank');
+            if (!newWindow) {
+                setMessage('Please allow popups for this website');
+            }
+        }
+    }, [triggerAliveEvents, dataAliveEvents, serial, backup]);
 
-    const {
-        isLoading: isLoadingFridge,
-        data: fridgeRawData,
-        isSuccess: isSuccessFridge
-    } = useQueryFridgeData(serial, backup, isBackupReady, section);
+    useEffect(() => {
+        if (Array.isArray(backupListData) ) {
+            setBackupList(backupListData);
+        }
+    }, [backupListData]);
 
-    const {
-        data: rawSoftwareType,
-        isFetched: isFetchedSoftwareType
-    } = useQueryGetSoftwareType(serial, backup, isGetSoftwareEnabled);
+    useEffect(() => {
+        console.log('searchValue', searchValue);
+        if (searchValue.length === 0) {
+            console.log('sono vuoto');
+            setFilteredEvents([]);
+        }
+    }, [searchValue]);
 
-    const {
-        isLoading: isLoadingFingerTransaction,
-        data: dataFingerTransaction,
-        isFetched: isFetchedFingerTransaction
-    } = useQueryFingerTransactions(serial, backup, isBackupReady, isGetFingerTransactionEnabled);
+    useEffect(() => {
+        if (serial.length !== 5) {
+            setBackupList([]);
+            setRawLogEvents([]);
+            setBackup('');
+            setIsBackupReady(false);
+        }
+    }, [serial]);
 
-    useAliveEvent(
-        isSuccessAliveEvent,
-        isAliveEvent,
-        aliveEvent as AliveEvent[],
-        eventString,
-        setDialogContent,
-        setIsDialogOpen,
-        setIsAliveEvent
-    );
+    useEffect(() => {
+        if (errorBackupList) {
+            setMessage("Error fetching backup list");
+        }
+    }, [errorBackupList]);
 
-    useErrorHandling({
-        eventsByDate: rawEventsByDate as ErrorResponse,
-        selectedEvents: rawSelectedEvents as ErrorResponse,
-        aliveEvent: aliveEvent as ErrorResponse,
-        rawBackupList: rawBackupList as ErrorResponse,
-        fridgeRawData: fridgeRawData as ErrorResponse,
-        dataFingerTransaction: dataFingerTransaction as ErrorResponse,
-        section,
-        setMessage,
-        setSection,
-        setLoading,
-        setIsBackupReady,
-        setIsGetSelectedEventsEnabled
-    });
+    useEffect(() => {
+        const downloadBackup = async () => {
+                try {
+                    await triggerDownloadBackup({ serial, backup });
+                    await triggerGetEventsByDate({ serial, backup , date: null });
+                } catch (error) {
+                    setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
+                }
+            };
+        if (serial.length === 5 && backup) {
+            downloadBackup();
+        }
+    }, [backup, serial, triggerDownloadBackup, triggerGetEventsByDate,]);
 
-    useBackupList(
-        rawBackupList as string[],
-        setBackup, isFetchedBackupList,
-        setIsGetBackupListEnabled,
-        setIsDownloadBackupEnabled,
-        setBackupList
-    );
+    
+    useEffect(() => {
+        if (Array.isArray(dataGetEventsByDate)) {
+            setRawLogEvents(dataGetEventsByDate)
+            setIsBackupReady(true);
+        }
+    }, [dataGetEventsByDate]);
 
-    useBackupStatus(
-        isFetchedDownloadBackup,
-        isSuccessDownloadBackup,
-        setIsDownloadBackupEnabled,
-        setIsBackupReady,
-        setIsGetEventsByDateEnabled,
-        setIsGetSoftwareEnabled
-    );
-
-    useLoadingStatus(
-        isLoadingEventsByDate,
-        isLoadingSelectedEvents,
-        isLoadingBackupList,
-        isDownloading,
-        setLoading
-    );
-
-    const handleSearchValueChange = useSearch(
-        setSearchValue,
-        setIsResettingSearchingEvent
-    );
-
-    const onCellDoubleClicked = useCellDoubleClick(
-        searchValue,
-        seteventString,
-        setIsAliveEvent,
-        setDialogContent,
-        setIsDialogOpen,
-        setMessage,
-        serial,
-        backup
-    );
+    useEffect(() => {
+        if (Array.isArray(dataFilteredEvents)) {
+            if (dataFilteredEvents.length === 0) {
+                setMessage("No data found.");
+                setFilteredEvents([]);
+                return;
+            }
+            setFilteredEvents(dataFilteredEvents as RawLogEventData[]);
+        }
+    }, [dataFilteredEvents]);
 
     const onSelectBackup = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
         setBackup(event.target.value);
-        setIsBackupReady(false);
-        setIsDownloadBackupEnabled(true);
-    }, [setBackup, setIsBackupReady]);
+    }, [setBackup]);
 
     const handleDatePickerChange = useCallback((date: Date ) => {
-
         // conversion in local date string without timezone ( keep gmt+1 )
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         const localDateString = `${year}-${month}-${day}T00:00:00.000Z`;
+        triggerGetEventsByDate({ serial, backup, date: localDateString }).catch((error) => {
+            setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
+        });
 
         setDatePickerDate(date);
         setDateIsoString(localDateString);
         setIsGetEventsByDateEnabled(true);
-    }, [setDatePickerDate, setDateIsoString, setIsGetEventsByDateEnabled]);
-
-    useEffect(() => {
-        if (isFetchedEventsByDate) {
-            setIsGetEventsByDateEnabled(false);
-            if ( Array.isArray(rawEventsByDate)){
-                if (rawEventsByDate.length === 0) {
-                    setMessage("No data found.");
-                    return;
-                }
-                setRawLogEvents(rawEventsByDate as RawLogEventData[]);
-            }
-        }
-        if (isFetchedSelectedEvent) {
-            setIsGetSelectedEventsEnabled(false);
-            if (Array.isArray(rawSelectedEvents) ){
-                if (rawSelectedEvents.length === 0) {
-                    setMessage("No data found.");
-                    return;
-                }
-                setSelectedEvents(rawSelectedEvents as RawLogEventData[]);
-            }
-        }
-        if (isFetchedSoftwareType){
-            setIsGetSoftwareEnabled(false);
-            console.log('rawSoftwareType',rawSoftwareType);
-            if ( typeof rawSoftwareType === 'string'){
-                setsoftwareType(rawSoftwareType);
-            }
-        }
-        if (isFetchedFingerTransaction){
-            setIsGetFingerTransactionEnabled(false);
-            if (Array.isArray(dataFingerTransaction)){
-                if (dataFingerTransaction.length === 0) {
-                    setMessage("No data found.");
-                    return;
-                }
-                setRawFingerTransactions(dataFingerTransaction as FingerRawData[]);
-            }
-        }
-
-    }, [dataFingerTransaction,
-        isFetchedEventsByDate,
-        isFetchedFingerTransaction,
-        isFetchedSelectedEvent,
-        isFetchedSoftwareType,
-        rawEventsByDate,
-        rawSelectedEvents,
-        rawSoftwareType]);
-
-    useEffect(() => {
-        if(searchValue.length > 0 && isBackupReady){
-            setIsGetSelectedEventsEnabled(true);
-        }
-    }, [searchValue, isBackupReady]);
-
-    useEffect(() => {
-        if (isFetchRequest) {
-            setLoading(true);
-            const formattedSerial = trimAndFormatSerial(serialTemp);
-            const message = getSerialValidationMessage(formattedSerial);
-            if (message !== "valid" ){
-                setMessage(message);
-                setLoading(false);
-            }
-            else{
-                reset().catch((error) => setMessage(error.message));
-                setSerial(formattedSerial);
-                setIsGetBackupListEnabled(true);
-            }
-            setIsFetchRequest(false);
-        }
-    }, [serialTemp, isFetchRequest, reset]);
-
+    }, [setDatePickerDate, setDateIsoString, setIsGetEventsByDateEnabled, serial, backup, triggerGetEventsByDate]);
 
     return (
         <div className="h-screen flex flex-col">
-            <NavbarTop
-                serialTemp={serialTemp}
+       {/*      <NavbarTop
+                serialTemp={serial}
                 setMessage={setMessage}
-            />
-            <div className="bg-base-100 text-neutral-content min-h-8 max-h-8 flex flex-row mb-4 mt-2 w-full">
-                <div className="space-x-2 flex flex-row ml-2 mr-2 w-full"> {/* Aggiunto w-full */}
+            /> */}
+            <div className="bg-base-100 text-neutral-content min-h-8 max-h-8 flex flex-row mb-4 mt-6 w-full">
+                <div className="flex flex-row justify-between items-center w-full px-2">
+                    {/* Left: Buttons */}
+                    <div className="flex flex-row space-x-4">
+                        <p className=" text-xl text-neutral-content font-bold ml-2">AM Service</p>
+                        <ButtonHome loading={loading} setSection={setSection}/>
+                        <ButtonRecoverDb loading={loading} setSection={setSection} />
+                        <ButtonParam isBackupReady={isBackupReady} loading={loading} setSection={setSection} setMessage={setMessage}/>
+                        <ButtonFridge isBackupReady={isBackupReady} loading={loading} setSection={setSection} setMessage={setMessage}/>
+                        <ButtonFinger
+                            isBackupReady={isBackupReady}
+                            loading={loading}
+                            setSection={setSection}
+                            setIsGetFingerTransactionEnabled={setIsGetFingerTransactionEnabled}/>
+                        <ButtonExcel
+                            isBackupReady={isBackupReady}
+                            loading={loading}
+                            setMessage={setMessage}
+                            section={section}
+                            storedGridAPi={storedGridAPi}
+                        />
+                    </div>
+                    {/* Right: Section controls */}
                     {section === 'master' && (
-                        <>
-                            <InputLog loading={loading} setSerialTemp={setSerialTemp} setIsFetchRequest={setIsFetchRequest} />
-                            <ButtonGet loading={loading} setIsFetchRequest={setIsFetchRequest} />
+                        <div className="flex flex-row items-center space-x-2">
+                            <InputLog loading={loading} setSerialTemp={setSerial} setIsFetchRequest={setIsFetchRequest} />
+        {/*                     <ButtonGet loading={loading} setIsFetchRequest={setIsFetchRequest} /> */}
                             <SelectBackup
+                                setBackup={setBackup}
                                 backup={backup}
                                 loading={loading}
                                 onSelectBackup={onSelectBackup}
@@ -338,102 +303,33 @@ const DashBoard: React.FC = () => {
                                 handleDatePickerChange={handleDatePickerChange}
                                 isBackupReady={isBackupReady}
                             />
+                            <InputSearchEvents loading={loading} setSearchValue={setSearchValue} isBackupReady={isBackupReady}/>
                             <div className="flex flex-row space-x-2 mt-2">
                                 <IconSoftware softwareType={softwareType}/>
                                 <Badge text={serial}/>
-                                <Badge text={machineModel}/>
-                                <BadgeVTE customerName={customerName} VTElink={VTElink}/>
+        {/*                         <Badge text={machineModel}/>
+                                <BadgeVTE customerName={customerName} VTElink={VTElink}/> */}
                             </div>
-                        </>
+                        </div>
                     )}
-                    <div className="flex justify-end space-x-2">
-                        {isBackupReady && (
-                            <>
-                                {(section === 'chart' || section ==='fridge') &&
-                                    <SwapChartTable section={section} setSection={setSection}
-                                    />
-                                }
-                                { (section === 'fridge' || section ==='chart') &&
-                                    <SelectFridge
-                                        fridgeRawData={fridgeRawData as RawFridgeData[]}
-                                        isLoadingFridge={isLoadingFridge}
-                                        isSuccessFridge={isSuccessFridge}
-                                        setFridgeSelected={setFridgeSelected}
-                                    />
-                                }
-                            </>
-                        )}
-                    </div>
-                    <div className="flex space-x-4 ml-auto ">
-                        <>
-                            <ButtonHome loading={loading} setSection={setSection}/>
-                            <ButtonRecoverDb loading={loading} setSection={setSection} />
-                            {isBackupReady && (
-                                <>
-                                    <ButtonParam isBackupReady={isBackupReady} loading={loading} setSection={setSection}/>
-                                    <ButtonFridge isBackupReady={isBackupReady} loading={loading} setSection={setSection}/>
-                                    <ButtonFinger
-                                        isBackupReady={isBackupReady}
-                                        loading={loading}
-                                        setSection={setSection}
-                                        setIsGetFingerTransactionEnabled={setIsGetFingerTransactionEnabled}/>
-                                    <ButtonExcel
-                                        isBackupReady={isBackupReady}
-                                        loading={loading}
-                                        setMessage={setMessage}
-                                        section={section}
-                                        storedGridAPi={storedGridAPi}
-                                    />
-                                </>
-                            )}
-                        </>
-                    </div>
                 </div>
             </div>
-            <div className="bg-base-100 text-neutral-content min-h-8 max-h-8 flex flex-row w-full mb-4">
-                { section === 'master' && (
-                    <SearchEvents loading={loading} handleSearchValueChange={handleSearchValueChange} isBackupReady={isBackupReady}/>
-                )}
-            </div>
-            <Alert
-                message={message}
-                setMessage={setMessage}
-            />
-
+            <ContainerBadge status={status} setStatus={setStatus} setMessage={setMessage} message={message}/>
             <div className="flex-grow flex-col space-y-4 ">
                 {section === 'master' &&
                     <AgGridMaster
                         loading={loading}
                         rawLogEvents={rawLogEvents}
-                        selectedEvents={selectedEvents}
+                        filteredEvents={filteredEvents}
                         onCellDoubleClicked={onCellDoubleClicked}
-                        isResettingSearchingEvent={isResettingSearchingEvent}
-                        setIsResettingSearchingEvent={setIsResettingSearchingEvent}
-                        section={section}
-                        setMessage={setMessage}
-                        searchValue={searchValue}
                         setStoredGridApi={setStoredGridApi}
                     />
                 }
-                {section === 'chart' &&
-                    <ContainerChartFridge
-                        fridgeRawData={fridgeRawData as RawFridgeData[]}
-                        isLoadingFridge={isLoadingFridge}
-                        isSuccessFridge={isSuccessFridge}
-                        fridgeSelected={fridgeSelected}
-                        setMessage={setMessage}
-                    />
-                }
-                {
-                    section ==='recoverdb' &&
-                        <ContainerRecoverDb />
-                }
+                { section ==='recoverdb' && <ContainerRecoverDb />}
                 {section === 'fridge' &&
-                    <AgGridFridge
-                        fridgeRawData={fridgeRawData as RawFridgeData[]}
-                        isLoadingFridge={isLoadingFridge}
-                        isSuccessFridge={isSuccessFridge}
-                        fridgeSelected={fridgeSelected}
+                    <ContainerFridgeSection
+                        serial={serial}
+                        backup={backup}
                         setMessage={setMessage}
                         setStoredGridApi={setStoredGridApi}
                     />

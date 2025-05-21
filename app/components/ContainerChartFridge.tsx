@@ -8,18 +8,15 @@ import { format } from "date-fns";
 import {ChartData, RawFridgeData} from "@/app/types/types";
 import {formatStringDateOrder, getTimeString} from "@/app/utils/utils";
 import {translateFrigoState} from "@/app/utils/device-costants";
-import AlertLoading from "@/app/components/AlertLoading";
 import SelectRange from "@/app/components/SelectRange";
 
 interface ChartProps {
     fridgeRawData: RawFridgeData[];
-    isLoadingFridge: boolean;
-    isSuccessFridge: boolean;
     fridgeSelected: number;
     setMessage: (message: string) => void;
 }
 
-const ContainerChartFridge: React.FC <ChartProps> = ({fridgeRawData, isLoadingFridge, isSuccessFridge, fridgeSelected, setMessage}) => {
+const ContainerChartFridge: React.FC <ChartProps> = ({fridgeRawData, fridgeSelected, setMessage}) => {
     const [intervalMinutes, setIntervalMinutes] = useState(0);
     const [startDate, setStartDate] = useState(new Date(Date.now() - 86400000));
     const [endDate, setEndDate] = useState(new Date());
@@ -104,12 +101,8 @@ const ContainerChartFridge: React.FC <ChartProps> = ({fridgeRawData, isLoadingFr
 
 
     useEffect(() => {
-        if (isLoadingFridge){
-            setLoading(true);
-            return;
-        }
 
-        if (isSuccessFridge && Array.isArray(fridgeRawData)) {
+        if (fridgeRawData && Array.isArray(fridgeRawData)) {
             if (fridgeRawData.length === 0) {
                 setMessage('No fridge data found');
                 setLoading(false);
@@ -143,7 +136,7 @@ const ContainerChartFridge: React.FC <ChartProps> = ({fridgeRawData, isLoadingFr
             setChartsData(groupedChartData);
         }
 
-    }, [fridgeRawData, isLoadingFridge, isSuccessFridge, setMessage]);
+    }, [fridgeRawData, setMessage]);
 
     useEffect(() => {
         if (chartsData[fridgeSelected]) {
@@ -174,9 +167,6 @@ const ContainerChartFridge: React.FC <ChartProps> = ({fridgeRawData, isLoadingFr
         const timer = setTimeout(() => setLoading(false), 500); // Add a small delay to simulate loading
         return () => clearTimeout(timer); // Cleanup the timeout
     }, [startDate, endDate]);
-
-    if ( isLoadingFridge)
-        return <AlertLoading />;
 
     if (data.length === 0) {
         return null;

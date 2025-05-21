@@ -8,9 +8,10 @@ interface FridgeButtonProps {
     isBackupReady: boolean;
     loading: boolean;
     setSection: React.Dispatch<React.SetStateAction<string>>;
+    setMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ButtonFridge: React.FC <FridgeButtonProps>= ({isBackupReady, loading, setSection}, ) => {
+const ButtonFridge: React.FC <FridgeButtonProps>= ({isBackupReady, loading, setSection, setMessage}, ) => {
     const [fade, setFade] = useState(false);
     const isDisabled = !isBackupReady || loading;
 
@@ -20,9 +21,18 @@ const ButtonFridge: React.FC <FridgeButtonProps>= ({isBackupReady, loading, setS
             return () => clearTimeout(timer);
         }
     }, [fade]);
+
+    const handleFridgeClick = () => {
+        if (isBackupReady) 
+            setSection("fridge");
+        else
+            setMessage("Backup not ready");
+    }
+
+
     return (
         <div >
-            <button onClick={() => setSection('chart')} disabled={isDisabled}>
+            <button onClick={handleFridgeClick} disabled={isDisabled}>
                 <FontAwesomeIcon
                     icon={faSnowflake}
                     size="2xl"

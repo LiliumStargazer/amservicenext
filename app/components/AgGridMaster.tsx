@@ -26,13 +26,8 @@ import LoadingOverlayAgGrid from "@/app/components/AgGridLoadingOverlay";
 interface AgGridMasterLogReactQueryProps {
     loading: boolean;
     rawLogEvents: RawLogEventData[];
-    selectedEvents: RawLogEventData[];
+    filteredEvents: RawLogEventData[];
     onCellDoubleClicked: (event: CellDoubleClickedEvent) => void;
-    isResettingSearchingEvent: boolean;
-    setIsResettingSearchingEvent: (value: boolean) => void;
-    section: string;
-    setMessage: (message: string) => void;
-    searchValue: string;
     setStoredGridApi: (api: GridApi) => void;
 }
 
@@ -49,13 +44,8 @@ const theme = (themeQuartz.withPart(colorSchemeDarkBlue)).withParams({
 const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
                                                                     loading,
                                                                     rawLogEvents,
-                                                                    selectedEvents,
+                                                                    filteredEvents,
                                                                     onCellDoubleClicked,
-                                                                    isResettingSearchingEvent,
-                                                                    setIsResettingSearchingEvent,
-                                                                    section,
-                                                                    setMessage,
-                                                                    searchValue,
                                                                     setStoredGridApi
 }) => {
 
@@ -68,22 +58,25 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
             if (gridApi)
                 gridApi.setGridOption('rowData', rows);
 
-    }, [rawLogEvents, gridApi, setMessage, setStoredData]);
+    }, [rawLogEvents, gridApi, setStoredData]);
 
     useEffect(() => {
-            const rows = getRowsMap(selectedEvents);
-            if (gridApi && selectedEvents.length > 0){
+            
+            if (gridApi && filteredEvents.length > 0){
+                const rows = getRowsMap(filteredEvents);
                 gridApi.setGridOption('rowData', rows);
+            }else if (gridApi && rawLogEvents.length > 0) {
+                gridApi.setGridOption('rowData', storedData);
             }
-            setMessage('');
-    }, [gridApi, selectedEvents, setMessage]);
 
-    useEffect(() => {
+    }, [gridApi, filteredEvents, rawLogEvents, storedData]);
+
+/*     useEffect(() => {
         if ( storedData.length > 0 && searchValue.length === 0 && gridApi && isResettingSearchingEvent) {
             gridApi.setGridOption('rowData', storedData);
             setIsResettingSearchingEvent(false);
         }
-    }, [gridApi, isResettingSearchingEvent, searchValue.length, setIsResettingSearchingEvent, storedData]);
+    }, [gridApi, isResettingSearchingEvent, searchValue.length, setIsResettingSearchingEvent, storedData]); */
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
         setStoredGridApi(params.api);

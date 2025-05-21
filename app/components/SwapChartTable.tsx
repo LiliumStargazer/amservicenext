@@ -9,10 +9,10 @@ interface SwapChartTableProps {
 const SwapChartTable: React.FC <SwapChartTableProps> = ({section, setSection}) => {
 
     const handleChanged = () => {
-        if (section === "fridge") {
+        if (section === "table") {
             setSection("chart");
         } else {
-            setSection("fridge");
+            setSection("table");
         }
     }
 

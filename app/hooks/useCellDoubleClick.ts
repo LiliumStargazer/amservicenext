@@ -12,9 +12,12 @@ const useCellDoubleClick = (
     backup: string
 ) => {
     return useCallback((event: CellDoubleClickedEvent) => {
+        
         if (event.colDef.field === 'EventString') {
+
             setEventString(event.data.EventString);
             setIsAliveEvent(true);
+            
         }
         if (event.colDef.field === 'TagData') {
             setDialogContent(event.data.TagData);

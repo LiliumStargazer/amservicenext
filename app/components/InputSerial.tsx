@@ -9,7 +9,7 @@ interface InputProps {
     setIsFetchRequest: (isFetchRequest: boolean) => void;
 }
 
-const InputLog: React.FC<InputProps> = ({loading, setSerialTemp, setIsFetchRequest}) => {
+const InputSerial: React.FC<InputProps> = ({loading, setSerialTemp, setIsFetchRequest}) => {
 
     const handleKeyDownOnLog = async (event: KeyboardEvent) => {
         if (event.key === "Enter") {
@@ -25,8 +25,10 @@ const InputLog: React.FC<InputProps> = ({loading, setSerialTemp, setIsFetchReque
             disabled={loading}
             onKeyDown={handleKeyDownOnLog}
             placeholder="Type Serial"
+            data-np-intersection-state="visible"
         />
     );
 };
 
-export default InputLog;
+export default InputSerial
+;

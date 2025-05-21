@@ -3,6 +3,7 @@
 import React, {useEffect, useState} from 'react';
 
 interface SelectAndDownloadBackupProps {
+    setBackup: (backup: string) => void;
     backup: string;
     loading: boolean;
     onSelectBackup: (event: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -10,7 +11,7 @@ interface SelectAndDownloadBackupProps {
     backupList: string[];
 }
 
-const SelectBackup: React.FC<SelectAndDownloadBackupProps> = ({ onSelectBackup, loading, backup, backupList }) => {
+const SelectBackup: React.FC<SelectAndDownloadBackupProps> = ({ setBackup, onSelectBackup, loading, backup, backupList }) => {
     const [backupOptions, setBackupOptions] = useState<React.ReactNode[]>([]);
     const isDisabled = !backupOptions || loading;
 
@@ -20,9 +21,13 @@ const SelectBackup: React.FC<SelectAndDownloadBackupProps> = ({ onSelectBackup, 
             .map(element => element[0]);
 
         filteredAndSortedBackups.sort().reverse();
-        const backupOptions: React.ReactNode[] = [] = filteredAndSortedBackups.map(element => <option key={element}>{element}</option>);
+        const backupOptions: React.ReactNode[] = filteredAndSortedBackups.map(element => <option key={element}>{element}</option>);
         setBackupOptions(backupOptions);
-    }, [backupList]);
+
+        if (filteredAndSortedBackups.length > 0) {
+            setBackup(filteredAndSortedBackups[0]);
+        }
+    }, [backupList, setBackup]);
 
     return (
         <select

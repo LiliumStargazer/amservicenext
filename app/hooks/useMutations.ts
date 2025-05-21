@@ -127,13 +127,13 @@ export function useGetFingersTransactionsMutation() {
 export function useGetEventsByDateMutation() {
     const { trigger, error, data, isMutating } = useSWRMutation(
         ['/events-by-date'],
-        (key, { arg }: { arg: { serial: string; backup: string; date: string } }) => fetcher([key[0], arg])
+        (key, { arg }: { arg: { serial: string; backup: string; date: string | null } }) => fetcher([key[0], arg])
     );
     return { trigger, error, isMutating, data };
 }
 
 // useGetSelectedEvents
-export function useGetSelectedEventsMutation() {
+export function useGetEventsFilteredMutation() {
     const { trigger, error, data, isMutating } = useSWRMutation(
         ['/events-filtered'],
         (key, { arg }: { arg: { serial: string; backup: string; event: string } }) => fetcher([key[0], arg])

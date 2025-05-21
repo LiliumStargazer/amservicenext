@@ -4,8 +4,7 @@ import React, {useEffect, useState} from 'react';
 import AlertMultiple from "@/app/components/AlertMultiple.";
 import { AlertStatus } from "@/app/enum/enum";
 import { useCheckIntegrityMutation, useDownloadBackupMutation, useRecoverDbMutation, useTransferFingerDbMutation } from '@/app/hooks/useMutations';
-import { useBackupList } from '../hooks/useQueries';
-console.log('AlertStatus importato:', AlertStatus);
+import { useBackupListQuery } from '@/app/hooks/useQueries';
 
 
 const ContainerRecoverDb: React.FC = () => {
@@ -22,8 +21,8 @@ const ContainerRecoverDb: React.FC = () => {
     const { trigger: triggerDownload, error: errorDownload, isMutating: isDownloadLoading } = useDownloadBackupMutation();
     const { trigger: triggerRecover, error: errorRecoverDb, isMutating: isLoadingRecoverDb } = useRecoverDbMutation();
     const { trigger: triggerTransfer, error: errorTransfer, isMutating: isLoadingTransfer } = useTransferFingerDbMutation();
-    const { data: dataBackupList, error: errorBackupList, isLoading: isLoadingBackupList } = useBackupList(serial);
-    const { data: sourceBackupList, error: errorSourceBackupList, isLoading: isLoadingSourceBackupList } = useBackupList(sourceSerial);
+    const { data: dataBackupList, error: errorBackupList, isLoading: isLoadingBackupList } = useBackupListQuery(serial);
+    const { data: sourceBackupList, error: errorSourceBackupList, isLoading: isLoadingSourceBackupList } = useBackupListQuery(sourceSerial);
 
     useEffect(() => {
         if (serial.length !== 5) {
