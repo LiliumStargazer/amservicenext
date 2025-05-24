@@ -22,34 +22,16 @@ import ButtonFridge from "@/app/components/ButtonFridge";
 import ButtonExcel from "@/app/components/ButtonExcel";
 import AgGridMaster from "@/app/components/AgGridMaster";
 import SwapChartTable from "@/app/components/SwapChartTable";
-import useQueryEventsByDate from "@/app/hooks/useQueryEventsByDate";
-import useQueryEventsFromAlive from "@/app/hooks/useQueryEventsFromAlive";
-import useQueryfilteredEvents from "@/app/hooks/useQueryfilteredEvents";
-import useResetQueries from "@/app/hooks/useResetQueries";
-import {useQueryDownloadBackup} from "@/app/hooks/useQueryDownloadBackup";
-import {useQueryFridgeData} from "@/app/hooks/useQueryFridgeData";
-import useAliveEvent from "@/app/hooks/useAliveEvent";
-import useErrorHandling from "@/app/hooks/useErrorHandling";
-import useLoadingStatus from "@/app/hooks/useLoadingStatus";
-import useReset from "@/app/hooks/useReset";
-import useCellDoubleClick from "@/app/hooks/useCellDoubleClick";
-import useBackupStatus from "@/app/hooks/useBackupStatus";
-import useBackupList from "@/app/hooks/useBackupList";
-import useSearch from "@/app/hooks/useSearch";
 import NavbarTop from "@/app/components/NavbarTop";
-import {getSerialValidationMessage, trimAndFormatSerial} from "@/app/utils/utils";
-import {useQueryGetSoftwareType} from "@/app/hooks/useQueryGetSoftwareType";
-import {useQueryFingerTransactions} from "@/app/hooks/useQueryFingerTransactions";
 import DatePicker from "@/app/components/DatePicker";
 import ButtonHome from "@/app/components/ButtonHome";
-import {useParamData} from "@/app/hooks/useParamData";
 import ParamSections from "@/app/components/ParamSections";
 import SelectParam from "@/app/components/SelectParam";
 import {useVteData} from "@/app/hooks/useVteData";
 import Badge from "@/app/components/Badge";
 import BadgeVTE from "@/app/components/BadgeVTE";
 import ButtonRecoverDb from "@/app/components/ButtonRecoverDb";
-import ContainerRecoverDb from "@/app/components/ContainerRecoverDb";
+import RecoverDbContainer from "@/app/components/RecoverDbContainer";
 import { useDownloadBackupMutation, useGetAliveEventsCorsHandlingMutation, useGetEventsByDateMutation, useGetEventsFilteredMutation } from "@/app/hooks/useMutations";
 import { date } from "drizzle-orm/pg-core";
 import { debounce } from "lodash";
@@ -77,7 +59,6 @@ const DashBoard: React.FC = () => {
     const [loading, setLoading] = React.useState(false);
     const [isResettingSearchingEvent, setIsResettingSearchingEvent] = useState(false);
     const [section, setSection] = useState<string>('master');
-    const resetQueries = useResetQueries();
     const [isGetBackupListEnabled, setIsGetBackupListEnabled] = useState<boolean>(false);
     const [isDownloadBackupEnabled, setIsDownloadBackupEnabled] = useState<boolean>(false);
     const [isGetEventsByDateEnabled, setIsGetEventsByDateEnabled] = useState<boolean>(false);
@@ -97,35 +78,34 @@ const DashBoard: React.FC = () => {
     const { trigger: triggerAliveEvents, error: errorAliveEvents, isMutating: isMutatingAliveEvents, data: dataAliveEvents } = useGetAliveEventsCorsHandlingMutation();
 
     useEffect(() => {
-        if ( isLoadingBackupList || isLoadingFilteredEvents || isLoadingDownloadBackup || isMutatingAliveEvents) {
-            setStatus(Status.Loading);
-            return;
-        }
-        if (errorBackupList || errorFilteredEvents || errorDownloadBackup || errorAliveEvents) {
-            console.log('errorBackupList', errorBackupList);
-            console.log('errorFilteredEvents', errorFilteredEvents);
-            console.log('errorDownloadBackup', errorDownloadBackup);
-            console.log('errorAliveEvents', errorAliveEvents);
-
-            setStatus(Status.Error);
-            setMessage('Error fetching data');
-            return;
-        }
-        if (serial.length === 5 && backupList.length > 0) {
-            setStatus(Status.Success);
-        } else {
-            setStatus(Status.None);
-        }
-
-    }, [isLoadingBackupList, 
-        isLoadingFilteredEvents, 
-        isLoadingDownloadBackup, 
-        isMutatingAliveEvents, 
-        errorBackupList, 
-        errorFilteredEvents, 
-        errorDownloadBackup, 
-        errorAliveEvents, 
-        serial.length, backupList.length
+        const timeoutId = setTimeout(() => {
+            if (isLoadingBackupList || isLoadingFilteredEvents || isLoadingDownloadBackup || isMutatingAliveEvents) {
+                setStatus(Status.Loading);
+                return;
+            }
+            if (errorBackupList || errorFilteredEvents || errorDownloadBackup || errorAliveEvents) {
+                setStatus(Status.Error);
+                setMessage('Error fetching data');
+                return;
+            }
+            if (serial.length === 5 && backupList.length > 0) {
+                setStatus(Status.Success);
+            } else {
+                setStatus(Status.None);
+            }
+        }, 300); // Delay of 300ms to debounce state changes
+        return () => clearTimeout(timeoutId); // Cleanup timeout on dependency change
+    }, [
+        isLoadingBackupList,
+        isLoadingFilteredEvents,
+        isLoadingDownloadBackup,
+        isMutatingAliveEvents,
+        errorBackupList,
+        errorFilteredEvents,
+        errorDownloadBackup,
+        errorAliveEvents,
+        serial.length,
+        backupList.length,
     ]);
 
     const onCellDoubleClicked = useCallback(async (event: CellDoubleClickedEvent) => {
@@ -325,7 +305,7 @@ const DashBoard: React.FC = () => {
                         setStoredGridApi={setStoredGridApi}
                     />
                 }
-                { section ==='recoverdb' && <ContainerRecoverDb />}
+                { section ==='recoverdb' && <RecoverDbContainer />}
                 {section === 'fridge' &&
                     <ContainerFridgeSection
                         serial={serial}
@@ -336,8 +316,10 @@ const DashBoard: React.FC = () => {
                 }
                 {section === 'fingersTransaction' &&
                     <AgGridFingersTransaction
-                        isLoadingFingerTransaction={isLoadingFingerTransaction}
-                        rawFingerTransactions={rawFingerTransactions}
+                        serial={serial}
+                        backup={backup}
+                        setMessage={setMessage}
+                        setStatus={setStatus}
                         setStoredGridApi={setStoredGridApi}
                     />
                 }

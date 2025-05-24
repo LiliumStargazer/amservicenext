@@ -73,9 +73,9 @@ export function useGetLisTransactionQuery(serial: string, backupSelected: string
     return { data, error, isLoading };
 }
 
-export function useGetFingersTransactionsQuery(serial: string, backupSelected: string) {
+export function useGetFingersTransactionsQuery(serial: string, backup: string) {
     const { data, error, isLoading } = useSWR(
-        serial.length === 5 && backupSelected ? ['/fingers-transactions', { serial, backup: backupSelected }] : null,
+        serial.length === 5 && backup ? ['/fingers-transactions', { serial, backup: backup }] : null,
         fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false }
     );
     return { data, error, isLoading };

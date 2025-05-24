@@ -22,6 +22,7 @@
     "@tanstack/react-query-devtools": "^5.76.1",
     "ag-grid-community": "^33.3.0",
     "ag-grid-react": "^33.3.0",
+    "amservicenext": "file:",
     "archiver": "^7.0.1",
     "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",

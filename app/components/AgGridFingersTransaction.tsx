@@ -8,22 +8,40 @@ import {FingerData, FingerRawData} from "@/app/types/types";
 import { ModuleRegistry, ClientSideRowModelModule, themeQuartz, colorSchemeDarkBlue, GridReadyEvent, ColDef } from "ag-grid-community";
 import LoadingOverlayAgGrid from "@/app/components/AgGridLoadingOverlay";
 import { GridApi } from "ag-grid-community";
+import { useGetFingersTransactionsQuery } from "@/app/hooks/useQueries";
+import { Status } from "@/app/enum/enum";
 
 interface AgGridFingersTransactionProps {
-    isLoadingFingerTransaction: boolean;
-    rawFingerTransactions: FingerRawData[];
+    serial: string;
+    backup: string;
     setStoredGridApi: (api: GridApi) => void;
-}
+    setStatus: (status: Status) => void;
+    setMessage: (message: string) => void;
+    }
 
-ModuleRegistry.registerModules([ClientSideRowModelModule]);
-const theme = (themeQuartz.withPart(colorSchemeDarkBlue)).withParams({spacing:3});
-
-const AgGridFingersTransaction: React.FC<AgGridFingersTransactionProps> = ({isLoadingFingerTransaction, rawFingerTransactions, setStoredGridApi }) => {
-
+const AgGridFingersTransaction: React.FC<AgGridFingersTransactionProps> = ({serial, backup, setStoredGridApi, setStatus, setMessage }) => {
+    ModuleRegistry.registerModules([ClientSideRowModelModule]);
+    const theme = (themeQuartz.withPart(colorSchemeDarkBlue)).withParams({spacing:3});
+    const { data, error, isLoading } = useGetFingersTransactionsQuery(serial, backup);
     const [fingerTransaction, setFingerTransaction] = useState<FingerData[]>([]);
 
     useEffect(() => {
-        const fingerTransaction = rawFingerTransactions.map((transaction: FingerRawData) : FingerData => {
+        if (isLoading) {
+            setStatus(Status.Loading);
+            setMessage('Loading data, one moment please...');
+        } else if (error) {
+            setStatus(Status.Error);
+            setMessage('Error loading data');
+        } else {
+            setStatus(Status.Success);
+            setMessage('Data loaded successfully');
+        }
+    }, [isLoading, error, setStatus, setMessage]);
+
+    useEffect(() => {
+        if (!Array.isArray(data))
+            return;
+        const fingerTransaction = data.map((transaction: FingerRawData) : FingerData => {
             return {
                 Date: formatStringDateOrder(transaction.DataOraR),
                 Time: getTimeFromData(transaction.DataOraR),
@@ -37,7 +55,7 @@ const AgGridFingersTransaction: React.FC<AgGridFingersTransactionProps> = ({isLo
         });
         setFingerTransaction(fingerTransaction);
 
-    }, [rawFingerTransactions]);
+    }, [data]);
 
     const colDefBase: ColDef<FingerData>[]   = useMemo(() => [
         { headerName: 'Date', field: 'Date', flex: 1, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: true, floatingFilter: true, suppressHeaderFilterButton: true, suppressFloatingFilterButton: true},

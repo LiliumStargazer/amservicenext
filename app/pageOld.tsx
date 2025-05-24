@@ -49,7 +49,7 @@ import {useVteData} from "@/app/hooks/useVteData";
 import Badge from "@/app/components/Badge";
 import BadgeVTE from "@/app/components/BadgeVTE";
 import ButtonRecoverDb from "@/app/components/ButtonRecoverDb";
-import ContainerRecoverDb from "@/app/components/ContainerRecoverDb";
+import RecoverDbContainer from "@/app/components/RecoverDbContainer";
 
 const DashBoard: React.FC = () => {
     const [serial, setSerial] = useState<string>('');
@@ -426,7 +426,7 @@ const DashBoard: React.FC = () => {
                 }
                 {
                     section ==='recoverdb' &&
-                        <ContainerRecoverDb />
+                        <RecoverDbContainer />
                 }
                 {section === 'fridge' &&
                     <AgGridFridge

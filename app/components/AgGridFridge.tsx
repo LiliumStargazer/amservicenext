@@ -7,18 +7,20 @@ import {AgGridReact} from "ag-grid-react";
 import { ModuleRegistry, ClientSideRowModelModule, themeQuartz, colorSchemeDarkBlue, ColDef , GridReadyEvent, GridApi} from "ag-grid-community";
 import {FridgesRowData, RawFridgeData} from "@/app/types/types";
 import LoadingOverlayAgGrid from "@/app/components/AgGridLoadingOverlay";
+import { Status } from "../enum/enum";
 
 interface AgGridFridgeProps {
     fridgeRawData: RawFridgeData[];
     fridgeSelected: number;
     setMessage: (message: string) => void;
+    setStatus: (status: Status) => void;
     setStoredGridApi: (api: GridApi) => void;
 }
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 const theme = (themeQuartz.withPart(colorSchemeDarkBlue)).withParams({spacing:3});
 
-const AgGridFridge: React.FC<AgGridFridgeProps> = ({fridgeRawData, fridgeSelected, setMessage, setStoredGridApi}) => {
+const AgGridFridge: React.FC<AgGridFridgeProps> = ({fridgeRawData, fridgeSelected, setMessage, setStatus, setStoredGridApi, }) => {
     const [fridgeTables, setFridgeTables] = useState<{[key: string]: FridgesRowData[]}>({});
     const [loading, setLoading] = useState<boolean>(true);
 

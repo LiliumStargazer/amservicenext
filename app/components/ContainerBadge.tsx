@@ -4,8 +4,8 @@ import { Status } from "@/app/enum/enum";
 
 interface ContainerBadgeProps {
     status: Status;
-    setStatus: React.Dispatch<React.SetStateAction<Status>>;
-    setMessage: React.Dispatch<React.SetStateAction<string>>;
+    setMessage: (message: string) => void;
+    setStatus: (status: Status) => void;
     message: string;
 }
 
