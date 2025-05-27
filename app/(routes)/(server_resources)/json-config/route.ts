@@ -10,7 +10,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     }
 
     const apiUrl = `https://collaudo.amdistributori.it/api/v1/configurazione/${serial}`;
-    const authHeader = `Basic ${btoa("jsonmaker::K;-c~V((AkPMq.#^5")}`;
+    const authHeader = `Basic ${btoa(`${process.env.JSONMAKER_USER}::${process.env.JSONMAKER_PASS}`)}`;
 
     try {
         const response = await fetch(apiUrl, {

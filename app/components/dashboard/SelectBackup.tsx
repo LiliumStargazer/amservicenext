@@ -35,6 +35,9 @@ const SelectBackup: React.FC<SelectAndDownloadBackupProps> = ({ setBackup, onSel
             onChange={onSelectBackup}
             disabled={isDisabled}
         >
+            <option value="" disabled hidden>
+            Select backup
+            </option>
             {backupOptions}
         </select>
     );

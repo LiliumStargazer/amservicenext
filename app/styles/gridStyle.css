@@ -70,6 +70,11 @@
     font-weight: bold;
 }
 
+.row-ev-pax-payment-warning {
+    background-color: #ffc107;
+    font-weight: bold;
+}
+
 .row-ev-bnk-escrow {
     background-color: #ffc107;
     font-weight: bold;

@@ -4,11 +4,11 @@ import axios from 'axios';
 import { Buffer } from 'buffer';
 import { NextResponse } from 'next/server';
 
-const gwName = "ProdottiFisiciService";
-const gwPwd = "PF@18TylS?V2";
-
-const clientId = "7ab4d3a0-0f77-47e7-acfb-6157f56b0908";
-const clientSecret = "f0e6c825-b954-4b41-9ac0-8e01729235bb";
+// Le seguenti variabili dovrebbero essere spostate nel file .env e lette tramite process.env
+const gwName = process.env.GW_NAME!;
+const gwPwd = process.env.GW_PWD!;
+const clientId = process.env.CLIENT_ID!;
+const clientSecret = process.env.CLIENT_SECRET!;
 
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);

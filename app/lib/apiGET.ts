@@ -1,4 +1,4 @@
-'use client'
+/* 'use client'
 
 const apiRequest = async <GenericResponseType>(endpoint: string, payload: Record<string, string | number | boolean | null>): Promise<GenericResponseType> => {
 
@@ -81,4 +81,4 @@ export const apiGetVteData = (serial: string): Promise<unknown> =>
     apiRequest(`/vte-data`, { serial });
 
 export const apiRecoverDB = (serial: string, backupSelected: string): Promise<unknown> =>
-    apiRequest(`/recover-db`, { serial, backup: backupSelected });
+    apiRequest(`/recover-db`, { serial, backup: backupSelected }); */

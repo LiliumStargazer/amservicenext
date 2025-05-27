@@ -2,10 +2,13 @@
 import { RowClassParams } from "ag-grid-community";
 import {LogEventData} from "@/app/types/types";
 
-export const eventsRowStyles ={
+export const eventsRowStyles = {
     'row-ev-coin-in': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_COIN_IN',
     'row-ev-bnk-in': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_BNK_IN',
-    'row-ev-pax-payment': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_PAX_PAYMENT',
+    'row-ev-pax-payment': (params: RowClassParams<LogEventData>) =>
+        params.data?.EventString === 'EV_PAX_PAYMENT' && params.data?.TagData?.toUpperCase().includes('ESEGUITA'),
+    'row-ev-pax-payment-warning': (params: RowClassParams<LogEventData>) =>
+        params.data?.EventString === 'EV_PAX_PAYMENT' && !(params.data?.TagData?.toUpperCase().includes('ESEGUITA')),
     'row-ev-ing-payment': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_ING_PAYMENT',
     'row-ev-card-ciclo-ok-eta': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_CARD_CICLO_OK_ETA',
     'row-ev-ticket': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_TICKET',

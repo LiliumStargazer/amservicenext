@@ -1,4 +1,4 @@
-'use client'
+/* 'use client'
 
 const apiRequest = async <GenericResponseType>(endpoint: string, payload: Record<string, string>): Promise<GenericResponseType> => {
     console.log('apiRequest', endpoint, payload);
@@ -26,3 +26,4 @@ const apiRequest = async <GenericResponseType>(endpoint: string, payload: Record
 
 export const apiSignIn = (email: string, password: string): Promise<unknown> =>
     apiRequest(`/auth/sign-in`, { email, password });
+ */

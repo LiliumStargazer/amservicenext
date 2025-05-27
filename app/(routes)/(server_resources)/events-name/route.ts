@@ -1,9 +1,7 @@
 // Desc: Route to get backup data
 'use server'
-import SftpConnector from "@/app/class/SftpConnector";
 import { NextResponse } from "next/server";
-import { unzipFile } from "@/app/lib/zip-handler";
-import { SftpPath } from "@/app/class/SftpPath";
+import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
 import { DatabasePath } from "@/app/class/DatabasePath";
 
 export async function GET(req: Request): Promise<NextResponse> {
@@ -14,15 +12,16 @@ export async function GET(req: Request): Promise<NextResponse> {
     const backup = searchParams.get('backup');
 
     if (!serial || !backup) {
-        return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
+        return NextResponse.json({ error: 'Missing serial or backup or date parameter' }, { status: 400 });
     }
     try {
-        const sftpPath = new SftpPath(serial, backup);
         const databasePath = new DatabasePath(serial, backup);
-        const sftpConnector = new SftpConnector();
-        await sftpConnector.downloadBackup(databasePath, sftpPath);
-        await unzipFile(databasePath.backupFileZip, databasePath.backupDir);
-        return NextResponse.json(true);
+        let query = `SELECT DISTINCT EventString FROM EventiView ORDER BY EventString COLLATE NOCASE ASC`;
+        if (databasePath.databaseUnzipped.includes("DbBackup")) {
+            query = `SELECT DISTINCT EventString FROM EventiAll ORDER BY EventString COLLATE NOCASE ASC`;
+        }
+        const results = await executeQueryOnDb(databasePath.databaseUnzipped, query);
+        return NextResponse.json(results);
     } catch (error) {
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }

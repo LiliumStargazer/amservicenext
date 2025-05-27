@@ -1,7 +1,6 @@
 // Desc: Route to get software type
 'use server'
 import { DatabasePath } from "@/app/class/DatabasePath";
-// import {  createSystemPaths, setLocalBackupUnzippedFile} from "@/app/lib/backup-handler";
 import { NextResponse } from "next/server";
 
 

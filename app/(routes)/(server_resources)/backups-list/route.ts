@@ -1,7 +1,6 @@
 'use server'
 import SftpConnector from "@/app/class/SftpConnector";
 import { NextResponse } from "next/server";
-/* import {DatabasePath} from "@/app/class/DatabasePath"; */
 import { SftpPath } from "@/app/class/SftpPath";
 
 

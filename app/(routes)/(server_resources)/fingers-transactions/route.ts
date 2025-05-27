@@ -1,6 +1,5 @@
 'use server'
 import { NextResponse } from "next/server";
-
 import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
 import { DatabasePath } from "@/app/class/DatabasePath";
 

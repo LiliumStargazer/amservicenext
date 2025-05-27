@@ -1,9 +1,6 @@
 'use client'
 
 import React from "react";
-
-import debounce from "lodash/debounce";
-
 interface SearchEventsProps {
     disabled: boolean;
     /* handleSearchValueChange: (event: React.ChangeEvent<HTMLInputElement>) => void; */
@@ -12,13 +9,16 @@ interface SearchEventsProps {
 
 const InputSearchEvents: React.FC <SearchEventsProps> = ({disabled, setSearchValue}) => {
     
-    const debouncedSetSearchValue = React.useMemo(
-        () => debounce((value: string) => setSearchValue(value), 300),
-        [setSearchValue]
-    );
+    const debouncedSetSearchValue = React.useMemo(() => {
+        let timeoutId: NodeJS.Timeout;
+        return (value: string) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => setSearchValue(value), 300);
+        };
+    }, [setSearchValue]);
 
     return (
-        <label className="input input-bordered input-info ml-2 mr-2 flex w-full max-w-xs items-center">
+        <label className="input input-bordered input-info ml-2 mr-2 flex w-96 max-w-xs items-center">
             <input
                 type="search"
                 className="grow text-sm"

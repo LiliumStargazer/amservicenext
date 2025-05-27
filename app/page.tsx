@@ -17,7 +17,7 @@ import DatePicker from "@/app/components/dashboard/DatePicker";
 import ButtonHome from "@/app/components/shared/ButtonHome";
 import ButtonRecoverDb from "@/app/components/buttons/ButtonRecoverDb";
 import { useDownloadBackupMutation, useGetAliveEventsCorsHandlingMutation, useGetEventsByDateMutation} from "@/app/hooks/useMutations";
-import InputSearchEvents from "@/app/components/dashboard/InputSearchEvents";
+/* import InputSearchEvents from "@/app/components/dashboard/InputSearchEvents"; */
 import { useBackupListQuery, useGetFilteredEventsQuery } from "@/app/hooks/useQueries";
 import ContainerFridgeSection from "@/app/components/fridge/ContainerFridgeSection";
 import { Status } from "@/app/enum/enum";
@@ -25,6 +25,7 @@ import ContainerBadge from "@/app/components/badge/ContainerBadge";
 import ContainerRecoverDb from "./components/recoverdb/ContainerRecoverDb";
 import InputSerial from "@/app/components/dashboard/InputSerial";
 import ContainerParam from "@/app/components/param/ContainerParam";
+import SelectSearch from "./components/dashboard/SelectSearch";
 
 const DashBoard: React.FC = () => {
     const [serial, setSerial] = useState<string>('');
@@ -40,8 +41,8 @@ const DashBoard: React.FC = () => {
     const [rawLogEvents, setRawLogEvents] = useState<RawLogEventData[]>([]);
     const [filteredEvents, setFilteredEvents] = useState<RawLogEventData[]>([]);
     const [backupList, setBackupList] = useState<string[]>([]);
-    const [disabled, setDisabled] = useState<boolean>(false);
-    
+    const [isDisabled, setIsDisabled] = useState<boolean>(true);
+    const [isGridReady, setIsGridReady] = useState<boolean>(false);
     const { data: backupListData, error: errorBackupList, isLoading: isLoadingBackupList } = useBackupListQuery(serial);
     const { trigger: triggerDownloadBackup, isMutating: isLoadingDownloadBackup, error: errorDownloadBackup } = useDownloadBackupMutation();
     const { trigger: triggerGetEventsByDate, error: errorGetEventsByDate, data: dataGetEventsByDate } = useGetEventsByDateMutation();
@@ -52,12 +53,12 @@ const DashBoard: React.FC = () => {
         const timeoutId = setTimeout(() => {
             if (isLoadingBackupList || isLoadingFilteredEvents || isLoadingDownloadBackup || isMutatingAliveEvents) {
                 setStatus(Status.Loading);
-                setDisabled(true);
+                setIsDisabled(true);
                 return;
             }
             if (errorBackupList || errorFilteredEvents || errorDownloadBackup || errorAliveEvents || errorGetEventsByDate) {
                 setStatus(Status.Error);
-                setDisabled(true);
+                setIsDisabled(true);
                 return;
             }
             if (errorBackupList) {
@@ -83,7 +84,7 @@ const DashBoard: React.FC = () => {
             if (serial.length === 5 && backupList.length > 0) {
                 setStatus(Status.Success);
                 setMessage('Ready');
-                setDisabled(false);
+                setIsDisabled(false);
             } else {
                 setStatus(Status.None);
                 setMessage("");
@@ -167,7 +168,7 @@ const DashBoard: React.FC = () => {
             setBackup('');
         }
         if (!backup){
-            setDisabled(true);
+            setIsDisabled(true);
         }
     }, [serial, backup]);
 
@@ -222,9 +223,7 @@ const DashBoard: React.FC = () => {
         triggerGetEventsByDate({ serial, backup, date: localDateString }).catch((error) => {
             setMessage(error instanceof Error ? error.message : 'Errore sconosciuto');
         });
-
         setDatePickerDate(date);
-    
     }, [setDatePickerDate, serial, backup, triggerGetEventsByDate]);
 
     return (
@@ -238,27 +237,28 @@ const DashBoard: React.FC = () => {
                     {/* Left: Buttons */}
                     <div className="flex flex-row space-x-4">
                         <p className=" text-xl text-neutral-content font-bold ml-2">AM Service</p>
-                        <ButtonHome disabled={disabled} setSection={setSection}/>
-                        <ButtonRecoverDb disabled={disabled} setSection={setSection} />
-                        <ButtonParam disabled={disabled} setSection={setSection} />
-                        <ButtonFridge disabled={disabled} setSection={setSection}/>
-                        <ButtonFinger disabled={disabled} setSection={setSection}/>
-                        <ButtonExcel disabled={disabled} setMessage={setMessage} section={section} storedGridAPi={storedGridAPi}/>
+                        <ButtonHome disabled={isDisabled || !isGridReady} setSection={setSection}/>
+                        <ButtonRecoverDb disabled={isDisabled || !isGridReady} setSection={setSection} />
+                        <ButtonParam disabled={isDisabled || !isGridReady} setSection={setSection} />
+                        <ButtonFridge disabled={isDisabled || !isGridReady} setSection={setSection}/>
+                        <ButtonFinger disabled={isDisabled || !isGridReady} setSection={setSection}/>
+                        <ButtonExcel disabled={isDisabled || !isGridReady} setMessage={setMessage} section={section} storedGridAPi={storedGridAPi}/>
                     </div>
                     {/* Right: Section controls */}
                     {section === 'master' && (
                         <div className="flex flex-row items-center space-x-2">
-                            <InputSerial  setSerial={setSerial} />
+                            <InputSerial disabled={isGridReady} setSerial={setSerial} />
                             <SelectBackup
                                 setBackup={setBackup}
                                 backup={backup}
-                                disabled={disabled}
+                                disabled={isDisabled || !isGridReady}
                                 onSelectBackup={onSelectBackup}
                                 backupList={backupList}
                             />
-                            <DropDownInfoBackup disabled={disabled} backupList={backupList as string[]} isLoadingBackupList={isLoadingBackupList}/>
-                            <DatePicker disabled={disabled} datePickerDate={datePickerDate} handleDatePickerChange={handleDatePickerChange} />
-                            <InputSearchEvents disabled={disabled} setSearchValue={setSearchValue}/>
+                            <DropDownInfoBackup disabled={isDisabled || !isGridReady} backupList={backupList as string[]} isLoadingBackupList={isLoadingBackupList}/>
+                            <DatePicker disabled={isDisabled || !isGridReady} datePickerDate={datePickerDate} handleDatePickerChange={handleDatePickerChange} />
+                            {/* <InputSearchEvents disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue}/> */}
+                            <SelectSearch serial={serial} backup={backup} disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue} />
                             <div className="flex flex-row space-x-2 mt-2">
                             </div>
                         </div>
@@ -274,6 +274,7 @@ const DashBoard: React.FC = () => {
                         filteredEvents={filteredEvents}
                         onCellDoubleClicked={onCellDoubleClicked}
                         setStoredGridApi={setStoredGridApi}
+                        setIsGridReady={setIsGridReady}
                     />
                 }
                 { section ==='recoverdb' && <ContainerRecoverDb />}

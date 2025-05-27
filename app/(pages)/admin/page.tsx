@@ -5,9 +5,16 @@ import FormRegistration from "@/app/components/auth/FormRegistration";
 
 export const dynamic = 'force-dynamic';
 
+type User = {
+    id: string | number;
+    name?: string;
+    email?: string;
+    role?: string;
+};
+
 export default async function AdminPage() {
 
-    let users;
+    let users: User[];
     try {
         users = await usersGet();
     } catch (error) {
@@ -16,7 +23,7 @@ export default async function AdminPage() {
         return <div>Errore nel recupero degli utenti: {(error as Error).message}</div>;
     }
 
-    const usersMapped = users.map((user) => (
+    const usersMapped = users.map((user: User) => (
         <tr key={user.id}>
             <td>{user.name || "N/A"}</td>
             <td>{user.email || "N/A"}</td>

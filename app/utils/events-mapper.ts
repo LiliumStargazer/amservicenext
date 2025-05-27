@@ -64,7 +64,7 @@ export const getRowsMap = (backupData: RawLogEventData[]): LogEventData[] => {
         EventString: value.EventString,
         State: convertToState(parseInt(value.State)),
         DevProducer: convertToDevType(parseInt(value.DevProducer || value.DevId || '0')),
-        DevIndex: value.DevIndex ? value.DevIndex : (value.RelIndex ? value.RelIndex : ''),
+        DevIndex: value.DevIndex !== undefined ? value.DevIndex.toString() : (value.RelIndex ? value.RelIndex.toString() : ''),
         SubIndex: value.SubIndex,
         DevClass: value.DevClass,
         Tag1: convertT1(value.EventString, value.Tag1),

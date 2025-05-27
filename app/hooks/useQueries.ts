@@ -81,9 +81,9 @@ export function useGetFingersTransactionsQuery(serial: string, backup: string) {
     return { data, error, isLoading };
 }
 
-export function useGetEventsByDateQuery(serial: string, backupSelected: string, currentDate: string | null) {
+export function useGetEventsByDateQuery(serial: string, backup: string, date: string | null) {
     const { data, error, isLoading } = useSWR(
-        serial.length === 5 && backupSelected && currentDate ? ['/events-by-date', { serial, backup: backupSelected, date: currentDate }] : null,
+        serial.length === 5 && backup && date ? ['/events-by-date', { serial, backup, date }] : null,
         fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false }
     );
     return { data, error, isLoading };
@@ -148,6 +148,14 @@ export function useGetVteDataQuery(serial: string, backup: string) {
 export function useRecoverDBQuery(serial: string, backupSelected: string) {
     const { data, error, isLoading } = useSWR(
         serial.length === 5 && backupSelected ? ['/recover-db', { serial, backup: backupSelected }] : null,
+        fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false }
+    );
+    return { data, error, isLoading };
+}
+
+export function useGetEventsName(serial: string, backup: string) {
+    const { data, error, isLoading } = useSWR(
+        serial.length === 5 && backup ? ['/events-name', { serial, backup }] : null,
         fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false }
     );
     return { data, error, isLoading };

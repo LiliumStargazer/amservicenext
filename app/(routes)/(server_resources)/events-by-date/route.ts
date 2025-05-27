@@ -4,8 +4,6 @@ import { NextResponse } from "next/server";
 import {executeQueryOnDb} from "@/app/lib/better-sqlite3";
 import { DatabasePath } from "@/app/class/DatabasePath";
 
-
-
 export async function GET(req: Request): Promise<NextResponse> {
 
     const url = new URL(req.url);

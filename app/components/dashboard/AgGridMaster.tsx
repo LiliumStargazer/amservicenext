@@ -29,6 +29,7 @@ interface AgGridMasterLogReactQueryProps {
     filteredEvents: RawLogEventData[];
     onCellDoubleClicked: (event: CellDoubleClickedEvent) => void;
     setStoredGridApi: (api: GridApi) => void;
+    setIsGridReady: (isReady: boolean) => void;
 }
 
 ModuleRegistry.registerModules([ClientSideRowModelModule, RowStyleModule, ValidationModule, CellStyleModule,TextFilterModule, NumberFilterModule]);
@@ -46,7 +47,8 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
                                                                     rawLogEvents,
                                                                     filteredEvents,
                                                                     onCellDoubleClicked,
-                                                                    setStoredGridApi
+                                                                    setStoredGridApi,
+                                                                    setIsGridReady
 }) => {
 
     const [storedData, setStoredData] = useState<LogEventData[]>([]);
@@ -61,14 +63,12 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
     }, [rawLogEvents, gridApi, setStoredData]);
 
     useEffect(() => {
-            
             if (gridApi && filteredEvents.length > 0){
                 const rows = getRowsMap(filteredEvents);
                 gridApi.setGridOption('rowData', rows);
             }else if (gridApi && rawLogEvents.length > 0) {
                 gridApi.setGridOption('rowData', storedData);
             }
-
     }, [gridApi, filteredEvents, rawLogEvents, storedData]);
 
 /*     useEffect(() => {
@@ -81,7 +81,8 @@ const AgGridMaster: React.FC<AgGridMasterLogReactQueryProps> = ({
     const onGridReady = useCallback((params: GridReadyEvent) => {
         setStoredGridApi(params.api);
         setGridApi(params.api);
-    }, [setGridApi, setStoredGridApi]);
+        setIsGridReady(true);
+    }, [setIsGridReady, setStoredGridApi]);
 
     const colDefsBase: ColDef<LogEventData>[] = useMemo(() => [
         { headerName: 'Data', field: 'DataOraR', flex: 1, minWidth: 140, cellStyle: { whiteSpace: 'nowrap' }, filter: true, sortable: false, floatingFilter: true,
