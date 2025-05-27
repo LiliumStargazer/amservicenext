@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 import { authenticate } from '@/app/lib/auth-actions';
-import AnimationShootingStars from "@/app/components/AnimationShootingStars";
+import AnimationShootingStars from "@/app/components/auth/AnimationShootingStars";
 
 export default function Login() {
     const [errorMessage, formAction] = useActionState(

@@ -11,14 +11,14 @@ import {
 } from "@/app/utils/ticket-statistics-utils";
 import {useQueryExternalTicketHistory} from "@/app/hooks/useQueryExternalTicketHistory";
 import {useQueryExternalLatestTicket} from "@/app/hooks/useQueryExternalLatestTicket";
-import AlertLoading from "@/app/components/AlertLoading";
+import AlertLoading from "@/app/components/shared/AlertLoading";
 import {AgGridReact} from "ag-grid-react";
-import LoadingOverlayAgGrid from "@/app/components/AgGridLoadingOverlay";
+import LoadingOverlayAgGrid from "@/app/components/shared/AgGridLoadingOverlay";
 import parseCsv from "@/app/utils/parse-csv";
 import { TechnicianStatistics, Ticket} from "@/app/types/types";
 import {ColDef} from "ag-grid-community";
-import ButtonNav from "@/app/components/ButtonNav";
-import Alert from "@/app/components/Alert";
+import ButtonNav from "@/app/components/param/ButtonNav";
+import Alert from "@/app/components/shared/Alert";
 
 const colDefs: ColDef<TechnicianStatistics>[] = [
     { headerName: 'Technician', field: 'Manutentore' as keyof TechnicianStatistics, flex: 2, cellStyle: { whiteSpace: 'nowrap' }, filter: false, sortable: true },

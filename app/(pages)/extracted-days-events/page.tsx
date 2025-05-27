@@ -1,7 +1,7 @@
 'use client'
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import "@/app/styles/gridStyle.css";
-import Dialog from "@/app/components/Dialog";
+import Dialog from "@/app/components/dashboard/Dialog";
 import {
     ModuleRegistry,
     RowStyleModule,

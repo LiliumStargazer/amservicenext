@@ -1,7 +1,7 @@
 // app/admin/page.tsx
 
 import { usersGet } from "@/app/lib/users-get";
-import FormRegistration from "@/app/components/FormRegistration";
+import FormRegistration from "@/app/components/auth/FormRegistration";
 
 export const dynamic = 'force-dynamic';
 

@@ -49,17 +49,17 @@ export function useFridgeEventsQuery(serial: string, backup: string) {
     return { data, error, isLoading };
 }
 
-export function useGetParamsQuery(serial: string, backupSelected: string, id: string) {
+export function useGetParamsQuery(serial: string, backup: string, id: string) {
     const { data, error, isLoading } = useSWR(
-        serial.length === 5 && backupSelected && id ? ['/params-data', { serial, backup: backupSelected, id }] : null,
+        serial.length === 5 && backup && id ? ['/params-data', { serial, backup, id }] : null,
         fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false }
     );
     return { data, error, isLoading };
 }
 
-export function useGetParamsIdsQuery(serial: string, backupSelected: string) {
+export function useGetParamsIdsQuery(serial: string, backup: string) {
     const { data, error, isLoading } = useSWR(
-        serial.length === 5 && backupSelected ? ['/params-ids', { serial, backup: backupSelected }] : null,
+        serial.length === 5 && backup ? ['/params-ids', { serial, backup }] : null,
         fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false }
     );
     return { data, error, isLoading };
@@ -89,17 +89,17 @@ export function useGetEventsByDateQuery(serial: string, backupSelected: string, 
     return { data, error, isLoading };
 }
 
-export function useGetFilteredEventsQuery(serial: string, backup: string, isBackupReady: boolean, event: string) {
+export function useGetFilteredEventsQuery(serial: string, backup: string, event: string) {
     const { data, error, isLoading } = useSWR(
-        isBackupReady && event.length > 0 ? ['/events-filtered', { serial, backup, event }] : null,
+        backup.length>0 && event.length > 0 ? ['/events-filtered', { serial, backup, event }] : null,
         fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false }
     );
     return { data, error, isLoading };
 }
 
-export function useGetSoftwareTypeQuery(serial: string, backupSelected: string) {
+export function useGetSoftwareTypeQuery(serial: string, backup: string) {
     const { data, error, isLoading } = useSWR(
-        serial.length === 5 && backupSelected ? ['/software-type', { serial, backup: backupSelected }] : null,
+        serial.length === 5 && backup ? ['/software-type', { serial, backup: backup }] : null,
         fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false }
     );
     return { data, error, isLoading };
@@ -137,9 +137,9 @@ export function useGetJsonParamQuery(serial: string) {
     return { data, error, isLoading };
 }
 
-export function useGetVteDataQuery(serial: string) {
+export function useGetVteDataQuery(serial: string, backup: string) {
     const { data, error, isLoading } = useSWR(
-        serial.length === 5 ? ['/vte-data', { serial }] : null,
+        serial.length === 5 && backup ? ['/vte-data', { serial }] : null,
         fetcher, { revalidateOnFocus: false, revalidateOnReconnect: false }
     );
     return { data, error, isLoading };

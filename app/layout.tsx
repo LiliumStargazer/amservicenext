@@ -1,7 +1,7 @@
 
 import { Inter } from "next/font/google";
 import "./globals.css";
-import TankStackProvider from "@/app/components/TanstackProvider";
+import TankStackProvider from "@/app/components/shared/TanstackProvider";
 import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
