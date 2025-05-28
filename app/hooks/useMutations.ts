@@ -1,5 +1,5 @@
 import useSWRMutation from 'swr/mutation';
-import { fetcher } from "../lib/axiosClient";
+import { fetcher } from "@/app/lib/axiosClient";
 
 export function useCheckIntegrityMutation() {
     const { trigger, error, data, isMutating } = useSWRMutation(

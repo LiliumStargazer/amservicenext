@@ -22,10 +22,14 @@ import { useBackupListQuery, useGetFilteredEventsQuery } from "@/app/hooks/useQu
 import ContainerFridgeSection from "@/app/components/fridge/ContainerFridgeSection";
 import { Status } from "@/app/enum/enum";
 import ContainerBadge from "@/app/components/badge/ContainerBadge";
-import ContainerRecoverDb from "./components/recoverdb/ContainerRecoverDb";
+import ContainerRecoverDb from "@/app/components/recoverdb/ContainerRecoverDb";
 import InputSerial from "@/app/components/dashboard/InputSerial";
 import ContainerParam from "@/app/components/param/ContainerParam";
-import SelectSearch from "./components/dashboard/SelectSearch";
+import SelectSearch from "@/app/components/dashboard/SelectSearch";
+import ContainerPassword from "@/app/components/buttons/ContainerPassword";
+import DrawerLinks from "@/app/components/buttons/DrawerLinks";
+import TextUser from "@/app/components/auth/TextUser";
+import { signOut } from "next-auth/react";
 
 const DashBoard: React.FC = () => {
     const [serial, setSerial] = useState<string>('');
@@ -233,16 +237,19 @@ const DashBoard: React.FC = () => {
                 setMessage={setMessage}
             /> */}
             <div className="bg-base-100 text-neutral-content min-h-8 max-h-8 flex flex-row mb-4 mt-6 w-full">
-                <div className="flex flex-row justify-between items-center w-full px-2">
+                <div className="flex flex-row justify-between items-center w-full px-4">
                     {/* Left: Buttons */}
                     <div className="flex flex-row space-x-4">
-                        <p className=" text-xl text-neutral-content font-bold ml-2">AM Service</p>
-                        <ButtonHome disabled={isDisabled || !isGridReady} setSection={setSection}/>
-                        <ButtonRecoverDb disabled={isDisabled || !isGridReady} setSection={setSection} />
+                        <p className=" text-xl text-neutral-content font-bold ml-2 whitespace-nowrap">AM Service</p>
+                        <ButtonHome setSection={setSection}/>
+                        <ButtonRecoverDb setSection={setSection} />
                         <ButtonParam disabled={isDisabled || !isGridReady} setSection={setSection} />
                         <ButtonFridge disabled={isDisabled || !isGridReady} setSection={setSection}/>
                         <ButtonFinger disabled={isDisabled || !isGridReady} setSection={setSection}/>
                         <ButtonExcel disabled={isDisabled || !isGridReady} setMessage={setMessage} section={section} storedGridAPi={storedGridAPi}/>
+                        <ContainerPassword/>
+                        <DrawerLinks serial={serial}/>
+
                     </div>
                     {/* Right: Section controls */}
                     {section === 'master' && (
@@ -259,8 +266,8 @@ const DashBoard: React.FC = () => {
                             <DatePicker disabled={isDisabled || !isGridReady} datePickerDate={datePickerDate} handleDatePickerChange={handleDatePickerChange} />
                             {/* <InputSearchEvents disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue}/> */}
                             <SelectSearch serial={serial} backup={backup} disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue} />
-                            <div className="flex flex-row space-x-2 mt-2">
-                            </div>
+                            <TextUser/>
+                            <button className="btn btn-info " onClick={() => signOut()}>Sign Out</button>
                         </div>
                     )}
                 </div>

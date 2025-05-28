@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Status } from "@/app/enum/enum";
-import ParamSections from './ParamSections';
-import SelectParam from './SelectParam';
-import { useGetParamsIdsQuery, useGetJsonParamQuery, useGetListinoFullQuery } from '@/app/hooks/useQueries';
-import {
-    Param,
-    jsonParams,
-} from "@/app/types/types";
-import { useGetParamsMutation } from '@/app/hooks/useMutations';
+import CollapseParam from '@/app/components/param/CollapseParam';
+import SelectParam from '@/app/components/param/SelectParam';
+import { useGetParamsIdsQuery } from '@/app/hooks/useQueries';
+import {Param,jsonParams} from "@/app/types/types";
+import { useGetJsonParamMutation, useGetListinoFullMutation, useGetParamsMutation } from '@/app/hooks/useMutations';
 interface ContainerParamProps {
     serial: string;
     backup: string;
@@ -24,66 +21,77 @@ const ContainerParam: React.FC<ContainerParamProps> = ({ serial, backup, setMess
     const [id, setID] = useState<string>('');
     const { data: paramIds, error: errorParamIds, isLoading: isLoadingIDS } = useGetParamsIdsQuery(serial, backup);
     const { trigger: triggerParams, error: errorParams, isMutating: isLoadingParams, data: params } = useGetParamsMutation();
-    const { data: jsonParams, error: errorJsonParams, isLoading: isLoadingJson } = useGetJsonParamQuery(serial);
-    const { data: listinoItems, error: errorListinoItems, isLoading: isLoadingListino } = useGetListinoFullQuery(serial);
-
+    const { trigger: triggerJsonParams, error: errorJsonParams, isMutating: isLoadingJson, data: jsonParams } = useGetJsonParamMutation();
+    const { trigger: triggerListinoItems, error: errorListinoItems, isMutating: isLoadingListino, data: listinoItems } = useGetListinoFullMutation();
 
     const handleOnChangeParam  = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         setID(e.target.value);
+        setStatus(Status.Loading);
     }
 
     useEffect(() => {
-        const fetchParam = async () => {
-            if (serial && backup && id) {
-                await triggerParams({ serial, backup, id });
-            }
-        }
-
-        if (serial && backup && id){
+        if (serial && backup && id) {
             setStatus(Status.Loading);
-            fetchParam();
+            (async () => {
+                try {
+                    await triggerParams({ serial, backup, id });
+                    await triggerJsonParams({ serial });
+                    await triggerListinoItems({ serial }); 
+                } catch (error) {
+                    setStatus(Status.Error);
+                    setMessage(`Error fetching parameters: ${error instanceof Error ? error.message : String(error)}`);
+                }
+            })();
         }
-
-    }, [serial, backup, id, triggerParams, setStatus]);
+    }, [serial, backup, id, triggerParams, setStatus, triggerJsonParams, triggerListinoItems, setMessage]);
 
     useEffect(() => {
-        if ( errorParamIds || errorParams || errorJsonParams || errorListinoItems) 
+        if ( errorParamIds || errorParams || errorJsonParams || errorListinoItems)
             setStatus(Status.Error);
-        if (errorParamIds) 
+        if (errorParamIds){
             setMessage(`Error fetching parameter IDs: ${errorParamIds.message}`);
-        if (errorParams) 
+            return;
+        }
+        if (errorParams){
             setMessage(`Error fetching parameters: ${errorParams.message}`);
-        if (errorJsonParams) 
+            return;
+        }   
+        if (errorJsonParams){
             setMessage(`Error fetching JSON parameters: ${errorJsonParams.message}`);
-        if (errorListinoItems) 
+            return;
+        }     
+        if (errorListinoItems){
             setMessage(`Error fetching listino items: ${errorListinoItems.message}`);
+            return;
+        }
+            
         if (isLoadingIDS || isLoadingParams || isLoadingJson || isLoadingListino)
             setStatus(Status.Loading);
         else
-            setStatus(Status.None);
+            setStatus(Status.Success);
 
     }, [errorParamIds, errorParams, errorJsonParams, errorListinoItems, setMessage, setStatus, isLoadingIDS, isLoadingParams, isLoadingJson, isLoadingListino]);
 
     return (
         <>
             <div className=" flex justify-center">
-                <SelectParam
-                    loading={isLoadingIDS}
-                    IDParam={id}
-                    handleOnChangeParam={handleOnChangeParam}
-                    rawIdList={paramIds as { ID: string; DataOra: string }[]}
-                    setIDParam={setID}
-                />
+            <SelectParam
+                loading={isLoadingIDS}
+                IDParam={id}
+                handleOnChangeParam={handleOnChangeParam}
+                rawIdList={paramIds as { ID: string; DataOra: string }[]}
+                setIDParam={setID}
+            />
             </div>
-            {params && listinoItems && (
-                    <ParamSections
-                        loading={isLoadingParams || isLoadingJson || isLoadingListino}
-                        param={params as Param}
-                        listinoItems={(listinoItems as Listino).items}
-                        jsonParams={jsonParams as jsonParams}
-                    />
-                )
-            }
+            {(isLoadingParams || isLoadingJson || isLoadingListino) ? null : (
+            params && listinoItems && jsonParams && (
+                <CollapseParam
+                param={params as Param}
+                listinoItems={(listinoItems as Listino).items}
+                jsonParams={jsonParams as jsonParams}
+                />
+            )
+            )}
         </>
     );
 };

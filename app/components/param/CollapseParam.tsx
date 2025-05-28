@@ -7,7 +7,6 @@ import {
     jsonParams, TypeConfigParams,
 } from "@/app/types/types";
 import {v4 as uuidv4} from "uuid";
-import AlertLoading from "@/app/components/shared/AlertLoading";
 import {
     getConfig,
     getCorrispettivi, getIngenico,
@@ -26,13 +25,12 @@ import {
 } from "@/app/utils/paramMapping";
 
 interface ParamsAccorditionProps {
-    loading: boolean;
     param: Param ;
     listinoItems: Array<{ code: number, prodName: string }> | null;
     jsonParams: jsonParams;
 }
 
-const ParamSections: React.FC<ParamsAccorditionProps> = ({loading, param, listinoItems, jsonParams}) => {
+const CollapseParam: React.FC<ParamsAccorditionProps> = ({ param, listinoItems, jsonParams}) => {
     type GenericParam = Record<string, string | number | undefined>;
     const [erogParams, setErogParams] = useState<TypeErogParams[]>([]);
     const [deviceParams, setDeviceParams] = useState<TypeConfigParams[]>([]);
@@ -199,9 +197,6 @@ const ParamSections: React.FC<ParamsAccorditionProps> = ({loading, param, listin
 
     sections = sections.filter((section) => section.params && section.params.length > 0);
 
-    if (loading)
-        return <AlertLoading/>;
-
     return (
         <div className="container mx-auto p-4 space-y-1 overflow-auto">
             {sections.map((section, index) => (
@@ -225,4 +220,4 @@ const ParamSections: React.FC<ParamsAccorditionProps> = ({loading, param, listin
         </div>
     );
 };
-export default ParamSections;
+export default CollapseParam;

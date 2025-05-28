@@ -4,17 +4,11 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faTableList } from '@fortawesome/free-solid-svg-icons';
 
 interface MasterButtonProps {
-    disabled: boolean;
     setSection: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ButtonHome: React.FC <MasterButtonProps>= ({disabled, setSection}) => {
+const ButtonHome: React.FC <MasterButtonProps>= ({ setSection}) => {
     const [fade, setFade] = useState(false);
-    // const [isDisabled, setIsDisabled] = useState(true);
-
-    const isDisabled = disabled;
-
-
     useEffect(() => {
         if (fade) {
             const timer = setTimeout(() => setFade(false), 1000);
@@ -24,7 +18,7 @@ const ButtonHome: React.FC <MasterButtonProps>= ({disabled, setSection}) => {
 
     return (
         <div>
-            <button disabled={isDisabled} onClick={() => setSection('master')}>
+            <button onClick={() => setSection('master')}>
                 <FontAwesomeIcon
                     icon={faTableList}
                     size="2xl"

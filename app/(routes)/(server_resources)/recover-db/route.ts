@@ -5,6 +5,8 @@ import { DatabasePath } from "@/app/class/DatabasePath";
 import { SftpPath } from "@/app/class/SftpPath";
 import { postData } from "@/app/lib/axiosClient";
 
+
+
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
     const searchParams = new URLSearchParams(url.search);
@@ -18,18 +20,14 @@ export async function GET(req: Request): Promise<NextResponse> {
     const sftpPath = new SftpPath(serial, backup);
 
     try {
-        const response = await postData('http://db-recovery:5000/recover', { serial, backup }) as Response;
-        if (!response.ok) {
-            const errorData = await response.json();
-            return NextResponse.json({ error: errorData.error || 'Errore sconosciuto' }, { status: response.status });
-        }
+        await postData(`http://db-recovery:5000/recover`, { serial, backup });
         const fileToZip= [databasePath.databaseRecovered, databasePath.databaseProductRecovered];
         await createZipFile(fileToZip, databasePath.databaseRecoveredZipped);
         const sftpConnector = new SftpConnector();
         await sftpConnector.uploadBackup(databasePath.databaseRecoveredZipped, sftpPath.backupFixedZip);
-
         return NextResponse.json('OK', { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }
+
 }

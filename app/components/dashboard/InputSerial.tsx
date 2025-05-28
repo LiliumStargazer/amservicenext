@@ -8,7 +8,6 @@ interface InputSerialProps {
 }
 
 const InputSerial: React.FC<InputSerialProps> = ({ setSerial, disabled }) => {
-    console.log("disabled", disabled);
     return (
         <input
             disabled={!disabled}

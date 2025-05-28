@@ -1,6 +1,9 @@
 'use server'
 import { NextResponse } from "next/server";
 
+const jsonMaker_User = process.env.JSONMAKER_USERNAME;
+const jsonMaker_Pass = process.env.JSONMAKER_PASS;
+
 export async function GET(req: Request): Promise<NextResponse> {
     const url = new URL(req.url);
     const serial = url.searchParams.get('serial');
@@ -10,7 +13,10 @@ export async function GET(req: Request): Promise<NextResponse> {
     }
 
     const apiUrl = `https://collaudo.amdistributori.it/api/v1/configurazione/${serial}`;
-    const authHeader = `Basic ${btoa(`${process.env.JSONMAKER_USER}::${process.env.JSONMAKER_PASS}`)}`;
+     const authHeader = `Basic ${btoa(`${jsonMaker_User}::${jsonMaker_Pass}`)}`; 
+//        const authHeader = `Basic ${btoa("jsonmaker::K;-c~V((AkPMq.#^5")}`;
+    console.log(jsonMaker_Pass);
+    console.log(jsonMaker_User);
 
     try {
         const response = await fetch(apiUrl, {

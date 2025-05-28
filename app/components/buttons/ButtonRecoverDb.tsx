@@ -5,11 +5,10 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faDatabase} from "@fortawesome/free-solid-svg-icons/faDatabase";
 
 interface FingerButtonProps {
-    disabled: boolean;
     setSection: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const ButtonRecoverDb: React.FC <FingerButtonProps>= ({ disabled, setSection}) => {
+const ButtonRecoverDb: React.FC <FingerButtonProps>= ({ setSection }) => {
     const [fade, setFade] = useState(false);
     useEffect(() => {
         if (fade) {
@@ -25,7 +24,6 @@ const ButtonRecoverDb: React.FC <FingerButtonProps>= ({ disabled, setSection}) =
         <div >
             <button
                 onClick={handleClick}
-                disabled={disabled}
             >
                 <FontAwesomeIcon
                     icon={faDatabase}

@@ -14,8 +14,7 @@ export async function GET(req: Request): Promise<NextResponse> {
         return NextResponse.json({ error: 'Missing serial or backup parameter' }, { status: 400 });
 
     try {
-        await postData(`http://db-recovery:5000/integrity_check`, { serial, backup }
-        );
+        await postData(`http://db-recovery:5000/integrity_check`, { serial, backup });
         return NextResponse.json('OK', { status: 200 });
     } catch (error) {
     /*     console.log('integrity check error: ',error); */

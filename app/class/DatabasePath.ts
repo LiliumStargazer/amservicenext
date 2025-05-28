@@ -60,7 +60,7 @@ export class DatabasePath {
     }
 
     get databaseProductRecovered(): string {
-        return this.databaseProductRecovered;
+        return this._databaseProductRecovered;
     }
 
     get databaseRecoveredZipped(): string {
