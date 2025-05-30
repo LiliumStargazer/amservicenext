@@ -17,7 +17,6 @@ import DatePicker from "@/app/components/dashboard/DatePicker";
 import ButtonHome from "@/app/components/shared/ButtonHome";
 import ButtonRecoverDb from "@/app/components/buttons/ButtonRecoverDb";
 import { useDownloadBackupMutation, useGetAliveEventsCorsHandlingMutation, useGetEventsByDateMutation} from "@/app/hooks/useMutations";
-/* import InputSearchEvents from "@/app/components/dashboard/InputSearchEvents"; */
 import { useBackupListQuery, useGetFilteredEventsQuery } from "@/app/hooks/useQueries";
 import ContainerFridgeSection from "@/app/components/fridge/ContainerFridgeSection";
 import { Status } from "@/app/enum/enum";

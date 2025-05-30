@@ -20,7 +20,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     const sftpPath = new SftpPath(serial, backup);
 
     try {
-        await postData(`http://db-recovery:5000/recover`, { serial, backup });
+        await postData(`http://db-recovery:5000/recover`, { serial, backup }, { timeout: 300000 });
         const fileToZip= [databasePath.databaseRecovered, databasePath.databaseProductRecovered];
         await createZipFile(fileToZip, databasePath.databaseRecoveredZipped);
         const sftpConnector = new SftpConnector();

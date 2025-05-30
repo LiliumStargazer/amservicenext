@@ -1,11 +1,57 @@
-
 services:
 
-  postgres:
-    container_name: postgres
-    image: postgres:latest
+  nextjs-app:
+    container_name: amservice
+    image: lalghisi/amservice
+    volumes:
+      - /opt/manutenzione/private-files/:/app/private-files/
+      - /opt/manutenzione/:/app/source/
+      - shared-volume:/tmp/tempAmService
+    ports:
+      - 80:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    restart: always
+    networks:
+      - amservice-network
     env_file:
-      - ./.env.local
+      - stack.env
+
+  migrator:
+    image: lalghisi/migrator:latest
+    container_name: migrator
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - amservice-network
+    env_file:
+      - stack.env
+    
+  cronjob:
+    image: lalghisi/cron:1.0
+    container_name: cronjob_amservice
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    restart: always
+    networks:
+      - amservice-network
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchover
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 600 --label-enable
+    restart: always
+
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
     volumes:
       - /opt/manutenzione/postgres:/var/lib/postgresql/data
     healthcheck:
@@ -15,69 +61,39 @@ services:
       start_period: 10s
       timeout: 5s
     restart: always
-
-  migrator:
-    container_name: migrator
-    image: lalghisi/migrator:latest
-    environment:
-      - AUTH_DRIZZLE_URL=postgres://postgres:postgres@postgres:5432/auth
-      - AUTH_ADMIN_PSW=IamAdmin
-      - AUTH_ADMIN_NAME=admin
-      - AUTH_ADMIN_EMAIL=admin@amservice.it
-    depends_on:
-      postgres:
-        condition: service_healthy
     networks:
       - amservice-network
-    restart: no
-
-  nextjs-app:
-    container_name: nextjs-app
-    image: lalghisi/amservice:1.0
+    
+  root-shell:
+    container_name: root-shell
+    image: alpine:latest
+    user: root  
     volumes:
-      - /opt/manutenzione/private-files/:/app/private-files/
       - /opt/manutenzione/:/app/source/
-    ports:
-      - "80:3000"
+      - shared-volume:/backups
+    stdin_open: true  #
+    tty: true 
+    restart: "no"
+    networks:
+      - amservice-network
+      
+  db-recovery:
+    container_name: db-recovery
+    volumes:
+      - shared-volume:/backups
+    image: lalghisi/dbrecover
+    networks:
+      - amservice-network
     env_file:
-        - ./.env.local
-    depends_on:
-      postgres:
-        condition: service_healthy
-    labels:
-      - com.centurylinklabs.watchtower.enable=true
-    networks:
-      - amservice-network
-    restart: always
-
-  watchtower:
-    container_name: watchover
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 600 --label-enable
-    networks:
-      - amservice-network
-    restart: always
-
-  cronjob:
-    container_name: cronjob
-    image: lalghisi/cron:1.0
-    labels:
-      - com.centurylinklabs.watchtower.enable=true
-    networks:
-      - amservice-network
-    restart: always
-
-  portainer:
-    image: portainer/portainer-ce
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-    ports:
-      - "9000:9000"
-    restart: always
-
+      - stack.env
+    
 networks:
   amservice-network:
     driver: bridge
+
+
+volumes:
+  shared-volume:
+    driver: local
+  next_cache:
+    driver: local

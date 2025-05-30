@@ -16,7 +16,7 @@ export default async function AdminPage() {
 
     let users: User[];
     try {
-        users = await usersGet();
+        users = await usersGet() as User[];
     } catch (error) {
         console.error("Error fetching users:", error);
 

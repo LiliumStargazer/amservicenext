@@ -1,5 +1,5 @@
 import initAnimation from "@/app/lib/animation";
-import "../styles/stars.scss";
+import "@/app/styles/stars.scss";
 import { useEffect, useRef } from "react";
 
 export default function AnimationShootingStars() {

@@ -36,17 +36,17 @@ ENV NODE_ENV=production \
 WORKDIR /app
 # Copia i file necessari per l'installazione delle dipendenze
 
-RUN groupadd -g 1001 nodejs && \
-    useradd -u 1001 -g nodejs nextjs && \
-    mkdir -p /app/.corepack && \
-    chown -R nextjs:nodejs /app && \
-    chmod -R 755 /app && \
-    corepack enable --install-directory=/app/.corepack
+#RUN groupadd -g 1001 nodejs && \
+#    useradd -u 1001 -g nodejs nextjs && \
+#    mkdir -p /app/.corepack && \
+#    chown -R nextjs:nodejs /app && \
+#    chmod -R 755 /app && \
+#    corepack enable --install-directory=/app/.corepack
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-USER nextjs
+#USER nextjs
 EXPOSE 3000
 CMD ["node", "server.js"]
