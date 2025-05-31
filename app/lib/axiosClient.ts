@@ -64,13 +64,28 @@ export const fetcher = async <T>(
     if (params) {
       config.params = params;
     }
-    
     const response: AxiosResponse<T> = await axiosInstance.get<T>(url, config);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw handleApiError(error);
     }
+    throw error;
+  }
+};
+
+export const mutationFetcher = async <T>(
+  url: string,
+  params?: ApiParams,
+  config?: AxiosRequestConfig
+): Promise<T> => {
+  try {
+    const finalConfig: AxiosRequestConfig = { ...(config || {}) };
+    if (params) finalConfig.params = params;
+    const response: AxiosResponse<T> = await axiosInstance.get<T>(url, finalConfig);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) throw handleApiError(error);
     throw error;
   }
 };
