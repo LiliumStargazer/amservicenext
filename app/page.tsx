@@ -14,7 +14,7 @@ import ButtonFridge from "@/app/components/buttons/ButtonFridge";
 import ButtonExcel from "@/app/components/buttons/ButtonExcel";
 import AgGridMaster from "@/app/components/dashboard/AgGridMaster";
 import DatePicker from "@/app/components/dashboard/DatePicker";
-import ButtonHome from "@/app/components/shared/ButtonHome";
+import ButtonHome from "@/app/components/buttons/ButtonHome";
 import ButtonRecoverDb from "@/app/components/buttons/ButtonRecoverDb";
 import { useDownloadBackupMutation, useGetAliveEventsCorsHandlingMutation, useGetEventsByDateMutation} from "@/app/hooks/useMutations";
 import { useBackupListQuery, useGetFilteredEventsQuery } from "@/app/hooks/useQueries";

@@ -19,20 +19,20 @@ const DropDownInfoBackup: React.FC <InfoDropDownProps>= ({disabled, backupList, 
         if ( isLoadingBackupList ) return;
 
         if (backupList && backupList.length > 0) {
-            const backupListTemp: backupListDetails[] = backupList.map((backupItem, ) => {
+            const backupListTemp: backupListDetails[] = backupList.map((backupItem) => {
                 const dashDateTimeFormat = backupItem[2]; // "24-04-2022 02:18:43"
                 const [datePart, timePart] = dashDateTimeFormat.split(' ');
                 const [day, month, year] = datePart.split('-');
-                const [hour, minute, second] = timePart.split(':');
+                const [hour, minute] = timePart.split(':');
                 const jsMonth = parseInt(month, 10) - 1;
                 //this dateObs is needed to sort the backupListTemp
 
-                const date = new Date(Number(year), jsMonth, Number(day), Number(hour), Number(minute), Number(second));
+                const date = new Date(Number(year), jsMonth, Number(day), Number(hour), Number(minute));
 
                 return {
                     dashDateTimeFormat: date,
                     backup: {
-                        slashDateTimeFormat: formatStringDateOrder ( dashDateTimeFormat ),
+                        slashDateTimeFormat: formatStringDateOrder(dashDateTimeFormat) + " " + `${hour}:${minute}`,
                         name: backupItem[0],
                         size: backupItem[1]
                     }
@@ -55,7 +55,7 @@ const DropDownInfoBackup: React.FC <InfoDropDownProps>= ({disabled, backupList, 
             </div>
             <div
                 tabIndex={0}
-                className="dropdown-content card card-compact bg-info text-primary-content z-[1] w-100 p-2 shadow">
+                className="dropdown-content card card-compact bg-info text-primary-content z-[1] w-120 p-2 shadow">
                 <div className="card-body">
                     <h3 className="card-title">
                         Backups Info

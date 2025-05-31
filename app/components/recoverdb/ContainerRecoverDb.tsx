@@ -37,7 +37,15 @@ const ContainerRecoverDb: React.FC = () => {
                 .filter(element => !element[1].includes("0 bytes"))
                 .map(element => element[0]);
 
-            filteredAndSortedBackups.sort().reverse();
+                filteredAndSortedBackups.sort((a, b) => {
+                    const dateA = new Date(
+                    dataBackupList.find(item => item[0] === a)?.[2] || ''
+                    ).getTime();
+                    const dateB = new Date(
+                    dataBackupList.find(item => item[0] === b)?.[2] || ''
+                    ).getTime();
+                    return dateB - dateA;
+                });
             const backupOptions: React.ReactNode[] = [] = filteredAndSortedBackups.map(element =>
                 <option key={element}>{element}</option>
             );
