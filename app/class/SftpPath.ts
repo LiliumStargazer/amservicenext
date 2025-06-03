@@ -7,7 +7,7 @@ export class SftpPath {
     protected readonly UPDATE_DIR = "update";
     protected readonly OUT_DIR = "Out";
     protected readonly BACKUP_FIXED_ZIP = "DB.zip";
-    protected readonly BACKUP_WITH_FINGER_ZIP = "DBAndFinger.zip";
+    protected readonly BACKUP_WITH_FINGER_ZIP = "DbAndFinger.zip";
     protected readonly _configDir: string;
     protected readonly _outDir: string;
     protected readonly _backupFileZip: string;
