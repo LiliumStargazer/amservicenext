@@ -5,6 +5,7 @@ import AlertMultiple from "@/app/components/shared/AlertMultiple.";
 import { AlertStatus } from "@/app/enum/enum";
 import { useCheckIntegrityMutation, useDownloadBackupMutation, useRecoverDbMutation, useTransferFingerDbMutation } from '@/app/hooks/useMutations';
 import { useBackupListQuery } from '@/app/hooks/useQueries';
+import { getFilteredAndSortedBackups } from '@/app/utils/utils';
 
 
 const ContainerRecoverDb: React.FC = () => {
@@ -32,22 +33,10 @@ const ContainerRecoverDb: React.FC = () => {
             setBackupSelected("");
             return;
         }
-        if (dataBackupList && Array.isArray(dataBackupList) ){
-            const filteredAndSortedBackups = dataBackupList
-                .filter(element => !element[1].includes("0 bytes"))
-                .map(element => element[0]);
-
-                filteredAndSortedBackups.sort((a, b) => {
-                    const dateA = new Date(
-                    dataBackupList.find(item => item[0] === a)?.[2] || ''
-                    ).getTime();
-                    const dateB = new Date(
-                    dataBackupList.find(item => item[0] === b)?.[2] || ''
-                    ).getTime();
-                    return dateB - dateA;
-                });
-            const backupOptions: React.ReactNode[] = [] = filteredAndSortedBackups.map(element =>
-                <option key={element}>{element}</option>
+        if (dataBackupList && Array.isArray(dataBackupList)) {
+            const filteredAndSortedBackups = getFilteredAndSortedBackups(dataBackupList);
+            const backupOptions: React.ReactNode[] = filteredAndSortedBackups.map(element =>
+            <option key={element}>{element}</option>
             );
             setBackupOptions(backupOptions);
             setBackupSelected(filteredAndSortedBackups[0]);
@@ -62,13 +51,9 @@ const ContainerRecoverDb: React.FC = () => {
             setSourceBackup("");
             return;
         }
-        if (sourceBackupList && Array.isArray(sourceBackupList) ){
-            const filteredAndSortedBackups = sourceBackupList
-                .filter(element => !element[1].includes("0 bytes"))
-                .map(element => element[0]);
-
-            filteredAndSortedBackups.sort().reverse();
-            const sourceBackupOptions: React.ReactNode[] = [] = filteredAndSortedBackups.map(element =>
+        if (sourceBackupList && Array.isArray(sourceBackupList)) {
+            const filteredAndSortedBackups = getFilteredAndSortedBackups(sourceBackupList);
+            const sourceBackupOptions: React.ReactNode[] = filteredAndSortedBackups.map(element =>
                 <option key={element}>{element}</option>
             );
             setSourceBackupOptions(sourceBackupOptions);
@@ -112,6 +97,7 @@ const ContainerRecoverDb: React.FC = () => {
         if (!serial) return setMessage("Seriale mancante");
         if (!backupSelected) return setMessage("Backup mancante");
         try{
+             await triggerDownload({ serial, backup: backupSelected });
             const result = await triggerRecover({ serial, backup: backupSelected });
             if (result) {
                 setMessage("DB recovered successfully");

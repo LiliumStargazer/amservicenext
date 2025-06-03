@@ -118,22 +118,31 @@ export const getLatestBackup = (backupList: string[]) => {
     }
     return latestBackup;
 };
-//
-// export const handleSerialValidation = (
-//     serial: string,
-//     setSerial: (serial: string) => void,
-//     setMessage: (message: string) => void,
-//     router: AppRouterInstance,
-//     pathname: string
-// ) => {
-//     const formattedSerial = trimAndFormatSerial(serial);
-//     const message = getSerialValidationMessage(formattedSerial);
-//     if (message !== "valid") {
-//         setMessage(message);
-//     } else {
-//         setSerial(formattedSerial);
-//         if (!pathname.includes("/log")) {
-//             router.push("/log");
-//         }
-//     }
-// };
+
+export function getFilteredAndSortedBackups(sourceBackupList: string[][]): string[] {
+    // Filter out backups with "0 bytes" in the second element and map to the first element
+    const filteredBackups = sourceBackupList
+        .filter(element => !element[1].includes("0 bytes"))
+        .map(element => element[0]);
+
+    // Helper to parse dd/mm/yyyy hh:mm to Date
+    const parseCustomDate = (dateStr: string) => {
+        const [datePart, timePart] = dateStr.split(' ');
+        const [day, month, year] = datePart.split('/').map(Number);
+        const [hour = 0, minute = 0] = (timePart || '').split(':').map(Number);
+        return new Date(year, month - 1, day, hour, minute);
+    };
+
+    // Sort by date descending
+    filteredBackups.sort((a, b) => {
+        const dateA = parseCustomDate(
+            sourceBackupList.find(item => item[0] === a)?.[2] || ''
+        ).getTime();
+        const dateB = parseCustomDate(
+            sourceBackupList.find(item => item[0] === b)?.[2] || ''
+        ).getTime();
+        return dateB - dateA;
+    });
+
+    return filteredBackups;
+}

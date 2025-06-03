@@ -54,7 +54,6 @@ class SftpConnector {
         try {
             await this.createSftpSession();
             const fileList: FileInfo[] = await this.sftp.list(sftpPath.configDir, undefined);
-            console.log('SftpConnector: getSftpBackupList: fileList:', fileList);
             return this.mapToBackupList(fileList);
         } catch (error) {
             console.error("Error while getting backup-list of backups:", error);
