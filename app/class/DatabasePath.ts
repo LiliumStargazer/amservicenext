@@ -8,7 +8,7 @@ export class DatabasePath {
     protected readonly CONFIG_DIR = "config";
     protected readonly UPDATE_DIR = "update";
     protected readonly BACKUP_ZIP = "DB.zip";
-    protected readonly BACKUP_WITH_FINGER_ZIP = "DBAndFinger.zip";
+    protected readonly BACKUP_WITH_FINGER_ZIP = "DbAndFinger.zip";
     protected readonly BACKUP_NAMES = ["AndBk.s3db", "DbBackup.s3db", "AndBkFarma.s3db"];
     protected readonly BACKUP_RECOVERED_NAMES = ["AndDbTouch.s3db", "TouchBull.s3db"];
     protected readonly BACKUP_PROD_NAMES = ["ProdDbTouch.s3db", "DbProduct.s3db"];
