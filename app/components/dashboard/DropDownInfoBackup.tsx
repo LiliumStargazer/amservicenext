@@ -2,7 +2,6 @@
 
 import React, {useEffect, useState} from "react";
 import {v4 as uuidv4} from 'uuid';
-import {formatStringDateOrder} from "@/app/utils/utils";
 import {backupListDetails} from "@/app/types/types";
 
 interface InfoDropDownProps {
@@ -16,30 +15,28 @@ const DropDownInfoBackup: React.FC <InfoDropDownProps>= ({disabled, backupList, 
     const classNameButton = ( disabled  ? "btn btn-disabled btn-circle btn-ghost btn-sm text-info" : "btn btn-circle btn-ghost btn-sm text-info" );
 
     useEffect(() => {
-        if ( isLoadingBackupList ) return;
-
+        if (isLoadingBackupList) return;
         if (backupList && backupList.length > 0) {
             const backupListTemp: backupListDetails[] = backupList.map((backupItem) => {
-                const dashDateTimeFormat = backupItem[2]; // "24-04-2022 02:18:43"
-                const [datePart, timePart] = dashDateTimeFormat.split(' ');
-                const [day, month, year] = datePart.split('-');
-                const [hour, minute] = timePart.split(':');
-                const jsMonth = parseInt(month, 10) - 1;
-                //this dateObs is needed to sort the backupListTemp
-
-                const date = new Date(Number(year), jsMonth, Number(day), Number(hour), Number(minute));
-
                 return {
-                    dashDateTimeFormat: date,
-                    backup: {
-                        slashDateTimeFormat: formatStringDateOrder(dashDateTimeFormat) + " " + `${hour}:${minute}`,
-                        name: backupItem[0],
-                        size: backupItem[1]
-                    }
+                    dateString: backupItem[2],
+                    name: backupItem[0],
+                    size: backupItem[1]
                 };
             });
-            backupListTemp.sort((a, b) => a.dashDateTimeFormat.getTime() - b.dashDateTimeFormat.getTime());
-            backupListTemp.reverse();
+
+            // Ordina dal più recente al meno recente usando la data/ora come stringa "dd/mm/yyyy hh:mm"
+            backupListTemp.sort((a, b) => {
+                const parseDate = (str: string) => {
+                    // "dd/mm/yyyy hh:mm"
+                    const [datePart, timePart] = str.split(' ');
+                    const [day, month, year] = datePart.split('/').map(Number);
+                    const [hour, minute] = timePart.split(':').map(Number);
+                    return new Date(year, month - 1, day, hour, minute).getTime();
+                };
+                return parseDate(b.dateString) - parseDate(a.dateString);
+            });
+
             setBackupInfo(backupListTemp);
         }
     }, [backupList, isLoadingBackupList]);
@@ -63,9 +60,9 @@ const DropDownInfoBackup: React.FC <InfoDropDownProps>= ({disabled, backupList, 
                     {backupInfo.map((item: backupListDetails) => {
                         return (
                             <div key={uuidv4()} className="flex whitespace-nowrap">
-                                <p className="p-0.5"><strong>Date: </strong>{item.backup.slashDateTimeFormat}</p>
-                                <p className="p-0.5" ><strong>Name: </strong>{item.backup.name}</p>
-                                <p className="p-0.5" ><strong>Size: </strong>{item.backup.size}</p>
+                                <p className="p-0.5" ><strong>Name: </strong>{item.name}</p>
+                                <p className="p-0.5"><strong>Date: </strong>{item.dateString}</p>
+                                <p className="p-0.5" ><strong>Size: </strong>{item.size}</p>
                             </div>
                         );
                     })}

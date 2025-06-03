@@ -12,6 +12,7 @@ const IconSoftware: React.FC <IconSoftwareProps>= ({softwareType}) => {
     const [softwareIcon, setSoftwareIcon] = useState<React.ReactNode>('');
 
     useEffect(() => {
+        console.log('IconSoftware: softwareType:', softwareType);
             if (softwareType.includes('android')) {
                 setSoftwareIcon(<FontAwesomeIcon icon={faAndroid} size="2xl" style={{ color: "#63E6BE" }} />);
             } else if (softwareType.includes('windows')) {

@@ -54,6 +54,7 @@ class SftpConnector {
         try {
             await this.createSftpSession();
             const fileList: FileInfo[] = await this.sftp.list(sftpPath.configDir, undefined);
+            console.log('SftpConnector: getSftpBackupList: fileList:', fileList);
             return this.mapToBackupList(fileList);
         } catch (error) {
             console.error("Error while getting backup-list of backups:", error);
@@ -104,10 +105,19 @@ class SftpConnector {
         // Estrai attributi leggibili da un file
         const fileName = entry.name;
         const size = this.formatSize(entry.size); // Formatta la dimensione del file
-        const localDateTime = new Date(entry.modifyTime)
-            .toISOString()
-            .replace('T', ' ') // Sostituisci il separatore T con uno spazio
-            .replace(/\.\d+Z$/, ''); // Rimuovi i millisecondi e il suffisso Z
+        // Se modifyTime è in secondi, moltiplica per 1000. Se è già in millisecondi, usa così.
+        const modifyTimeMs = entry.modifyTime > 1e12 ? entry.modifyTime : entry.modifyTime * 1000;
+        const date = new Date(modifyTimeMs);
+        // Ottieni la data e ora locale italiana (CET/CEST)
+        const localDateTime = date.toLocaleString('it-IT', {
+            timeZone: 'Europe/Rome',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        }).replace(',', '');
         return [fileName, size, localDateTime];
     }
 

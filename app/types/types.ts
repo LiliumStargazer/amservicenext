@@ -182,12 +182,9 @@ export type TypeConfigParams = {
 }
 
 export interface backupListDetails{
-    dashDateTimeFormat: Date,
-    backup :{
-        slashDateTimeFormat: string,
-        name: string,
-        size: string
-    }
+    dateString: string,
+    name: string,
+    size: string
 }
 
 export interface DialogContent {
