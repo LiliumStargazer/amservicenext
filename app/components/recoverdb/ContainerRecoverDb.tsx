@@ -6,6 +6,7 @@ import { AlertStatus } from "@/app/enum/enum";
 import { useCheckIntegrityMutation, useDownloadBackupMutation, useRecoverDbMutation, useTransferFingerDbMutation } from '@/app/hooks/useMutations';
 import { useBackupListQuery } from '@/app/hooks/useQueries';
 import { getFilteredAndSortedBackups } from '@/app/utils/utils';
+import DropDownInfoBackup from '@/app/components/dashboard/DropDownInfoBackup';
 
 
 const ContainerRecoverDb: React.FC = () => {
@@ -159,8 +160,8 @@ const ContainerRecoverDb: React.FC = () => {
                 status={status}
             />
             </div>
-            <div className="flex items-center justify-center space-x-4">
-                <div className="card w-full max-w-sm bg-base-200 shadow-xl ">
+            <div className="flex items-center justify-center space-x-14">
+                <div className="card w-full max-w-sm bg-base-200 shadow-xl border-2 border-base-white">
                     <div className="card-header">
                         <h2 className="card-title flex justify-center w-full mt-2">Recover DB</h2>
                     </div>
@@ -173,16 +174,25 @@ const ContainerRecoverDb: React.FC = () => {
                             />
                         </label>
                         <p className="text-sm text-gray-500">Select the backup to recover</p>
-                        <label className="select w-full">
-                            <span className="label">Backups</span>
-                            <select
-                                className="w-full"
-                                onChange={e => setBackupSelected(e.target.value)}
-                                disabled={backupOptions.length === 0}
-                            >
-                                {backupOptions}
-                            </select>
-                        </label>
+                        <div className = "flex flex-row space-x-2">
+                            <label className="select w-full">
+                                <span className="label">Backups</span>
+                                <select
+                                    className="w-full"
+                                    onChange={e => setBackupSelected(e.target.value)}
+                                    disabled={backupOptions.length === 0}
+                                >
+                                    {backupOptions}
+                                </select>
+                            </label>
+                            <div className="flex">
+                                <DropDownInfoBackup 
+                                    disabled={backupOptions.length === 0}
+                                    backupList={dataBackupList as string[]}
+                                    isLoadingBackupList={isLoadingBackupList || isLoadingRecoverDb || isDownloadLoading || isCheckingIntegrity || isLoadingSourceBackupList || isLoadingTransfer}
+                                />
+                            </div>
+                        </div>
                         <button
                             className="btn btn-soft w-full"
                             onClick={handleClickRecover}
@@ -199,7 +209,7 @@ const ContainerRecoverDb: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <div className="card w-full max-w-sm bg-base-200 shadow-xl ">
+                <div className="card w-full max-w-sm bg-base-200 shadow-xl border-2 border-base-white">
                     <div className="card-header">
                         <h2 className="card-title flex justify-center w-full mt-2">Transfer Fingers</h2>
                     </div>
@@ -212,16 +222,24 @@ const ContainerRecoverDb: React.FC = () => {
                             />
                         </label>
                         <p className="text-sm text-gray-500">Select the backup to transfer</p>
-                        <label className="select w-full">
-                            <span className="label">Transfer</span>
-
-                            <select
-                                onChange={e => setSourceBackup(e.target.value)}
-                                disabled={sourceBackupOptions.length === 0}
-                            >
-                                {sourceBackupOptions}
-                            </select>
-                        </label>
+                        <div className = "flex flex-row space-x-2">
+                            <label className="select w-full">
+                                <span className="label">Transfer</span>
+                                <select
+                                    onChange={e => setSourceBackup(e.target.value)}
+                                    disabled={sourceBackupOptions.length === 0}
+                                >
+                                    {sourceBackupOptions}
+                                </select>
+                            </label>
+                                <div className="flex">
+                                <DropDownInfoBackup 
+                                    disabled={sourceBackupOptions.length === 0}
+                                    backupList={sourceBackupList as string[]}
+                                    isLoadingBackupList={isLoadingBackupList || isLoadingRecoverDb || isDownloadLoading || isCheckingIntegrity || isLoadingSourceBackupList || isLoadingTransfer}
+                                />
+                            </div>
+                        </div>
                         <label className="input w-full">
                             <span className="label w-64">Destination Serial</span>
                             <input
