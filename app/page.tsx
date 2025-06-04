@@ -157,9 +157,7 @@ const DashBoard: React.FC = () => {
     }, [backupListData]);
 
     useEffect(() => {
-        console.log('searchValue', searchValue);
         if (searchValue.length === 0) {
-            console.log('sono vuoto');
             setFilteredEvents([]);
         }
     }, [searchValue]);
@@ -231,10 +229,6 @@ const DashBoard: React.FC = () => {
 
     return (
         <div className="h-screen flex flex-col">
-       {/*      <NavbarTop
-                serialTemp={serial}
-                setMessage={setMessage}
-            /> */}
             <div className="bg-base-100 text-neutral-content min-h-8 max-h-8 flex flex-row mb-4 mt-6 w-full">
                 <div className="flex flex-row justify-between items-center w-full px-4">
                     {/* Left: Buttons */}

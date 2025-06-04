@@ -21,6 +21,15 @@ export async function GET(req: Request): Promise<NextResponse> {
     const sftpPath = new SftpPath(targetSerial, backup);
     try {
         //copia il db, il db finger e il db prodotti nel nuovo File DbAndFinger.zip nell'sftp alla cartella nrseriale/config/Out
+        
+        if (databasePath.databaseFingerUnzipped.includes('AndBk')) {
+            const fs = await import('fs/promises');
+            await fs.rename(databasePath.databaseFingerUnzipped, databasePath.defaultFingerDbPath);
+            databasePath.setDefaultFingerDbPath(databasePath.defaultDbPath);
+            await fs.rename(databasePath.databaseUnzipped, databasePath.defaultDbPath);
+            databasePath.setDefaultDbPath(databasePath.defaultDbPath);
+        }
+
         const fileToZip = [databasePath.databaseUnzipped, databasePath.databaseFingerUnzipped, databasePath.databaseProductUnzipped];
         await createZipFile(fileToZip, databasePath.databaseWithFingerZipped);
         const sftpConnector = new SftpConnector();

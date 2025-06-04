@@ -1,7 +1,7 @@
 'use client'
 
 import { useGetEventsName } from '@/app/hooks/useQueries';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 
 interface Option {
     value: string;
@@ -18,6 +18,7 @@ interface SelectSearchProps {
 const SelectSearch: React.FC<SelectSearchProps> = ({ serial, backup, disabled, setSearchValue }) => {
     const [search, setSearch] = useState('');
     const [open, setOpen] = useState(false);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Replace this with your actual data fetching hook
     const { data = [] } = useGetEventsName(serial, backup);
@@ -53,6 +54,13 @@ const SelectSearch: React.FC<SelectSearchProps> = ({ serial, backup, disabled, s
         setSearch('');
     };
 
+    const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearch(value);
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => setSearchValue(value), 300);
+    };
+
     const selectedLabel =
         options.find((opt) => opt.value === selectedValue)?.label || '';
 
@@ -83,7 +91,7 @@ const SelectSearch: React.FC<SelectSearchProps> = ({ serial, backup, disabled, s
                 className="w-full bg-transparent outline-none"
                 placeholder="Seleziona evento o digita per cercare"
                 value={open ? search : selectedLabel}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleOnChange}
                 onFocus={() => !disabled && setOpen(true)}
                 disabled={disabled}
                 readOnly={!open}

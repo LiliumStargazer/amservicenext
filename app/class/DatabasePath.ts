@@ -13,15 +13,19 @@ export class DatabasePath {
     protected readonly BACKUP_RECOVERED_NAMES = ["AndDbTouch.s3db", "TouchBull.s3db"];
     protected readonly BACKUP_PROD_NAMES = ["ProdDbTouch.s3db", "DbProduct.s3db"];
     protected readonly BACKUP_FINGER_NAMES = ["fingerRead.db", "DbRFinger.db"];
+    protected readonly DEFAULT_FINGER_DB_NAME = "DbRFinger.db";
+    protected readonly DEFALULT_DB_NAME = "DbBackup.s3db";
     protected readonly _backupDir: string;
     protected readonly _backupFileZip: string;
-    private readonly _databaseUnzipped: string;
+    private _databaseUnzipped: string;
     protected readonly _databaseProductUnzipped: string;
-    protected readonly _databaseFingerUnzipped: string;
+    protected _databaseFingerUnzipped: string;
     protected readonly _databaseRecovered: string;
     protected readonly _databaseProductRecovered: string;
     protected readonly _databaseRecoveredZipped: string;
     protected readonly _databaseWithFingerZipped: string;
+    protected readonly _defaultFingerDbPath: string;
+    protected readonly _defaultDbPath: string;
 
     constructor(private serial: string, private backupName: string) {
         this._backupDir = this.create_backupDir(this.serial, this.backupName); ///tmp/tempAmService/1234/AndBk17    
@@ -33,6 +37,8 @@ export class DatabasePath {
         this._databaseProductRecovered = this.unzippedDbProdPath(this._backupDir); //tmp/tempAmService/1234/AndBk17/ProdDbTouch.s3db
         this._databaseRecoveredZipped = path.join(this._backupDir, this.BACKUP_ZIP); // tmp/tempAmService/1234/AndBk17/DB.zip
         this._databaseWithFingerZipped = path.join(this._backupDir, this.BACKUP_WITH_FINGER_ZIP); // tmp/tempAmService/1234/AndBk17/DBAndFinger.zip
+        this._defaultFingerDbPath = path.join(this._backupDir, this.DEFAULT_FINGER_DB_NAME); // tmp/tempAmService/1234/AndBk17/DbRFinger.db
+        this._defaultDbPath = path.join(this._backupDir, this.DEFALULT_DB_NAME); // tmp/tempAmService/1234/AndBk17/DbBackup.s3db
     }
 
     get backupDir(): string {
@@ -71,7 +77,21 @@ export class DatabasePath {
         return this._databaseWithFingerZipped;
     }
 
+    get defaultFingerDbPath(): string {
+        return this._defaultFingerDbPath;
+    }
 
+    get defaultDbPath(): string {
+        return this._defaultDbPath;
+    }
+
+    setDefaultFingerDbPath(fingerDbPath: string): void {
+        this._databaseFingerUnzipped = fingerDbPath;
+    }
+
+    setDefaultDbPath( dbPath: string): void {
+        this._databaseUnzipped = dbPath;
+    }
 
     private create_backupDir(serial: string, backupName: string): string {
         const localPath = path.join(

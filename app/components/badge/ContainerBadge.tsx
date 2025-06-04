@@ -18,14 +18,20 @@ interface ContainerBadgeProps {
 const ContainerBadge: React.FC<ContainerBadgeProps> = ({status, setStatus, setMessage, message, serial, backup}) => {
     const [customerName, setCustomerName] = React.useState<string>('');
     const [VTElink, setVTElink] = React.useState<string>('');
-    const { data: softwareType, isLoading: softwareTypeIsLoading } = useGetSoftwareTypeQuery(serial, backup);
+    const [software, setSoftware] = React.useState<string>('');
+    const { data: softwareTypeData, isLoading: softwareDataIsLoading } = useGetSoftwareTypeQuery(serial, backup);
     const { data: vteData, isLoading: vteIsLoading } = useGetVteDataQuery(serial, backup);
 
     useEffect(() => {
-
-        if (softwareTypeIsLoading || vteIsLoading) 
+        if (softwareDataIsLoading || vteIsLoading) 
             setStatus(Status.Loading);
-    }, [, softwareTypeIsLoading, setStatus, setMessage, , vteIsLoading]);
+    }, [softwareDataIsLoading, setStatus, setMessage, , vteIsLoading]);
+
+    useEffect(() => {
+        if (softwareTypeData && typeof softwareTypeData === 'string')
+            setSoftware(softwareTypeData);
+            
+    }, [softwareTypeData, setStatus, setMessage]);
 
 
     useEffect(() => {
@@ -37,12 +43,14 @@ const ContainerBadge: React.FC<ContainerBadgeProps> = ({status, setStatus, setMe
 
     }, [vteData, setCustomerName, setVTElink]);
 
+   
     useEffect(() => {
         if (serial.length !== 5){
             setCustomerName('');
             setVTElink('');
+            setSoftware('');
         }
-    }, [serial, setCustomerName, setVTElink]);
+    }, [serial, setCustomerName, setVTElink, setSoftware]);
 
     return (
         <div className="mb-2">
@@ -66,12 +74,10 @@ const ContainerBadge: React.FC<ContainerBadgeProps> = ({status, setStatus, setMe
                     Success
                 </div>
                 }
-                {
-                typeof softwareType === 'string' && (
-                    <div className="flex items-center">
-                    <IconSoftware softwareType={softwareType} />
-                    </div>
-                )
+                {   
+                <div className="flex items-center">
+                    <IconSoftware softwareType={software} />
+                </div>
                 }
                 {
                 serial.length === 5 && backup && (
