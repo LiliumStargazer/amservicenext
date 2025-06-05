@@ -1,5 +1,4 @@
 import { onClickOpenWindow } from "@/app/utils/utils";
-import { faCloud, faList, faMusic } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import amclub from "@/public/mini/amClubLogoMini.png";
@@ -7,16 +6,16 @@ import amwiki from "@/public/mini/logos-wikijsMini.png";
 import prestashop from "@/public/mini/PrestashopMini.png";
 import chatWooot from "@/public/mini/chatwootMini.png";
 import academy from "@/public/mini/amacademyMini.png";
-import vte from "@/public/mini/vtenextMini.png";
 import taiga from "@/public/mini/taigaMini.svg";
 import tableau from "@/public/mini/tableauMini.svg";
 import { faJs } from "@fortawesome/free-brands-svg-icons";
+import { faList, faMusic } from "@fortawesome/free-solid-svg-icons";
 
 interface DrawerLinksProps {
     serial: string;
 }
 
-const DrawerLinks: React.FC<DrawerLinksProps> = ({ serial }) => {
+const DrawerLinks: React.FC<DrawerLinksProps> = () => {
 
 
     return (
@@ -52,22 +51,6 @@ const DrawerLinks: React.FC<DrawerLinksProps> = ({ serial }) => {
                             <Image src={prestashop} alt="shop" className="responsive-image" />
                         </button>
                     </li>
-                    <li>
-                        <button
-                            id="alive"
-                            className="btn btn-ghost btn-md flex gap-4 items-center w-full text-left"
-                            onClick={() =>
-                                onClickOpenWindow(
-                                    "https://alive2.amdistributori.it:8443/dettaglio-distributore/?serialnumber={input}",
-                                    serial
-                                )
-                            }
-                        >
-                            <FontAwesomeIcon icon={faCloud} style={{ color: "#e32400" }} size="2x" />
-                            <span>Alive</span>
-                        </button>
-                    </li>
-
                     <li>
                         <button
                             id="amwiki"
@@ -137,16 +120,6 @@ const DrawerLinks: React.FC<DrawerLinksProps> = ({ serial }) => {
                         >
                             <Image src={academy} alt="academy" className="responsive-image" />
                             <span>Academy</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button
-                            id="vte"
-                            className="btn btn-ghost btn-md flex gap-4 items-center w-full text-left"
-                            onClick={() => onClickOpenWindow("https://www.dacsy.it/", "")}
-                        >
-                            <Image src={vte} alt="vte" className="responsive-image" />
-                            <span>Vte</span>
                         </button>
                     </li>
                     <li>

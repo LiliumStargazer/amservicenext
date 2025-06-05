@@ -4,7 +4,11 @@ import { Status } from "@/app/enum/enum";
 import IconSoftware from '@/app/components/badge/IconSoftware';
 import { useGetSoftwareTypeQuery, useGetVteDataQuery } from '@/app/hooks/useQueries';
 import Badge from '@/app/components/badge/Badge';
-import BadgeLink from '@/app/components/badge/BadgeLink';
+import { onClickOpenWindow } from '@/app/utils/utils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloud } from '@fortawesome/free-solid-svg-icons';
+import Image from 'next/image';
+import vte from "@/public/mini/vtenextMini.png";
 
 interface ContainerBadgeProps {
     status: Status;
@@ -74,11 +78,6 @@ const ContainerBadge: React.FC<ContainerBadgeProps> = ({status, setStatus, setMe
                     Success
                 </div>
                 }
-                {   
-                <div className="flex items-center">
-                    <IconSoftware softwareType={software} />
-                </div>
-                }
                 {
                 serial.length === 5 && backup && (
                     <div className="flex items-center">
@@ -89,10 +88,51 @@ const ContainerBadge: React.FC<ContainerBadgeProps> = ({status, setStatus, setMe
                 {
                 customerName && VTElink && (
                     <div className="flex items-center">
-                    <BadgeLink text={customerName} link={VTElink}/>
+                    <Badge text={customerName}/>
                     </div>
                 )
                 }
+                {   
+                    <div className="flex items-center">
+                        <IconSoftware softwareType={software} />
+                    </div>
+                }
+                {
+                serial && backup && (
+                    <button
+                        type="button"
+                        title="Apri Alive"
+                        aria-label="Apri Alive"
+                        onClick={() =>
+                            onClickOpenWindow(
+                                "https://alive2.amdistributori.it:8443/dettaglio-distributore/?serialnumber={input}",
+                                serial
+                            )
+                        }
+                        style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                    >
+                        <FontAwesomeIcon icon={faCloud} style={{ color: "#e32400" }} size="2x" />
+                    </button>
+                )
+                }{
+                    VTElink && (
+                        <button
+                            id="vte"
+                            title="Apri vte"
+                            aria-label="Apri vte"
+                            onClick={() => window.open(VTElink, '_blank')}
+                        >
+                            <Image
+                                src={vte}
+                                alt="vte"
+                                className="responsive-image"
+                                width={32}
+                                height={32}
+                            />
+                        </button>
+                )
+                }
+                
             </span>
             </div>
         </div>

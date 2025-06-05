@@ -260,7 +260,7 @@ const DashBoard: React.FC = () => {
                             {/* <InputSearchEvents disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue}/> */}
                             <SelectSearch serial={serial} backup={backup} disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue} />
                             <TextUser/>
-                            <button className="btn btn-info " onClick={() => signOut()}>Sign Out</button>
+                            <button className="btn btn-sm btn-info " onClick={() => signOut()}>Sign Out</button>
                         </div>
                     )}
                 </div>
