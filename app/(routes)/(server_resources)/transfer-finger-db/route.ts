@@ -25,9 +25,9 @@ export async function GET(req: Request): Promise<NextResponse> {
         if (databasePath.databaseFingerUnzipped.includes('AndBk')) {
             const fs = await import('fs/promises');
             await fs.rename(databasePath.databaseFingerUnzipped, databasePath.defaultFingerDbPath);
-            databasePath.setDefaultFingerDbPath(databasePath.defaultDbPath);
+            databasePath.setdatabaseFingerUnzipped(databasePath.defaultFingerDbPath);
             await fs.rename(databasePath.databaseUnzipped, databasePath.defaultDbPath);
-            databasePath.setDefaultDbPath(databasePath.defaultDbPath);
+            databasePath.setdatabaseUnzipped(databasePath.defaultDbPath);
         }
 
         const fileToZip = [databasePath.databaseUnzipped, databasePath.databaseFingerUnzipped, databasePath.databaseProductUnzipped];

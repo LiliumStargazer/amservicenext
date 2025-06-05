@@ -85,11 +85,11 @@ export class DatabasePath {
         return this._defaultDbPath;
     }
 
-    setDefaultFingerDbPath(fingerDbPath: string): void {
+    setdatabaseFingerUnzipped(fingerDbPath: string): void {
         this._databaseFingerUnzipped = fingerDbPath;
     }
 
-    setDefaultDbPath( dbPath: string): void {
+    setdatabaseUnzipped(dbPath: string): void {
         this._databaseUnzipped = dbPath;
     }
 
