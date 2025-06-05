@@ -49,17 +49,20 @@ const SelectBackup: React.FC<SelectAndDownloadBackupProps> = ({ setBackup, onSel
     }, [backupList, setBackup]);
 
     return (
-        <select
-            className="select select-md select-bordered max-w-min min-w-44 join-item"
-            value={backup}
-            onChange={onSelectBackup}
-            disabled={isDisabled}
-        >
-            <option value="" disabled hidden>
-            Select backup
-            </option>
-            {backupOptions}
-        </select>
+        <label className="select select-sm min-w-60 max-w-min">
+            <span className="label text-info">Backup List:</span>
+            <select
+                value={backup}
+                onChange={onSelectBackup}
+                disabled={isDisabled}
+            >
+            <option value="" disabled hidden></option>
+                <option value="" disabled hidden>
+                    Select backup
+                </option>
+                {backupOptions}
+            </select>
+        </label>
     );
 };
 

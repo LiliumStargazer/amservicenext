@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
 import vte from "@/public/mini/vtenextMini.png";
+import DropDownInfoBackup from '@/app/components/badge/DropDownInfoBackup';
 
 interface ContainerBadgeProps {
     status: Status;
@@ -17,9 +18,11 @@ interface ContainerBadgeProps {
     message: string;
     serial: string;
     backup: string;
+    backupList: string[];
+    isLoadingBackupList: boolean;
 }
 
-const ContainerBadge: React.FC<ContainerBadgeProps> = ({status, setStatus, setMessage, message, serial, backup}) => {
+const ContainerBadge: React.FC<ContainerBadgeProps> = ({status, setStatus, setMessage, message, serial, backup, backupList, isLoadingBackupList}) => {
     const [customerName, setCustomerName] = React.useState<string>('');
     const [VTElink, setVTElink] = React.useState<string>('');
     const [software, setSoftware] = React.useState<string>('');
@@ -131,6 +134,11 @@ const ContainerBadge: React.FC<ContainerBadgeProps> = ({status, setStatus, setMe
                             />
                         </button>
                 )
+                }
+                {
+                    backupList && backupList.length > 0 && (
+                        <DropDownInfoBackup disabled={false} backupList={backupList as string[]} isLoadingBackupList={isLoadingBackupList}/>
+                    )
                 }
                 
             </span>

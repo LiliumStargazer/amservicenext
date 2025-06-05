@@ -6,7 +6,7 @@ import { AlertStatus } from "@/app/enum/enum";
 import { useCheckIntegrityMutation, useDownloadBackupMutation, useRecoverDbMutation, useTransferFingerDbMutation } from '@/app/hooks/useMutations';
 import { useBackupListQuery } from '@/app/hooks/useQueries';
 import { getFilteredAndSortedBackups } from '@/app/utils/utils';
-import DropDownInfoBackup from '@/app/components/dashboard/DropDownInfoBackup';
+import DropDownInfoBackup from '@/app/components/badge/DropDownInfoBackup';
 
 
 const ContainerRecoverDb: React.FC = () => {

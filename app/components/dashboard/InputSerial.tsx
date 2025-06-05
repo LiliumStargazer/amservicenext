@@ -9,16 +9,18 @@ interface InputSerialProps {
 
 const InputSerial: React.FC<InputSerialProps> = ({ setSerial, disabled }) => {
     return (
-        <input
-            disabled={!disabled}
-            type="text"
-            className="input input-md input-bordered input-info join-item max-w-32"
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setSerial(event.target.value)}
-            placeholder="Type Serial"
-            data-np-intersection-state="visible"
-        />
+        <label className="input input-sm max-w-36 min-w-36 ">
+            <span className="label text-info">Serial:</span>
+            <input
+                disabled={!disabled}
+                type="text"
+                className="max-w-1/2"
+                onChange={(event: ChangeEvent<HTMLInputElement>) => setSerial(event.target.value)}
+                //placeholder="Type Serial"
+                data-np-intersection-state="visible"
+            />
+        </label>
     );
 };
 
-export default InputSerial
-;
+export default InputSerial;

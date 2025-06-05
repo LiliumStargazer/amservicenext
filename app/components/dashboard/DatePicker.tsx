@@ -9,29 +9,31 @@ interface DatePickerProps {
 }
 
 const DatePicker: React.FC <DatePickerProps>= ({ disabled, datePickerDate, handleDatePickerChange }: DatePickerProps) => {
+
     return (
-        <div className="min-w-max w-64">
-            <button popoverTarget="rdp-popover" className="input input-border" disabled={disabled} style={{ anchorName: "--rdp" } as React.CSSProperties}>
+        <label className="input input-sm min-w-72 max-w-min">
+        <span className="label text-info">Select date:</span>
+            <button className="button" popoverTarget="rdp-popover" disabled={disabled} style={{ anchorName: "--rdp" } as React.CSSProperties}>
                 {datePickerDate ? datePickerDate.toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }): "Pick a date"}
             </button>
             <div popover="auto" id="rdp-popover" className="dropdown" style={{ positionAnchor: "--rdp" } as React.CSSProperties}>
-                <DayPicker
-                    className="react-day-picker"
-                    mode="single"
-                    disabled={disabled}
-                    selected={datePickerDate}
-                    onSelect={handleDatePickerChange}
-                    required
-                    locale={it}
-                    onDayClick={() => {
-                        const popover = document.getElementById("rdp-popover");
-                        if (popover && "hidePopover" in popover && typeof (popover as Element & { hidePopover?: () => void }).hidePopover === "function") {
-                            (popover as Element & { hidePopover: () => void }).hidePopover();
-                        }
-                    }}
-                />
+            <DayPicker
+                className="react-day-picker"
+                mode="single"
+                disabled={disabled}
+                selected={datePickerDate}
+                onSelect={handleDatePickerChange}
+                required
+                locale={it}
+                onDayClick={() => {
+                const popover = document.getElementById("rdp-popover");
+                if (popover && "hidePopover" in popover && typeof (popover as Element & { hidePopover?: () => void }).hidePopover === "function") {
+                (popover as Element & { hidePopover: () => void }).hidePopover();
+                }
+                }}
+            />
             </div>
-        </div>
+        </label>
     );
 }
 

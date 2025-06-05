@@ -80,22 +80,27 @@ const SelectSearch: React.FC<SelectSearchProps> = ({ serial, backup, disabled, s
     }, [open]);
 
     return (
-        <div className="relative min-w-96" id="select-search-dropdown">
-            <div
-            className={`select select-md select-bordered min-w-44 join-item flex items-center cursor-pointer ${
-                disabled ? 'opacity-50 pointer-events-none' : ''
-            }`}
-            tabIndex={0}
-            >
+    <div className="min-w-76 max-w-min" id="select-search-dropdown">
+        <label className="input input-sm ">
+            <span className="label text-info">Search events:</span>
             <input
                 className="w-full bg-transparent outline-none"
-                placeholder="Seleziona evento o digita per cercare"
                 value={open ? search : selectedLabel}
                 onChange={handleOnChange}
                 onFocus={() => !disabled && setOpen(true)}
                 disabled={disabled}
                 readOnly={!open}
             />
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                className="h-4 w-4 opacity-70">
+                <path
+                    fillRule="evenodd"
+                    d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                    clipRule="evenodd" />
+            </svg>
             {selectedValue && !disabled && (
                 <button
                 type="button"
@@ -123,38 +128,29 @@ const SelectSearch: React.FC<SelectSearchProps> = ({ serial, backup, disabled, s
                 </svg>
                 </button>
             )}
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                className="h-4 w-4 opacity-70">
-                <path
-                fillRule="evenodd"
-                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                clipRule="evenodd" />
-            </svg>
-            </div>
-            {open && (
+        </label>
+        {open && (
             <ul
-                className="absolute z-10 mt-1 w-full bg-base-100 border border-base-300 rounded shadow max-h-80 overflow-y-auto"
+                className="absolute z-10 mt-1 w-76 bg-base-100 border border-base-300 rounded shadow max-h-80 overflow-y-auto"
             >
                 {filteredOptions.length === 0 && (
-                <li className="px-4 py-2 text-gray-400">Nessuna opzione</li>
+                    <li className="px-4 py-2 text-gray-400">Nessuna opzione</li>
                 )}
                 {filteredOptions.map((opt) => (
-                <li
-                    key={opt.value}
-                    className={`px-4 py-2 cursor-pointer hover:bg-base-200 text-sm ${
-                    selectedValue === opt.value ? 'bg-base-200' : ''
-                    }`}
-                    onClick={() => handleSelect(opt.value)}
-                >
-                    {opt.label}
-                </li>
+                    <li
+                        key={opt.value}
+                        className={`px-4 py-2 cursor-pointer hover:bg-base-200 text-sm ${
+                            selectedValue === opt.value ? 'bg-base-200' : ''
+                        }`}
+                        onClick={() => handleSelect(opt.value)}
+                    >
+                        {opt.label}
+                    </li>
                 ))}
             </ul>
-            )}
-        </div>
+        )}
+
+    </div>
     );
 };
 

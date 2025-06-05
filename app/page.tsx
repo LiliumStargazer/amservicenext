@@ -5,7 +5,6 @@ import {AliveEvent, RawLogEventData} from "@/app/types/types";
 import { CellDoubleClickedEvent } from "ag-grid-community";
 import { GridApi } from "ag-grid-community";
 import SelectBackup from "@/app/components/dashboard/SelectBackup";
-import DropDownInfoBackup from "@/app/components/dashboard/DropDownInfoBackup";
 import Dialog from "@/app/components/dashboard/Dialog";
 import AgGridFingersTransaction from "@/app/components/fingers/AgGridFingersTransaction";
 import ButtonFinger from "@/app/components/buttons/ButtonFinger";
@@ -231,7 +230,26 @@ const DashBoard: React.FC = () => {
         <div className="h-screen flex flex-col">
             <div className="bg-base-100 text-neutral-content min-h-8 max-h-8 flex flex-row mb-4 mt-6 w-full">
                 <div className="flex flex-row justify-between items-center w-full px-4">
+                    
                     {/* Left: Buttons */}
+                        <TextUser/>
+                        {section === 'master' && (
+                        <div className="flex flex-row items-left space-x-2">
+                            <InputSerial disabled={isGridReady} setSerial={setSerial} />
+                            <DatePicker disabled={isDisabled || !isGridReady} datePickerDate={datePickerDate} handleDatePickerChange={handleDatePickerChange} />
+                            <SelectSearch serial={serial} backup={backup} disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue} />
+                            <SelectBackup
+                                setBackup={setBackup}
+                                backup={backup}
+                                disabled={isDisabled || !isGridReady}
+                                onSelectBackup={onSelectBackup}
+                                backupList={backupList}
+                            />
+
+                            {/* <InputSearchEvents disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue}/> */}
+                        </div>
+                    )}
+                    {/* Right: Section controls */}
                     <div className="flex flex-row space-x-4">
                         <p className=" text-xl text-neutral-content font-bold ml-2 whitespace-nowrap">AM Service</p>
                         <ButtonHome setSection={setSection}/>
@@ -242,30 +260,20 @@ const DashBoard: React.FC = () => {
                         <ButtonExcel disabled={isDisabled || !isGridReady} setMessage={setMessage} section={section} storedGridAPi={storedGridAPi}/>
                         <ContainerPassword/>
                         <DrawerLinks serial={serial}/>
-
+                        <button className="btn btn-sm btn-info " onClick={() => signOut()}>Sign Out</button>
                     </div>
-                    {/* Right: Section controls */}
-                    {section === 'master' && (
-                        <div className="flex flex-row items-center space-x-2">
-                            <InputSerial disabled={isGridReady} setSerial={setSerial} />
-                            <SelectBackup
-                                setBackup={setBackup}
-                                backup={backup}
-                                disabled={isDisabled || !isGridReady}
-                                onSelectBackup={onSelectBackup}
-                                backupList={backupList}
-                            />
-                            <DropDownInfoBackup disabled={isDisabled || !isGridReady} backupList={backupList as string[]} isLoadingBackupList={isLoadingBackupList}/>
-                            <DatePicker disabled={isDisabled || !isGridReady} datePickerDate={datePickerDate} handleDatePickerChange={handleDatePickerChange} />
-                            {/* <InputSearchEvents disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue}/> */}
-                            <SelectSearch serial={serial} backup={backup} disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue} />
-                            <TextUser/>
-                            <button className="btn btn-sm btn-info " onClick={() => signOut()}>Sign Out</button>
-                        </div>
-                    )}
                 </div>
             </div>
-            <ContainerBadge status={status} setStatus={setStatus} setMessage={setMessage} message={message} serial={serial} backup={backup}/>
+            <ContainerBadge 
+                status={status} 
+                setStatus={setStatus} 
+                setMessage={setMessage} 
+                message={message} 
+                serial={serial} 
+                backup={backup}
+                backupList={backupList as string[]}
+                isLoadingBackupList={isLoadingBackupList} 
+            />
             <div className="flex-grow flex-col space-y-4 ">
                 {section === 'master' &&
                     <AgGridMaster
