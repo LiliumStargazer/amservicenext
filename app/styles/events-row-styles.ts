@@ -6,10 +6,13 @@ export const eventsRowStyles = {
     'row-ev-coin-in': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_COIN_IN',
     'row-ev-bnk-in': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_BNK_IN',
     'row-ev-pax-payment': (params: RowClassParams<LogEventData>) =>
-        params.data?.EventString === 'EV_PAX_PAYMENT' && params.data?.TagData?.toUpperCase().includes('ESEGUITA'),
+        params.data?.EventString === 'EV_PAX_PAYMENT' && params.data?.Tag1.includes('0'),
     'row-ev-pax-payment-warning': (params: RowClassParams<LogEventData>) =>
-        params.data?.EventString === 'EV_PAX_PAYMENT' && !(params.data?.TagData?.toUpperCase().includes('ESEGUITA')),
-    'row-ev-ing-payment': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_ING_PAYMENT',
+        params.data?.EventString === 'EV_PAX_PAYMENT' && !(params.data?.Tag1?.includes('0')),
+    'row-ev-ing-payment': (params: RowClassParams<LogEventData>) =>
+        params.data?.EventString === 'EV_ING_PAYMENT' && params.data?.Tag1.includes('0'),
+    'row-ev-ing-payment-warning': (params: RowClassParams<LogEventData>) =>
+        params.data?.EventString === 'EV_ING_PAYMENT' && !(params.data?.Tag1?.includes('0')),
     'row-ev-card-ciclo-ok-eta': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_CARD_CICLO_OK_ETA',
     'row-ev-ticket': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_TICKET',
     'row-ev-dev-sernum': (params: RowClassParams<LogEventData>) => params.data?.EventString === 'EV_DEV_SERNUM',

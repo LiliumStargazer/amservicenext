@@ -75,6 +75,11 @@
     font-weight: bold;
 }
 
+.row-ev-ing-payment-warning {
+    background-color: #ffc107;
+    font-weight: bold;
+}
+
 .row-ev-bnk-escrow {
     background-color: #ffc107;
     font-weight: bold;
