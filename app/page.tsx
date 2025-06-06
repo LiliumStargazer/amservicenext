@@ -241,11 +241,10 @@ const DashBoard: React.FC = () => {
                             <SelectBackup
                                 setBackup={setBackup}
                                 backup={backup}
-                                disabled={isDisabled || !isGridReady}
+                                disabled={backupList.length === 0 || !isGridReady}
                                 onSelectBackup={onSelectBackup}
                                 backupList={backupList}
                             />
-
                             {/* <InputSearchEvents disabled={isDisabled || !isGridReady} setSearchValue={setSearchValue}/> */}
                         </div>
                     )}
