@@ -47,6 +47,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 600 --label-enable
     restart: always
+    networks:
+      - amservice-network
 
 
   postgres:
@@ -71,7 +73,7 @@ services:
     volumes:
       - /opt/manutenzione/:/app/source/
       - shared-volume:/backups
-    stdin_open: true  #
+    stdin_open: true  
     tty: true 
     restart: "no"
     networks:
@@ -91,9 +93,6 @@ networks:
   amservice-network:
     driver: bridge
 
-
 volumes:
   shared-volume:
-    driver: local
-  next_cache:
     driver: local

@@ -1,15 +1,20 @@
 'use server'
 import { NextResponse } from "next/server";
 import fs from 'fs';
+import path from "path";
 
 export async function DELETE(): Promise<NextResponse> {
     const temporaryPath: string = process.env.TMPDIR || '/tmp';
-    const amServiceTempPath: string = `${temporaryPath}/tempAmService`;
+    const amServiceTempPath: string = `${temporaryPath}/tempAmService/`;
     try {
         const amServiceTempPathExists: boolean = fs.existsSync(amServiceTempPath);
         if (amServiceTempPathExists) {
-            fs.rmSync(amServiceTempPath, { recursive: true });
-            return NextResponse.json({ message: 'Cartella pulita con successo' });
+            const entries = fs.readdirSync(amServiceTempPath);
+            for (const entry of entries) {
+                const entryPath = path.join(amServiceTempPath, entry); 
+                fs.rmSync(entryPath, { recursive: true, force: true });
+            }
+            return NextResponse.json({ message: 'Contenuto della cartella pulito con successo' });
         } else {
             return NextResponse.json({ error: 'La cartella non esiste' }, { status: 400 });
         }
