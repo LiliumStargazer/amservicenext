@@ -165,6 +165,7 @@ const DashBoard: React.FC = () => {
         if (serial.length !== 5) {
             setBackupList([]);
             setRawLogEvents([]);
+            setSearchValue('');
             setFilteredEvents([]);
             setBackup('');
         }
