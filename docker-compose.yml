@@ -20,17 +20,17 @@ services:
     env_file:
       - stack.env
 
-  migrator:
-    image: lalghisi/migrator:latest
-    container_name: migrator
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - amservice-network
-    env_file:
-      - stack.env
-    
+#  migrator:
+#    image: lalghisi/migrator:latest
+#   container_name: migrator
+#   depends_on:
+#     postgres:
+#       condition: service_healthy
+#   networks:
+#     - amservice-network
+#   env_file:
+#     - stack.env
+
   cronjob:
     image: lalghisi/cron:1.0
     container_name: cronjob_amservice
@@ -40,15 +40,15 @@ services:
     networks:
       - amservice-network
 
-  watchtower:
-    image: containrrr/watchtower
-    container_name: watchover
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 600 --label-enable
-    restart: always
-    networks:
-      - amservice-network
+#  watchtower:
+#   image: containrrr/watchtower
+#   container_name: watchover
+#   volumes:
+#     - /var/run/docker.sock:/var/run/docker.sock
+#   command: --interval 600 --label-enable
+#   restart: always
+#   networks:
+#     - amservice-network
 
 
   postgres:
@@ -76,6 +76,9 @@ services:
     stdin_open: true  
     tty: true 
     restart: "no"
+    deploy:
+      restart_policy:
+        condition: none
     networks:
       - amservice-network
       

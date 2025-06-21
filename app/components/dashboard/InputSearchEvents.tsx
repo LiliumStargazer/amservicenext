@@ -13,7 +13,7 @@ const InputSearchEvents: React.FC <SearchEventsProps> = ({disabled, setSearchVal
         let timeoutId: NodeJS.Timeout;
         return (value: string) => {
             clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => setSearchValue(value), 300);
+            timeoutId = setTimeout(() => setSearchValue(value), 700);
         };
     }, [setSearchValue]);
 

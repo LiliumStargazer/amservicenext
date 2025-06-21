@@ -58,7 +58,7 @@ const SelectSearch: React.FC<SelectSearchProps> = ({ serial, backup, disabled, s
         const value = e.target.value;
         setSearch(value);
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => setSearchValue(value), 300);
+        timeoutRef.current = setTimeout(() => setSearchValue(value), 700);
     };
 
     const selectedLabel =
