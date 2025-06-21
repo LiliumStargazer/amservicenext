@@ -72,7 +72,6 @@ const SelectSearch: React.FC<SelectSearchProps> = ({ serial, backup, disabled, s
             const dropdown = document.getElementById('select-search-dropdown');
             if (dropdown && !dropdown.contains(target)) {
                 setOpen(false);
-                setSearch('');
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -85,7 +84,7 @@ const SelectSearch: React.FC<SelectSearchProps> = ({ serial, backup, disabled, s
             <span className="label text-info">Search events:</span>
             <input
                 className="w-full bg-transparent outline-none"
-                value={open ? search : selectedLabel}
+                value={search || selectedLabel}
                 onChange={handleOnChange}
                 onFocus={() => !disabled && setOpen(true)}
                 disabled={disabled}
